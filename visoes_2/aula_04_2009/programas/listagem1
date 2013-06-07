@@ -1,0 +1,26 @@
+Python 2.6.2 (r262:71600, Apr 16 2009, 09:17:39) 
+[GCC 4.0.1 (Apple Computer, Inc. build 5250)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def quadrado(n):
+... 	return n * n
+... 
+>>> quadrado(4)
+16
+>>> quadrado(quadrado(4))
+256
+>>> id(quadrado)
+13432880
+>>> quadrado
+<function quadrado at 0xccf830>
+>>> type(quadrado)
+<type 'function'>
+>>> toto = quadrado
+>>> toto(8)
+64
+>>> id(toto)
+13432880
+>>> toto
+<function quadrado at 0xccf830>
+>>> type(toto)
+<type 'function'>
+>>> 

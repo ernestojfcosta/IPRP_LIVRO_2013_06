@@ -1,0 +1,227 @@
+\documentclass[a4paper,12pt,portuguese]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage[applemac]{inputenc}
+\usepackage{graphicx,color, colortbl}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{url}
+\usepackage{marvosym}
+\usepackage[Lenny]{fncychap}
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+\usepackage{pifont}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage[official]{eurosym}
+
+
+%-----------------
+
+\usepackage{lettrine}
+\usepackage{soul}
+\usepackage{epigraph}
+\usepackage{xcolor}
+\usepackage{fancybox,calc}
+%--------------------------
+
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+\newcommand{\python}{\textbf {Python }}
+%----------------------------------------------
+
+\definecolor{cinza}{rgb}{0.9,0.9,0.9}
+
+\definecolor{orange}{rgb}{1,0.5,0.0}
+
+\definecolor{rose}{rgb}{1,0.6,0.6}
+
+\newcommand\marginlabel[1]{\mbox{}\marginpar{\raggedright\hspace{0pt}\textcolor{blue}{#1}}}
+
+
+\newcommand{\problema}[1]{\noindent \fbox{} \colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Problema #1}}}}
+
+
+\newcommand{\modulo}[1]{\noindent\colorbox{black}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Módulo #1}}}\,}
+
+\newcommand{\muitofacil}{\noindent \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MF}}}\par}
+
+\newcommand{\facil}{\noindent \colorbox{green}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{F}}}\par}
+
+\newcommand{\medio}{\noindent \colorbox{orange}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{M}}}\par}
+
+\newcommand{\dificil}{\noindent \colorbox{red}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{D}}}\par}
+
+\newcommand{\muitodificil}{\noindent \colorbox{rose}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MD}}}\par}
+
+%-----------------------------------------------
+\renewcommand\lstlistingname{Listagem}
+
+\lstset{backgroundcolor=\color{yellow},language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+
+
+%\lstset{language=Python,backgroundcolor=\color{yellow},captionpos=b}
+% ----------------------------------------------------------------
+\newenvironment{objectivos}
+    {\noindent {\bfseries{\Large{Objectivos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+% contador de Exercicios
+\newcounter{exercicio}[chapter]
+\renewcommand\theexercicio{\thechapter.\arabic{exercicio}}
+
+\newenvironment{Exercicio}
+{\noindent  \refstepcounter{exercicio}  \colorbox{blue}{  \textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Problema \theexercicio}}} \vspace*{0.4cm} }
+{\par  \hfill \colorbox{blue}{} \vspace*{0.4cm} \par}
+
+\newenvironment{requisitos}
+    {\noindent {\bfseries{\Large{Requisitos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{materialapoio}
+    {\noindent {\bfseries{\Large{Material de Apoio}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{sol}
+{\noindent  \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Solução}}}}
+{ \vspace*{0.2cm} \par}
+
+
+\newcounter{caixa}[chapter]
+\renewcommand\thecaixa{\thechapter.\arabic{caixa}}
+
+\newenvironment{Caixa}[1]
+{\vspace*{0.5cm}
+ \noindent \colorbox{blue}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{Caixa\stepcounter{caixa} \thecaixa}}}\\ 
+\noindent \doublebox{\parbox{\textwidth}{
+#1} }   }
+ {}
+
+
+\newcounter{exemplo}[chapter]
+\renewcommand\theexemplo{\thechapter.\arabic{exemplo}}
+
+\newenvironment{Exemplo}[1]
+{\vspace*{0.5cm}
+ \noindent \colorbox{blue}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{Exemplo\stepcounter{exemplo} \theexemplo}}}\\ 
+\noindent \doublebox{\parbox{\textwidth}{
+#1} }   }
+ {}
+
+
+
+
+
+
+\begin{document}
+
+\noindent \rule{\linewidth}{1mm}
+
+\begin{center}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{timbre.eps}
+ \end{figure}
+
+\LARGE{\textbf{\textcolor[rgb]{0.98,0.00,0.00}
+{Introdução à Programação \\ e Resolução de Problemas}}} \\
+\vspace*{0.25cm}2011/2012 \\\vspace*{0.25cm}
+
+\rule{\linewidth}{1mm}
+
+\vspace*{5.0cm} \textcolor[rgb]{0.00,0.40,0.29}{Exercícios para as aulas (1) }
+
+\vspace*{2.0cm}
+\noindent \textbf{Ernesto Costa}
+\end{center}
+
+\renewcommand\chaptername{ }
+\setcounter{chapter}{0}
+\chapter{O número $\pi$}
+\setcounter{chapter}{1}
+
+\section{Introdução}
+
+O número $\pi$ é um número transcendental e define-se como o quociente entre o perímetro e o diâmetro de uma circunferência. Ao longo dos anos muitas foram as soluções para se obter o valor aproximado deste número. Vamos usar \python para implementar algumas das fórmulas e métodos. Mas não se esqueça: os computadores têm limitações na representação dos números reais, logo o resultado que obtiver nunca pode ter mais algarismos significativos do que aqueles que o sistema permite. Caso pretenda saber quais os limites  do \python no seu computador use os comandos que a listagem abaixo indica.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+Python 2.6.1 (r261:67515, Jun 24 2010, 21:47:49) 
+[GCC 4.2.1 (Apple Inc. build 5646)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.float_info
+sys.floatinfo(max=1.7976931348623157e+308, max_exp=1024, max_10_exp=308, min=2.2250738585072014e-308, min_exp=-1021, min_10_exp=-307, dig=15, mant_dig=53, epsilon=2.2204460492503131e-16, radix=2, rounds=1)
+>>> 
+\end{lstlisting}
+
+O valor de \texttt{epsilon} dá-lhe uma ideia da precisão, logo do número de algarismos significativos.\\
+
+\section{Agora é a sua vez...}
+
+\begin{Exercicio}
+Algumas aproximações de $\pi$ são dadas por fracções:
+
+\begin{itemize}
+\item $\frac{22}{7}$
+\item $\frac{355}{113}$
+\item $\frac{9801}{2206 \times \sqrt{2}}$
+\end{itemize}
+
+Teste estas expressões em \python.
+\end{Exercicio}
+
+
+\begin{Exercicio}
+Leibniz propôs um modo de calcular $\pi$, baseado na fórmula:
+
+\[ \frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \dots \]
+
+Trata-se de uma série infinita. Escreva um programa para calcular o valor de $\pi$ baseado nesta ideia. A suas solução permite controlar o valor da precisão?
+\end{Exercicio}
+
+
+\begin{Exercicio}
+Wallis propôs uma outra abordagem baseada no facto de que:
+
+\[ \frac{\pi}{2} = 2 \times \frac{2}{3} \times \frac{4}{3} \times \frac{4}{5} \times \frac{6}{5} \times \frac{6}{7} \ldots \]
+
+Escreva um programa para calcular o valor de $\pi$ baseado nesta ideia. A suas solução permite controlar o valor da precisão?
+
+\end{Exercicio}
+
+\begin{Exercicio}
+O método de Monte Carlo para o cálculo de $\pi$ é um pouco mais sofisticado. Admitamos  que temos um quadrado de lado 2 unidades e dentro dele uma circunferência de raio 1. Divida-se  o quadrado em quatro partes iguais. É óbvio que  área de cada um dos quatro quadrados pequenos é de 1 (ver figura \ref{fig:pi}). 
+
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{imagens/pi.png}
+\caption{{\bf pi: método de Monte Carlo}}
+\label{fig:pi}
+\end{center}
+\end{figure}
+
+
+Por outro lado sabemos que a área da circunferência é igual  a $\pi \times r^2 = \pi$\footnote{Pois o raio é 1.} Logo, a área da parte da circunferência que cobre cada quadrado pequeno vale $\frac{\pi}{4}$. O método de Monte Carlo, consiste em simular o lançamento de dardos na direcção de um dos quadrados pequenos, contar a proporção dos que caiem dentro do quarto de circunferência, e multiplicar esse valor por 4.\\
+
+Implemente este método em \python. Qual o número de dardos que precisa lançar par obter um valor razoável?
+\end{Exercicio}
+
+\end{document}

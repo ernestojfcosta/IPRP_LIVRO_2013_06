@@ -1,0 +1,2190 @@
+%%% objectos_1
+%%% conceitos básicos
+%%% Ernesto Costa
+%%% Julho 2006 - agosto 2007
+
+%\setcounter{exemplo}{1}
+
+\chapter{Objectos (I)}\label{cap:objectos1}
+
+\begin{objectivos}
+
+\item Entender os conceitos de literal, objecto e tipo
+\item Introduzir os conceitos de precedência e de precisão
+\item Explorar os tipos básicos e operações associadas: números e sequências
+\end{objectivos}
+
+\section{Generalidades}\label{sec:gen}
+
+Os computadores utilizam e manipulam coisas que designamos por \textbf{objectos}. Numa primeira aproximação diremos que os objectos são entidades que têm:
+	\begin{itemize}
+		\item identidade
+		\item valor
+		\item tipo
+	\end{itemize}
+
+A \textbf{identidade} é o que torna o objecto único podendo ser consultada mas não modificada. Em termos informáticos falamos normalmente da identidade como uma referência ou apontador para uma zona da memória onde se encontra a descrição do objecto. O \textbf{valor} traduz o estado do objecto num dado momento. Este valor pode ser acedido e em certas circunstâncias alterado. O \textbf{tipo} determina o conjunto de valores que o objecto pode assumir e as operações que com ele podemos fazer. Em \python  o tipo é uma propriedade do objecto pode ser consultado mas não  alterado. \\
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Tipagem}
+ As linguagens têm restrições diferentes relativamente ao tipo dos objectos. Umas, como ADA, C++ ou JAVA, dizem-se \textbf{fortemente tipadas} e a associação entre os objectos e o seu tipo não pode ser alterada. Questão diferente é o problema da tipagem ser estática ou dinâmica. Neste último caso o que está em jogo não é um problema de \textbf{consistência} entre o objecto e o seu tipo mas antes o \textbf{tempo} em que se faz a associação entre o objecto e o tipo. Quando a este último aspecto as linguagens podem adoptar uma ligação \textbf{estática} (a ligação fica definida antes da compilação) ou uma ligação \textbf{dinâmica} ( a ligação é conhecida em tempo de execução). São possíveis diversas situações. Por exemplo, existem linguagens fortemente tipadas com ligação estática (e.g., ADA), fortemente tipadas e mas suportando ligação dinâmica (e.g., C++, Java) ou ainda não tipadas e ligação dinâmica (e.g., \python).
+\end{bclogo}
+
+Em \python os tipos são implementados como \textbf{classes}. Antes de discutir de modo aprofundado o conceito de classe, podemos dizer, de forma simples que uma classe é um modelo para descrever o que o conjunto dos objectos da classe partilham, em particular os seus atributos, que definem o \textbf{estado} do objecto e as operações que podem ser feitas com o objecto, definidoras do seu \textbf{comportamento}.\\
+
+Vejamos uma sessão simples no interpretador como podemos \textbf{inspeccionar} objectos em \python.
+
+\begin{lstlisting}
+>>> id(5)
+4563119552
+>>> 5
+5
+>>> type(5)
+<class 'int'>
+>>>
+\end{lstlisting}
+
+Ficamos a saber que $5$ é um objecto guardado na posição de memória $4563119552$, tem valor $5$ (!) e tipo\footnote{Não se esqueça que os tipos são implementados como classes.} inteiro (\texttt{int}). Já sabemos que podemos associar nomes aos objectos. Por isso não nos estranhará o resultado da sessão seguinte, efectuada na sequência da sessão anterior.
+
+\begin{lstlisting}
+>>> a = 5
+>>> id(a)
+4563119552
+>>> a
+5
+>>> type(a)
+<class 'int'>
+>>> 
+\end{lstlisting}
+
+Como se pode ver o nome $a$ está associado ao objecto $5$, pelo que se obtêm exactamente os mesmos resultados.  Podemos visualizar  (ver  figura \ref{fig:objecto})  a situação da memória que resulta da sessão anterior.
+
+
+% incluir a package graphicx
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{objectos_1/imagens/ivt.eps} 
+\caption{Ambiente, nomes e objectos}
+\label{fig:objecto}
+\end{figure}
+
+Independentemente do aprofundamento que faremos mais adiante desta questão, importa salientar desde já dalguns aspectos. Em primeiro lugar, sempre que se executa algo existe um \textbf{ambiente}\marginlabel{Ambiente} que permite identificar os objectos activos e os seus atributos. Em segundo lugar, os nomes dentro do ambiente activo formam o que se designa por \textbf{espaço de nomes}. Em terceiro lugar, o nome permite para aceder aos restantes atributos de um objecto.\\
+
+Quando iniciamos o sistema existe um ambiente inicial simples, que pode ser inspeccionado. Qualquer alteração posterior modifica  o ambiente.
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__']
+>>> a = 5
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__', 'a']
+>>> dir(a)
+['__abs__', '__add__', '__and__', '__bool__', '__ceil__', '__class__', '__delattr__', '__divmod__', '__doc__', '__eq__', '__float__', '__floor__', '__floordiv__', '__format__', '__ge__', '__getattribute__', '__getnewargs__', '__gt__', '__hash__', '__index__', '__init__', '__int__', '__invert__', '__le__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__', '__new__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__round__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'bit_length', 'conjugate', 'denominator', 'from_bytes', 'imag', 'numerator', 'real', 'to_bytes']
+>>>
+\end{lstlisting}
+
+Esta listagem mostra que inicialmente existe um conjunto reduzido de (quatro) nomes conhecidos. Quando criamos um objecto e o associamos a um nome ($a$), se voltarmos a \textbf{inspeccionar} o ambiente lá encontraremos o novo nome. Igualmente, o uso do comando \texttt{dir} sobre um objecto permite saber que operações podemos efectuar com esse objecto. Na realidade, o sistema mostra todas as operações que podemos fazer com qualquer objecto do mesmo tipo. \\
+
+\texttt{\_\_builtins\_\_} é o nome de um módulo que contém as constantes e funções embutidas.  Algumas dessas constantes são \texttt{True}, \texttt{False} e \texttt{None}. As duas primeiras correspondem aos membros do tipo \textbf{boolean} e a última ao tipo \textbf{NoneType}. \texttt{None} denota a ausência de valor. \texttt{\_\_name\_\_} permite conhecer o valor associado ao ambiente activo.
+
+
+\begin{lstlisting}
+>>> dir(__builtins__)
+['ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BufferError', 'BytesWarning', 'DeprecationWarning', 'EOFError', 'Ellipsis', 'EnvironmentError', 'Exception', 'False', 'FloatingPointError', 'FutureWarning', 'GeneratorExit', 'IOError', 'ImportError', 'ImportWarning', 'IndentationError', 'IndexError', 'KeyError', 'KeyboardInterrupt', 'LookupError', 'MemoryError', 'NameError', 'None', 'NotImplemented', 'NotImplementedError', 'OSError', 'OverflowError', 'PendingDeprecationWarning', 'ReferenceError', 'ResourceWarning', 'RuntimeError', 'RuntimeWarning', 'StopIteration', 'SyntaxError', 'SyntaxWarning', 'SystemError', 'SystemExit', 'TabError', 'True', 'TypeError', 'UnboundLocalError', 'UnicodeDecodeError', 'UnicodeEncodeError', 'UnicodeError', 'UnicodeTranslateError', 'UnicodeWarning', 'UserWarning', 'ValueError', 'Warning', 'ZeroDivisionError', '_', '__build_class__', '__debug__', '__doc__', '__import__', '__name__', '__package__', 'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'bytearray', 'bytes', 'callable', 'chr', 'classmethod', 'compile', 'complex', 'copyright', 'credits', 'delattr', 'dict', 'dir', 'divmod', 'enumerate', 'eval', 'exec', 'exit', 'filter', 'float', 'format', 'frozenset', 'getattr', 'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int', 'isinstance', 'issubclass', 'iter', 'len', 'license', 'list', 'locals', 'map', 'max', 'memoryview', 'min', 'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'quit', 'range', 'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 'sorted', 'staticmethod', 'str', 'sum', 'super', 'tuple', 'type', 'vars', 'zip']
+>>> __name__
+'__main__'
+>>> 
+\end{lstlisting}
+
+Podemos ainda pedir ajuda para saber o que determinados objectos fazem, recorrendo ao comando \texttt{help}.
+
+\begin{lstlisting}
+help(pow)
+Help on built-in function pow in module builtins:
+
+pow(...)
+    pow(x, y[, z]) -> number
+    
+    With two arguments, equivalent to x**y.  With three arguments,
+    equivalent to (x**y) % z, but may be more efficient (e.g. for longs).
+\end{lstlisting}
+
+Como se pode observar a função \texttt{pow} pode ter dois ou três argumentos. No primeiro caso, devolve a potência do primeiro elevada ao segundo. No segundo caso, obtemos esse valor módulo o terceiro argumento.\\
+
+São vários os tipos pré-definidos em \python, que podem ser agrupados por características comuns. Os principais são os tipos numéricos, as sequências, e os mapeamentos\footnote{Por exemplo, também exsite o tipo \texttt{module}, restrito basicamente à operação de acesso (aos objectos do módulo).}.  Neste capítulo iremos introduzir com algum detalhe os tipos mais primitivos de entre os numéricos (inteiros, reais e complexos) e sequências (cadeias de caracteres, tuplos e \textit{range}) (ver figura \ref{fig:tiposprim})\footnote{No texto será explicado o porquê da inclusão do tipo \texttt{bool} no subgrupo dos tipos numéricos.}. 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_1/imagens/tipos_1a.eps}
+\caption{Tipos básicos}
+\label{fig:tiposprim}
+\end{center}
+\end{figure}
+
+\section{Números}
+
+Os objectos primitivos mais simples são os números. Existem fundamentalmente três tipos de números: inteiros, reais (ou vírgula flutuante)\footnote{Do inglês \textit{float}.} e complexos. Como todos os objectos os números são construídos por recurso a \textbf{literais}\marginlabel{Literais}, i.e., expressões cuja sintaxe gera (ou denota) um objecto. Números sem qualquer adorno são inteiros, com um ponto decimal são reais e com um 'j' ou 'J' são complexos. Na tabela \ref{tab:liter} encontram-se literais para diferentes objectos numéricos\footnote{Os inteiros também podem ser representados em notação bi<nária, octal e hexadecimal.}.
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		733, -15, 0 & Inteiros  \\
+		2.46, 3.14e-20, 6E100, 4.0e+120 & Vírgula flutuante\\
+		4 + 5j, 4.0 + 5.0j, 6J & Números Complexos \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Literais Numéricos}
+\label{tab:liter}
+\end{table}
+
+Em relação aos literais podemos  desde já observar que existem várias notações sintáticas (i.e., literais) para os números em vírgula flutuante. Por outro lado, os números inteiros  podem ser representados com precisão ilimitada, o mesmo não sendo verdade para reais e complexos. Devemos ter em atenção de que uma coisa são os objectos e outra a sua representação externa. Olhemos para a sessão que se segue.
+
+\begin{lstlisting}
+>>> 543
+543
+>>> 4.0e3
+4000.0
+>>> 4E100
+4.0000000000000001e+100
+>>> 5.0e+50
+5e+50
+>>> 4.0e50
+4.0000000000000003e+50
+>>> 2.4 + 5.2J
+(2.4+5.2j)
+>>> 0.0 + 5j
+5j
+>>> 
+\end{lstlisting}
+
+Como vemos os dados introduzidos são "ecoados" de modo não necessariamente idêntico. Como anteriormente explicado, quando se recorre a um interpretador este funciona com base num ciclo normalmente designado por ciclo \texttt{lê-avalia-escreve}: uma expressão é lida, o valor que lhe está associado é calculado e o resultado desse cálculo é enviado para o exterior. Na aparência é um ciclo com três passos. No entanto são na realidade \textbf{cinco} pois a seguir à leitura há uma conversão para um formato interno e antes da impressão há a escolha do formato de saída. Um outro aspecto que devemos notar é que no caso de algumas expressões, por exemplo da  \texttt{4E100}, o resultado enviado é diferente do esperado: existe uma imprecisão na máquina!\\
+
+\subsubsection*{Operações}
+Se não pudéssemos  efectuar  operações e cálculos com os números estes não teriam muito interesse. Desde tempos remotos que  com eles fazemos operações básicas que nos permitem contar, medir ou calcular. Na escola fomos progredindo dos números inteiros até aos complexos passando pelos racionais e pelos reais. Na tabela \ref{tab:opera} encontram-se as operações elementares que podemos efectuar, e que são comuns aos três tipos de  números, excepto nalguns casos óbvios envolvendo números complexos.\\
+
+
+\begin{table}[!htdp]
+\caption{Operações básicas sobre números}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operações & Descrição  \\ [0.5ex]
+		+ & Adição \\
+		- & Subtracção (dois argumentos)\\
+		* &  Multiplicação \\ 
+		/ & Divisão\\
+		// & Divisão truncada\\
+		\% & resto \\ 
+		- & Negação (um argumento)\\
+		\texttt{abs} & Valor absoluto \\
+		\texttt{conjugate} & o conjugado de um complexo\\
+		\texttt{divmod} & Divisão truncada e resto \\
+		\texttt{pow} & Exponenciação \\
+		** & Exponenciação  \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:opera}
+\end{table}
+
+Vejamos uma pequena sessão de cálculos (ver listagem \ref{lst:opnum}).
+
+
+\begin{lstlisting}[caption={Opera\c cões com números}, label=lst:opnum]
+>>> 4 + 7
+11
+>>> 4 - 7
+-3
+>>> 4.3 + 2.4 # oops, mais um problema de precisão! 
+6.699999999999999
+>>> (4.3 + 2.4j) + (3.4 + 4.2j)
+(7.699999999999999+6.6j)
+>>> 34 * 14
+476
+>>> 1 / 2
+0.5
+>>> 1 / 3
+0.3333333333333333
+>>> 1 / 3.14
+0.3184713375796178
+>>> import math
+>>> 1 / math.pi
+0.3183098861837907
+>>> 1 // 2
+0
+>>> -1 // 2
+-1
+>>> 1 // -2
+-1
+>>> 4.3 // 2.4
+1.0
+>>> 4.3 / 2.4
+1.7916666666666667
+>>> 4 \% 5
+4
+>>> 7 \% 5
+2
+>>> -7 \% 5
+3
+>>> 7.0 \% 5.0
+2.0
+>>> 4+3j * 2+5j
+(4+11j)
+>>> (4+3j) * (2+5j)
+(-7+26j)
+>>> (4+3j) / (2+5j)
+(0.793103448275862-0.48275862068965514j)
+>>> (4+3j).conjugate()
+(4-3j)
+>>> divmod(7,5)
+(1, 2)
+>>> pow(2,3)
+8
+>>> pow(2,3,2)
+0
+>>> 2 ** 3
+8
+>>> 0 ** 0 # zero levantado a zero é igual a um!
+1
+>>> (4+2j)**2
+(12+16j)
+>>> (4+3j) / (2+5j)
+(0.793103448275862-0.48275862068965514j)
+>>> 
+\end{lstlisting}
+
+
+Alguns aspectos  sobressaem desta pequena sessão. Desde logo, o facto de o mesmo \textbf{símbolo} de operador ser usado para efectuar operações com números de tipos diferentes. Dizemos que o operador está  \marginlabel{Operadores Sobrecarregados} \textbf{sobrecarregado}. Por outro lado, quando os objectos são de tipo diferente existe uma \textbf{conversão} automática de tipos\marginlabel{Conversão de Tipos}.  Por exemplo, quando dividimos um inteiro por um número em vírgula flutuante o resultado é um número em vírgula flutuante. A conversão é feita para o tido dito mais \textit{geral}: complexos são mais \textit{gerais} do que os reais, e estes mais gerais do que os inteiros. A figura \ref{fig:converte} mostra o modo de proceder de \python. Também se torna de novo aparente as questões de precisão já antes referidas.\\
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Precisão}
+Os computadores são máquinas com limitações. Cada número tem que ter uma representação única no computador. No caso dos números inteiros em \python podemos representar qualquer número, estando apenas limitados pela memória do computador. Já no caso dos números reais o problema é mais delicado. Como existem uma infinidade de números reais, nunca poderemos representar todos, mas apenas um seu subconjunto1. Por outro lado, uma vez mais devido a limitações da máquina, usam-se representações de comprimento fixo. Isso implica, por exemplo, que um número com muitos dígitos tenha que ser aproximado. Daqui decorre que os números reais têm representações imprecisas e as operações que com eles fazemos são inexactas. Para saber alguma informação sobre a precisão o leitor interessado pode fazer o indicado na listagem. Por \textbf{precisão}, de um sistema em vírgula flutuante, entende-se o número \textit{epsilon} ($\epsilon$) mais pequeno para o qual se verifica $ 1 + \epsilon > 1$.
+
+\begin{lstlisting}
+>>> import sys
+>>> sys.float_info
+sys.float_info(max=1.7976931348623157e+308, max_exp=1024, max_10_exp=308, min=2.2250738585072014e-308, min_exp=-1021, min_10_exp=-307, dig=15, mant_dig=53, epsilon=2.220446049250313e-16, radix=2, rounds=1)
+>>>
+\end{lstlisting}
+
+Da listagem\footnote{Os valores listados dependem da máquina em que está a correr o interpretador.} podemos retirar, entre outras coisas, os valores máximo e mínimo que se pode representar bem como o valor de  \textit{epsilon}
+\end{bclogo}
+
+
+Na tabela \ref{tab:opera} afirmamos que $//$ representa a divisão truncada. Na realidade ela pretende designar a divisão inteira por recurso à operação \texttt{floor}. É como se a  divisão com inteiros fosse executada em dois passos: primeiro, é feita uma divisão como se se tratasse de números reais; depois, o valor é aproximado ao maior inteiro \textbf{menor} do que o real obtido. É por isso que temos o resultado nas linhas 20 a 27. Existe uma diferença subtil entre truncar ou fazer do modo referido. A listagem ilustra a diferença.\\
+
+\begin{lstlisting}
+>>> import math
+>>> math.floor(4.5)
+4
+>>> math.floor(-4.5)
+-5
+>>> math.trunc(4.5)
+4
+>>> math.trunc(-4.5)
+-4
+>>> 
+\end{lstlisting}
+Como se vê só no caso de os números serem positivos é que a truncagem e a operação \texttt{floor} coincidem.
+
+
+\begin{figure}[!]
+\begin{center}
+\includegraphics[scale=0.65]{objectos_1/imagens/coercao_2.eps}
+\caption{Conversão automática de tipos}
+\label{fig:converte}
+\end{center}
+\end{figure}
+
+\subsubsection*{Coerção e construtores}
+
+O programador pode for\cçar a conversão de tipos numéricos. A tabela \ref{tab:converte} mostra os operadores que podemos usar.
+
+\begin{table}[!htdp]
+\caption{Operadores de conversão de tipos}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operadores& Descrição  \\ [0.5ex]
+		int(\textit{obj}, \textit{base}=10) &  Converte para inteiro na base \textit{base} \\ 
+		float(\textit{obj})  & Converte para float\\
+		complex(\textit{real}, \textit{imag}=0.0) & Converte para complexo\\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:converte}
+\end{table}
+
+Vejamos agora alguns exemplos ilustrativos.
+
+\begin{lstlisting}
+>>> int(4.5)
+4
+>>> int(8/3)
+2
+>>> int('123')
+123
+>>> float('123')
+123.0
+>>> float('123e10')
+1230000000000.0
+>>> 
+>>> float(34)
+34.0
+>>> float('123')
+123.0
+>>> float('123e10')
+1230000000000.0
+>>>
+>>> complex(5,3)
+(5+3j)
+>>> complex('4+5j')
+(4+5j)
+>>> complex(5)
+(5+0j)
+>>> float(4+5j)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can't convert complex to float; use abs(z)
+>>> abs(4+5j)
+6.4031242374328485
+\end{lstlisting}
+
+Estes exemplos mostram que nem tudo é possível fazer. Por exemplo, não podemos converter um número complexo num real\footnote{Mas, como veremos mais tarde, podemos aceder às suas componentes e depois efectuar a conversão}. \\
+
+As funções indicadas na tabela \ref{tab:converte} são conhecidas como \textbf{construtores}\marginlabel{Construtores} do tipo\footnote{Não é por acaso que têm o nome do tipo.} Podem também ser usadas sem argumento nenhum, criando neste caso objectos particulares do tipo.
+
+\begin{lstlisting}
+>>> int()
+0
+>>> float()
+0.0
+>>> complex()
+0j
+>>> 
+\end{lstlisting}
+
+% ----- complexos: parte real e parte imaginária
+
+Os números complexos têm a particularidade de terem dois atributos: a parte real e a parte imaginária. Em certas aplicações estamos interessados em obter separadamente cada uma destas partes. No caso dos complexos,  tal pode ser feito usando a \textbf{notação por ponto} e o nome dado a cada um dos atributos, \texttt{real} e \texttt{imag}.
+
+\begin{lstlisting}
+>>> (4.5 + 3.2j).real
+4.5
+>>> (4.5 + 3.2j).imag
+3.2
+>>> 
+\end{lstlisting}
+
+
+%------ Precedência dos operadores
+\subsubsection*{Precedência}
+
+Os exemplos que temos vindo a mostrar  são bastante simples, envolvendo apenas um operador em cada expressão. O que acontece se tivermos mais operadores, do mesmo tipo ou de tipos diferentes,  ou seja, por que ordem são feitas as operações? Esta questão resolve-se devido à existência de \textbf{prioridade} ou \textbf{precedência} entre os operadores. A tabela \ref{tab:opera} mostra os operadores por ordem crescente de prioridade\footnote{Podemos forçar a ordem pela qual as operações são efectuadas recorrendo ao uso de parênteses.}. Vejamos um exemplo ilustrativo.
+
+\begin{lstlisting}
+>>> 2 + 3 * 5
+17
+>>> (2 + 3) * 5
+25
+>>> 2 ** 3 ** 2
+512
+>>> (2 ** 3) ** 2
+64
+>>> 2 * 3 / 4
+1.5
+>>> 2 / 3 * 4
+2.6666666666666665
+>>> 
+\end{lstlisting}
+
+\subsubsection*{Outros Casos}
+
+À  semelhan\c ca de outras linguagens também existem opera\c cões ao nível do bit. Só funcionam com argumentos inteiros e os números negativos estão representados em complemento para dois. A tabela \ref{tab:opbit} mostra as operações por ordem crescente de prioridade.
+
+
+\begin{table}[!htdp]
+\caption{Operadores ao nível do Bit}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operadores& Descrição  \\ [0.5ex]
+
+		x | y & O \textit{ou} dos bits \\
+		x \texttt{\^} y & O \textit{ou exclusivo}  dos bits \\
+		x \& y & O \textit{and} dos bits \\
+		x << n & O \textit{deslocamento à esquerda} de \textit{n} bits \\
+		x >> n & O \textit{deslocamento à direita} de \textit{n} bits \\
+		\texttt{\~} x & A inversão dos bits \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:opbit}
+\end{table}
+
+Vejamos exemplos ilustrativos.
+
+\begin{lstlisting}
+>>> 5 >> 2
+1
+>>> 4 << 3
+32
+>>> 5 & 3
+1
+>>> 5 ^ 2
+7
+>>> 5 | 3
+7
+>>> ~8
+-9
+>>> ~-7
+6
+>>> 
+\end{lstlisting}
+
+\subsubsection{Exemplos}
+
+Vejamos dois exemplos simples de programas envolvendo cálculos com números. \\
+
+\begin{Exemplo}
+{Suponhamos que queremos calcular o declive de uma recta dados dois pontos. A fórmula para o fazer é conhecida:
+
+\[ declive(x_1,y_1,x_2,y_2) = \frac{(y_2 - y_1)}{(x_2 - x_1)} \]
+
+Daqui decorre um programa muito simples.
+
+\begin{lstlisting}
+def declive(x1,y1,x2,y2):
+	""" Usa a forma habitual para calcular o declive, dados dois pontos.
+	Cuidado: não podem ter a mesma abcissa!
+	"""
+	return (y2 - y1)/(x2 - x1)
+\end{lstlisting}
+
+
+O único problema com este programa é que não prevê o caso de os pontos terem a mesma abcissa, isto é, estarmos na presença de uma recta perpendicular ao eixo dos $x$. Mas tal pode ser remediado facilmente efectuando um teste a essa situação e tomando a acção apropriada.
+
+\begin{lstlisting}
+def declive(x1,y1,x2,y2):
+	""" Usa a forma habitual para calcular o declive, dados dois pontos.
+	Cuidado: não podem ter a mesma abcissa!
+	"""
+	if x1 != x2:
+		return (y2 - y1)/(x2 - x1)
+	else:
+		return float('Inf')
+\end{lstlisting}
+
+Note-se como em \python podemos introduzir uma constante que simboliza o infinito (linha 8). Caso pretendamos menos infinito usamos \texttt{float('-Inf')}.}
+\end{Exemplo}
+
+\begin{Exemplo}
+{Passemos ao caso do cálculo das raízes de um polinómio do segundo grau. Também aqui a fórmula é conhecida:
+
+
+\[ x_{1,2} = \frac{- b \pm \sqrt{b^2 - 4 \times a \times c}}{2 \times a}  \]}
+
+O código é directo.
+
+\begin{lstlisting}
+import cmath 
+
+def poli_2(a,b,c):
+	""" Calcula as raizes de um polinomio do segundo grau."""
+	delta = cmath.sqrt(b**2 - 4 * a * c)
+	raiz_1 = (- b + delta)/ (2 * a)
+	raiz_2 = (- b - delta) / (2 * a)
+	return raiz_1, raiz_2
+\end{lstlisting}
+
+Neste exemplo fomos obrigados a usar o módulo \texttt{cmath}, semelhante ao módulo \texttt{math}, mas que disponibiliza operações para números complexos. Notar ainda que é possível uma função devolver mais do que um valor, neste caso as duas raízes do polinómio\footnote{Na realidade  o que é devolvido é um \textbf{tuplo}, objecto de um tipo de que falaremos na secção \ref{sec:tuplos}.}.
+
+\end{Exemplo}
+
+
+\section{Booleanos}\label{sec:boolean}
+
+Os booleanos foram representados durante muito tempo por números, mais concretamente, o $1$ para verdadeiro e o $0$ para falso. Actualmente têm o seu próprio tipo, \texttt{bool} e valores (as constantes \texttt{True} e \texttt{False}). Existem três operações com objectos do tipo booleano, como se indica na tabela \ref{tab:opbool}.
+
+\begin{table}[!htdp]
+\caption{Operadores Booleanos}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operadores& Descrição  \\ [0.5ex]
+		x and y & O \textit{e} lógico \\
+		x or y & O \textit{ou} lógico \\
+		not x & A nega\c cão lógica \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:opbool}
+\end{table}
+
+Em termos de implementação convém referir que estas operações e seguem o princípio dito de \textit{curto circuito}: no caso do \texttt{and} a operação termina mal um dos operandos tenha valor \texttt{False} e, no caso do \texttt{or}, termina mal um dos operandos seja \texttt{True}.  A existência de booleanos é fundamental em programação pois é o que necessitamos usar nas instruções de controlo condicionais ou nos ciclos de execução condicional.
+
+Eis alguns exemplos simples de utiliza\c cão. 
+
+\begin{lstlisting}
+>>> True and False
+False
+>>> True and True
+True
+>>> True or False
+True
+>>> False or False
+False
+>>> not True
+False
+\end{lstlisting}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcattention]{Booleanos e inteiros}
+Tecnicamente o a classe \texttt{bool} é uma subclasse da classe \texttt{int}. \texttt{True} e \texttt{False} comportam-se exactamente como os inteiros 1 e 0, respectivamente. Daí ser possível observar coisas bizarras como se indica na listagem.
+
+\begin{lstlisting}
+>>> True + 2
+3
+>>> False * 3
+0
+>>> True + False
+1
+>>> 
+\end{lstlisting}
+
+Encontrar situações destas em código é sinal de má programação.
+\end{bclogo}
+
+Existe um conjunto grande de operadores de comparação cujo resultado é um objecto do tipo booleano. A tabela \ref{tab:opcomp} identifica-os.
+
+\begin{table}[!htdp]
+\caption{Operadores de Comparação}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operadores& Descrição  \\ [0.5ex]
+		> &  Maior \\
+		>= &Maior ou igual \\
+		< & Menor \\
+		>= & Menor ou igual \\
+		== & Igual valor\\
+		!= & Desigual (valor)\\
+		is & Igual identidade \\
+		is not & Desigual identidade\\  \hline
+	\end{tabular}
+	\end{center}
+\label{tab:opcomp}
+\end{table}
+
+Vejamos alguns exemplos de utilização.
+
+\begin{lstlisting}
+>>> 4 >= 5
+False
+>>> 3 <= 4
+True
+>>> 4 != 5
+True
+>>> 3 == 3
+True
+>>> 4 == 4.0
+True
+>>> 3 is 3
+True
+>>> 4 is 4.0
+False
+>>> 5 == 5E0
+True
+>>> 
+\end{lstlisting}
+
+Notar a diferença entre as operações \texttt{==} e \texttt{is}. A primeira verifica se os objectos têm o mesmo valor, enquanto a segunda só é \texttt{True} se se tratar do mesmo objecto, isto é, tiverem a mesma identidade.\\
+
+O \textbf{construtor} deste tipo chama-se \ldots \texttt{bool}. 
+
+\begin{lstlisting}
+>>> bool()
+False
+>>> bool(0)
+False
+>>> bool(0.0)
+False
+>>> bool(0j)
+False
+>>> bool(45)
+True
+>>> bool(43.5)
+True
+>>> bool((3+4j))
+True
+>>> 
+\end{lstlisting}
+
+Sem argumento, cria o objecto \texttt{False}. Com argumentos específicos (linhas 3 a 8) cria ainda o objecto \texttt{False}\footnote{Como veremos mais tarde há outros objectos que são reconhecidos como \texttt{False}. Tipicamente trata-se dos objectos de outros tipos criados pelo respectivo construtor.} Com argumentos genéricos (linhas 9 a 14) cria o objecto \texttt{True}.
+
+
+
+% -----------------------------------------------------------------
+
+\section{Cadeia de Caracteres}\label{sec:cadcar}
+
+Cada vez mais nesta sociedade nós trocamos mensagens uns com os outros, por exemplo sob a forma de correio electrónico, sms, no twitter ou no facebook, guardamos informação em grandes bases de dados, procuramos e manipulamos informação, por exemplo encriptando-a. O que têm em comum estas diferentes maneiras de interagir com, ou por meio de, informação é o facto de esta ser representada por texto, ou seja, por uma sequência de caracteres de um dado alfabeto. A própria vida pode ser entendida a partir de uma (grande) cadeia de caracteres, a cadeia de ADN, formada a partir de apenas   quatro letras. Essas quatro letras correspondem às quatro bases distintas existentes no nosso ADN, identificadas por letras: T(imina), A(denina), C(itosina) e G(uanina). % A figura \ref{fig:adn} mostra, de modo simplificado, um zoom sobre a dupla hélice do ADN.
+
+\begin{comment}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_1/imagens/adn.png}
+\caption{ Cromossomas, ADN, nucleótidos e bases}
+\label{fig:adn}
+\end{center}
+\end{figure}
+\end{comment}
+
+ Em \textbf{Python} é fácil representar uma cadeia de ADN usando uma \textbf{cadeia de caracteres} que representa a sequência de bases. 
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> meu_adn = 'ATTCGGTATGGTAC'
+>>> meu_adn
+'ATTCGGTATGGTAC'
+\end{lstlisting}
+
+As cadeias de caracteres são outro tipo  primitivo da linguagem \texttt{Python}. As cadeias de caracteres são colecções ordenadas, isto é sequências, de caracteres\footnote{Em \python ao contrário de outras linguagens não existe o tipo caracter.}, homogéneas (todos os seus elementos são do mesmo tipo, no caso caracteres). Como no caso dos números estas cadeias são construídas por recurso a literais como se ilustra na tabela \ref{tab:litcar}.\\
+
+\begin{table}[!htb]
+
+\caption{Literais Para Cadeias de Caracteres}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		'alma' & Só um plica\\
+		''lamA'' &  Duas plicas \\ 
+		'''''' Mala'''''' & Três plicas duplas\\
+		'''MaLa''' & Três plicas simples\\
+		''Sporting's'' & Mistura \\
+		' Ele gritou ''Golo''!' & Mais mistura\\ 
+		''''Sim!'' disse ele. 'É a praxe...' '' & Ainda mais mistura\\
+		\verb=r'\ternesto\ncosta'= & Cadeia bruta\\ \hline
+	\end{tabular}
+	\end{center}
+	\label{tab:litcar}
+\end{table}
+
+Dos exemplos da tabela resulta claro que a \textbf{marca sintáctica} para construir cadeias de caracteres é o recurso às plicas. Estas podem ser simples, duplas ou triplas. As últimas permitem escrever longas cadeias de caracteres que se propagam por mais do que uma linha sendo por isso muito usadas para comentar o nosso código. Existem cadeias \textit{brutas} que são prefixadas com \textbf{r}. As cadeias são sensíveis ao caso, pelo que \texttt{"alma"} e \texttt{"Alma"} são objectos diferentes. Na  listagem \ref{lst:plicas} mostramos um exemplo trivial. A existência de mais do que uma marca  é útil para as situações das cadeias de caracteres em que existem no seu interior plicas, como é visível em alguns exemplos da tabela \ref{tab:litcar}. As cadeias de caracteres podem ainda ter associadas marcas, que alteram o modo como estas são interpretadas, como se apresenta no último exemplo. \\
+
+\subsubsection*{Caracteres de controlo\footnote{Do inglês \textit{Escape characters.}}}
+
+Como já aconteceu com os números, as cadeias introduzidas não são sempre exactamente ecoadas. No exemplo da listagem \ref{lst:plicas} exemplificamos essa situação. Em particular, no exemplo com três plicas a cadeia \texttt{"gosto muito de jogar futebol"} é transformada em \texttt{"gosto muito de jogar\textbackslash nfutebol"}, porque o utilizador carregou na tecla de \texttt{return}. O uso de \texttt{\ \textbackslash n} tem a função de um caracter de controlo, que ao ser interpretado faz mudar de linha para continuar a visualização. 
+\begin{lstlisting}[caption={Uso das plicas},label=lst:plicas]
+>>> 'bola'
+'bola'
+>>> "Bola"
+'Bola'
+>>> """BoLa"""
+'BoLa'
+>>> """gosto muito de jogar
+... futebol"""
+'gosto muito de jogar\nfutebol'
+>>> 
+\end{lstlisting}
+
+O uso destes caracteres  permite formatar, de modo simples, os nossos textos. Existe uma multiplicidade de caracteres de controlo parcialmente ilustrada na tabela \ref{tab:ccont}. 
+
+\begin{table}[!htb]
+\caption{Caracteres de controlo em cadeias de carateres}
+\label{tab:ccont}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Escape & Interpretação  \\ [0.5ex]
+		\textbackslash \textbackslash& Armazena uma barra inclinada \\
+		\textbackslash b &  Espaçamento atrás \\ 
+		\textbackslash n& Muda de linha\\
+		\textbackslash t & Tabulação horizontal\\
+		\textbackslash v & Tabulação vertical\\ \hline
+	\end{tabular}
+	\end{center}
+\end{table}
+
+A listagem \ref{lst:cadcar} ilustra o uso dos caracteres de controlo.
+
+
+\begin{lstlisting}[caption= {Marcas em cadeias de caracteres}, label = lst:cadcar]
+>>> "spam"
+'spam'
+>>> "s\tpa\nm"
+'s\tpa\nm'
+>>> r"s\tpa\nm"
+'s\\tpa\\nm'
+>>> "C:\\spam\\toto.exe"
+'C:\\spam\\toto.exe'
+>>> "\tsp\vam"
+'\tsp\x0bam'
+>>> 
+\end{lstlisting}
+
+\subsubsection*{Operações de conversão}
+
+Cada caractere, que aparece numa cadeia, é representado representado por meio de um código\marginlabel{Codificação}\footnote{Existem vários códigos, como o ASCII, Latin-1, Unicode. Estes códigos coincidem nos primeiros 127 caracteres (basicamente dígitos, letras e alguns sinais). Os códigos que aparecem após o códico ASCII, apareceram para dar expressão a caracteres especiais de várias línguas, como o português. Actualmente o código que melhor garante a portabilidade é o Unicode. }.  Existe uma operação que nos permite dado um caractere obter o seu código (\texttt{ord}), e outra para dado um código obter o respectivo caractere (\texttt{chr}).
+
+
+\begin{lstlisting}
+>>> car_1 = 'A'
+>>> ord(car_1)
+65
+>>> chr(65)
+'A'
+>>> len(car_1)
+1
+>>> car_3 = 'ó'
+>>> car_3
+'ó'
+>>> ord(car_3)
+243
+>>> chr(243)
+'ó'
+>>> len(car_3)
+1
+>>>
+\end{lstlisting}
+
+
+\subsubsection*{Comparando cadeias de caracteres}
+
+As cadeias de caracteres podem ser comparadas usando os operadores convencionais de comparação: \texttt{<}, \texttt{<=},\texttt{==},\texttt{!=},\texttt{>=}. Para se obter o resultado destas comparações usam-se os códigos dos seus caracteres. Quando existe apenas um caractere o método de comparação é trivial. Quando existe mais do que um caractere é preciso percorrer as duas cadeias a partir da posição zero. Se os caracteres numa dada posição são iguais, passamos para a posição seguinte e repetimos. Se são diferentes, o resultado final é o que decorre da comparação desses caracteres. Se as duas cadeias têm comprimento diferente mas são iguais até à última posição da menor então a de maior comprimento é sempre maior.
+
+
+\begin{lstlisting}
+>>> 'a' == 'a'
+True
+>>> 'a' > 'A'
+True
+>>> 'amo' < 'ama'
+False
+>>> 'pa' < 'para'
+True
+>>> 'a' != 'A'
+True
+>>> 
+\end{lstlisting}
+
+
+\subsubsection{Operadores}
+
+Existe um conjunto de operações comuns os vários tipos de sequências, logo que podem ser usadas com cadeias de caracteres. A tabela \ref{tab:opbascar}  apresenta as básicas.
+
+\begin{table}[!htb]
+\caption{Operações básicas Para Cadeias de Caracteres}
+\label{tab:opbascar}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		 \texttt{+} & Concatenação de cadeias de carateres\\
+		\texttt{*}  & Cópias de superfície de uma cadeia \\ 
+		 \texttt{len}  & Comprimento da cadeia\\ \hline
+	\end{tabular}
+	\end{center}
+\end{table}
+
+
+O leitor atento terá logo notado que os \textbf{símbolos} para as operações de concatenação e de repetição são os mesmos  que os utilizados para as operações de soma e produto de números, respectivamente. Uma vez mais dizemos que os operadores estão \textbf{sobrecarregados}. Sendo o símbolo (ou nome) da operação o mesmo o que faz a diferença é o \textbf{tipo} do objecto.
+
+Alguns exemplos simples estão ilustrados na listagem \ref{lst:opbas}.
+
+\begin{lstlisting}[caption={Caracteres: opera\c cões básicas}, label= lst:opbas]
+>>> 'GAATTC' + 'GGATCC'
+'GAATTCGGATCC'
+>>> 'GAATTC' * 2
+'GAATTCGAATTC'
+>>> 2 * 'GAATTC'
+'GAATTCGAATTC' 
+>>> len('GAATTC')
+6
+\end{lstlisting}
+
+\subsubsection{Indexação}
+As cadeias de caracteres são \textbf{sequências}, logo são ordenadas. Cada posição tem associada um \textbf{índice}. Os índices crescem da esquerda para a direita a partir de $0$ até \texttt{len(<cadeia>) - 1}, e decrescem de $-1$ até \texttt{-len(<cadeia>)} (ver figura \ref{fig:cadcar}).
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_1/imagens/cadcar.eps}
+\caption{ Cadeia de caracteres: indexação}
+\label{fig:cadcar}
+\end{center}
+\end{figure}
+
+
+Os índices permitem aceder a um caractere particular, usando para tal o operador de indexação \texttt{[]}.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia = 'Homem Aranha'
+>>> cadeia[3]
+'e'
+>>> cadeia[-1]
+'a'
+>>> cadeia[0]
+'H'
+>>> cadeia[4] == cadeia[-8]
+True
+>>> 
+\end{lstlisting}
+
+
+\subsubsection{Fatiamento}
+
+Podemos generalizar a operação de indexação por forma a obter uma fatia (elementos contíguos) da cadeia ou para obter a sequência de elementos espaçados regularmente. Usamos agora a notação \texttt{[inf:sup]}, no primeiro caso, e \texttt{[inf:sup:step]}, no segundo caso.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia = 'Homem Aranha'
+>>> cadeia[1:4]
+'ome'
+>>> cadeia[-6:-2]
+'Aran'
+>>> cadeia[:5]
+'Homem'
+>>> cadeia[6:]
+'Aranha'
+>>> cadeia[:]
+'Homem Aranha'
+>>> cadeia[::2]
+'HmmAah'
+>>> cadeia[1:7:2]
+'oe '
+>>> 
+\end{lstlisting}
+
+Notará que o fatiamento é feito entre a posição \textbf{inf} inclusive e a posição \textbf{sup} exclusive. Podemos usar os índices positivos ou negativos. Caso o índice inferior seja maior que o índice superior o resultado será uma cadeia vazia. Podemos  não colocar os índices. Se não pusermos o inferior significa desde o início; se não pusermos o superior, significa até ao fim, se não pusermos ambos, significa do início ao fim do objecto. Os últimos exemplos ilustram a obtenção da subsequência de elementos igualmente espaçados.\\
+
+
+\begin{Exemplo}
+{Obtenha a cadeia inversa e uma dada cadeia de caracteres.\\
+
+
+A solução é trivial.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia[::-1]
+'ahnarA memoH'
+>>>
+\end{lstlisting}
+
+}\end{Exemplo}
+
+
+\begin{comment}
+
+Sendo as cadeias de caracteres objectos \textbf{compostos} por elementos mais simples (os caracteres) é natural que se coloque a questão de saber se podemos aceder a   esses elementos mais simples  (indexação) ou ainda a pedaços do objecto (consecutivos ou não). A resposta é sim e o operador que o permite é o operador de \textit{fatiamento} \footnote{Tradução livre do termo inglês \textit{slice}}. 
+Na figura \ref{fig:praxe} ilustramos o modo como a cadeira se encontra internamente organizada. Resulta da imagem que cada caracter na cadeia tem um \textbf{índice} associado, começando em $0$. O operador de fatiamento é formado pelos caracteres "[" e "]" podendo incluir separadores denotados por dois pontos ":". Valores negativos significa que o índice é contado a partir do fim.
+
+
+% incluir a package graphicx
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{objectos_1/imagens/praxe.eps} 
+\caption{Cadeias de caracteres: acesso}
+\label{fig:praxe}
+\end{figure}
+
+
+Vejamos na sessão \ref{lst:fat} o que podemos fazer com o objecto \texttt{DIVIDIRAPRAXE}.
+
+
+\begin{lstlisting}[caption={Opera\c cão de Fatiamento}, label= lst:fat]
+>>> 'dividirapraxe'[3]
+'i'
+>>> 'dividirapraxe'[2:5]
+'vid'
+>>> 'dividirapraxe'[::2]
+'dvdrpae'
+>>> 'dividirapraxe'[::-1]
+'exarparidivid'
+>>> 'dividirapraxe'[:5]
+'divid'
+>>> 'dividirapraxe'[:]
+'dividirapraxe'
+>>> 'dividirapraxe'[::]
+'dividirapraxe'
+>>> 
+\end{lstlisting}
+
+Que comentários podemos fazer?
+
+\begin{itemize}
+\item podemos aceder a um objecto indicando o seu índice;
+\item podemos aceder a uma subsequência indicando  o índice do primeiro elemento e o índice do elemento \textbf{a seguir} ao último;
+\item podemos aceder a elementos igualmente espaçados (no exemplo obtemos os elementos nas posições pares);
+\item podemos aceder aos elementos a partir do fim (se forem todos como no exemplo o resultado final é a cadeia com os caracteres invertidos);
+\item podemos obter toda a cadeia de mais do que uma maneira.
+\end{itemize}
+
+O exemplo é apenas indicativo e todas as combinações são possíveis.\\
+
+\end{comment}
+%--------------------------------------
+
+
+\subsubsection*{Cadeias de Caracteres, \texttt{print} e formatação}
+
+Em exemplos anteriores já vimos como podemos usar a função \texttt{print} para nos devolver o valor associado a uma expressão ou para imprimir mensagens simples. Neste último caso as mensagens eram codificadas como cadeias de caracteres sempre iguais. Acabámos de ver que podemos colocar caracteres especiais numa cadeia de modo a obter uma impressão de acordo com um certo formato. Será que podemos usar algo  semelhante para gerar mensagens, frases, cujo resultado final depende do valor de certos objectos? A resposta é positiva.
+
+\begin{lstlisting}
+>>> num_1 = 1
+>>> num_2 = 3
+>>> mensagem_1 = "A soma de " + str(num_1) + " com " + str(num_2) + " dá " + str(num_1 + num_2)
+>>> print(mensagem_1)
+A soma de 1 com 3 dá 4
+>>> 
+\end{lstlisting}
+
+A listagem acima mostra como podemos fabricar uma mensagem usando a operação de concatenação para juntar os pedaços a partir dos quais a mensagem é composta. Como os objectos variáveis de que precisamos são números e a operação de concatenação actua sobre cadeias de caracteres é preciso converter os números para cadeias de caracteres usando o \textbf{construtor} \texttt{str}\marginlabel{Construtor}.\\
+
+Temos que convir que este modo de construção não é muito prático. Para nos ajudar existe o \textbf{operador de formatação} de cadeias de caracteres. Vejamos um exemplo de aplicação.
+
+\begin{lstlisting}
+>>> mensagem_2 = "A soma de %d com %d dá  %d" % (num_1,num_2, num_1 + num_2)
+>>> print(mensagem_2)
+A soma de 1 com 3 dá  4
+>>> 
+\end{lstlisting}
+
+A estrutura desta construção é muito simples:
+
+\begin{lstlisting}
+<frase_com_formato> % <valores>
+\end{lstlisting}
+
+A frase com formato não é mais do que uma cadeia de caracteres com marcas de formatação no seu interior que recorrem ao mesmo símbolo \texttt{\%}. Os valores são os elementos que vão substituir as especificações de conversão. Quando é só um valor basta usar uma expressão, no caso de ser mais do que um valor temos que fornecer os valores separados por vírgulas e enquadrados por parênteses\footnote{Tecnicamente, neste caso usamos um objecto do tipo \texttt{tuplo} de que falaremos mais adiante.}. O leitor atento terá reparado que estamos perante mais um exemplo de operador sobrecarregado. Com efeito, o operador \texttt{\%} pode ser usado como acabamos de ver mas também como o operador que nos dá o resto da divisão inteira de dois números.
+
+Vejamos um outro exemplo.
+
+\begin{lstlisting}
+>>> num_3 = 1.0
+>>> num_4 = 3.0
+>>> mensagem_2 = "A divisão de %f por %f é igual a %f" % (num_3, num_4, num_3 / num_4)
+>>> print(mensagem_2)
+A divisão de 1.000000 por 3.000000 é igual a 0.333333
+>>> mensagem_2 = "A divisão de %.0f por %.0f é igual a %.2f" % (num_3, num_4, num_3 / num_4)
+>>> print(mensagem_2)
+A divisão de 1 por 3 é igual a 0.33
+>>> 
+\end{lstlisting}
+
+Neste exemplo vemos como podemos controlar o que é mostrado. Mais um exemplo para terminar\footnote{O leitor deve consultar o material para ver todas as possibilidades oferecidas pela linguagem.}.
+
+\begin{lstlisting}
+>>> nome = "Ernesto Costa"
+>>> mensagem = "Exmo. Senhor\n%s" % nome
+>>> print(mensagem)
+Exmo. Senhor
+Ernesto Costa
+>>> 
+\end{lstlisting}
+
+Neste último exemplo usamos cadeias de caracteres como objectos o que obriga a usar uma marca de conversão diferente. Aprece também um caractere especial para colocar o texto em duas linhas.\\
+
+
+\subsubsection{Mais operações}
+
+Existem operações adicionais comuns às sequências. A tabela \ref{tab:maisopseq} identifica-as.
+
+
+\begin{table}[!htb]
+
+\caption{Operações adicionais ara cadeias de caracteres}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		 \texttt{in} & Determina se uma cadeia é sub cadeia de outra\\
+		\texttt{max}  &Qual o maior elemento da cadeia \\ 
+		\texttt{min}  &Qual o menor elemento da cadeia \\ 
+		\texttt{index}  & O índice da primeira ocorrência \\ 
+		 \texttt{count}  & O número de ocorrências\\ \hline
+	\end{tabular}
+	\end{center}
+	\label{tab:maisopseq}
+\end{table}
+
+
+A listagem \ref{lst:mop} ilustra algumas aplicações das operações da tabela \ref{tab:maisopseq}.
+
+\begin{lstlisting}[label=lst:mop, caption= Mais operações]
+>>> cadeia = 'Homem Aranha'
+>>> 'ma' in cadeia
+False
+>>> max(cadeia)
+'r'
+>>> min(cadeia)
+' '
+>>> cadeia.count('a')
+2
+>>> cadeia.index('a')
+8
+>>> 
+\end{lstlisting}
+
+Refira-se que para as operações \texttt{max} e \texttt{min} é usado o valor dado por \texttt{ord} a cada caractere.
+
+
+\subsubsection{Métodos}
+
+Para além das operações já mencionadas, e que podem ser usadas com todo o tipo de sequências e não apenas cadeias de caracteres, existem outro tipos de operações específicas  das cadeira de caracteres, ou seja \textbf{métodos}. A tabela \ref{tab:metcc} ilustram \textbf{alguns} desses métodos. O leitor interessado deve procurar no manual da linguagem a lista completas dos métodos.
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Método & Significado \\ [0.5ex]
+		\texttt{s.find(sub)} &  O índice da primeira ocorrência ou -1 \\ 
+		\texttt{s.isalpha()}& Verdadeiro se só letras\\
+		\texttt{s.isdigit()}&  Verdadeiro se só dígitos\\
+		\texttt{s.center(comprimento)}&  Centra numa cadeia de comprimento\\
+		\texttt{s.lower()}& Converte para letras minúsculas\\ 
+		\texttt{s.upper()}&  Converte para maiúsculas\\ 
+		\texttt{s.strip()}&  Retira brancos à esquerda e direita\\ 
+		\texttt{s.replace(velho,novo)}&  Substitui ocorrências de velho por novo\\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Métodos  das cadeias de caracteres}
+\label{tab:metcc}
+\end{table}
+
+Vejamos exemplos concretos da sua utilização.
+
+\begin{lstlisting}
+>>> cadeia = "TACGAUGGGTCAAUGTCGAT"
+>>> cadeia.find('AUG')
+4
+>>> cadeia.find('AUG',6)
+12
+>>> cadeia.find('AUT',6)
+-1
+>>> cadeia.isalpha()
+True
+>>> cadeia.lower()
+'tacgaugggtcaaugtcgat'
+>>> cadeia.replace('T','U')
+'UACGAUGGGUCAAUGUCGAU'
+>>> nome = 'Ernesto J. F. Costa'
+>>> nome.center(50)
+'               Ernesto J. F. Costa                '
+>>> titulo = nome.center(30)
+>>> titulo
+'     Ernesto J. F. Costa      '
+>>> titulo.strip()
+'Ernesto J. F. Costa'
+>>> titulo.upper()
+'     ERNESTO J. F. COSTA      '
+>>> '1234'.isdigit()
+True
+>>> '12.34'.isdigit()
+False
+>>> 
+\end{lstlisting}
+
+Algumas notas. O método  \texttt{find} pode ter argumentos opcionais que indicam o início e o fim da zona a pesquisar\footnote{A procura é feita entre o primeiro valor inclusive e o último exclusive. Se este não for indicado procura-se até ao final da cadeia.}. No caso do \texttt{find} se não encontra devolve -1. Chama-se a atenção para a operação semelhante a \texttt{find}, \texttt{index}. No caso desta última se o elemento não se encontrar na cadeia dá um erro.\\
+
+\subsubsection{Construtor}
+À semelhança dos outros tipos de objectos, a cadeia de carateres também tem um construtor, o método \texttt{str}.
+
+\begin{lstlisting}
+>>> str()
+''
+>>> bool('')
+False
+>>> str(123)
+'123'
+>>> str('abc')
+'abc'
+>>> str(12e3)
+'12000.0'
+>>> str(4+5j)
+'(4+5j)'
+>>> str(True)
+'True'
+>>> a = 3
+>>> str(a)
+'3'
+>>> str(4+5)
+'9'
+>>>  
+\end{lstlisting}
+
+Quando usado sem argumento o construtor devolve a cadeia vazia. Com argumento procura transformar o objecto associado numa cadeia de caracteres. Veja-se ainda como a cadeia vazia pode ser interpretada como \texttt{False} (linhas 3 e 4).
+
+\subsubsection{Exemplos}
+
+Como referimos a cadeia de ADN é uma longa sequência formada por caracteres provenientes de um alfabeto de quatro letras (A,T,C,G). A cadeia de ADN é fundamental para a construção de um organismo biológico a partir de um ovo fertilizado. A etapa inicial da construção envolve a expressão dos genes contidos no ADN, comportando ela própria dois momentos: num primeiro tempo, denominada transcrição, o ADN é transformado no ARN por substituição da base Timina por outra base, Uracil; num segundo tempo, denominada tradução, o ARN produz as proteínas que vão ser responsáveis por alimentar o processo de construção do organismo.
+
+\begin{Exemplo}
+{Desenvolva um programa que dada uma cadeia de ADN fabrique a correspondente cadeia de ARN. \\
+
+A solução é directa e baseia-se na utilização do método \texttt{replace.}
+
+\begin{lstlisting}
+def transcreve(adn):
+    """Tranforma o ADN em ARN."""
+    return adn.replace('T','U')
+\end{lstlisting}
+
+Esta solução apenas pressupõe que a cadeia de ADN é dada com caracteres maiúsculos.}
+\end{Exemplo}
+
+\begin{Exemplo}
+{Um problema importante é o da identificação dos genes numa cadeia de ARN. Felizmente existe um marcador para o seu início, formado pela subsequência de bases \texttt{'AUG'}, conhecido como codão de início. Sabendo isto o código para resolver esta questão é o seguinte:
+
+\begin{lstlisting}
+def gene_pos(arn):
+    """Indica a posição do início do primeiro gene na cadeia de ARN."""
+    return arn.find('AUG')
+    
+def gene_pos_b(arn, pos):
+    """Indica a posição do início do primeiro gene na cadeia de ARN,
+    a partir da posição pos."""
+    return arn.find('AUG',pos)
+\end{lstlisting}
+
+Agora é a vez de usar o método \texttt{find}. Ter em atenção que em caso de inexistência o resultado devolvido é $-1$.  Notar ainda que na segunda versão podemos definir a posição a partir da qual nos interessa identificar o gene.}
+\end{Exemplo}
+
+ \begin{Exemplo}
+ { Sabemos que as duas fitas do ADN se encontram ligadas através das respectivas bases. Mas esta ligação não é qualquer. Assim, só podemos ter uma Adenina ligada com uma Timina, e uma Citosina com uma Guanina. esta propriedade permite reconstruir uma das fitas conhecida a outra. É isso que o programa da listagem faz.
+ \begin{lstlisting}
+def complemento(adn):
+    """Fabrica o complemento da cadeia de ADN."""
+    bases = 'TACG'
+    par = 'ATGC'
+    comp = ''
+    for base in adn:
+        indice = bases.index(base)
+        comp = comp + par[indice]
+    return comp
+\end{lstlisting}
+}
+
+Este exemplo é importante a vários titulos. Mostra o uso de operações e de métodos, mas sobretudo ilustra um \textbf{padrão} de programação\marginlabel{Padrão de Programação}. Este padrão recorre a uma ciclo e a uma variável que funciona como \textbf{acumulador} dos resultados que o interior do ciclo vai gerando. Este padrão é tão recorrente que a linguagem \python fornece construções que permitem a sua implementação de modo sucinto, como veremos mais adiante. Refira-se também que o controlo da execução do ciclo recorre, como é usual, a um objecto iterável, a cadeia de caracter, que é percorrida não pelos índices mas pelo seu \textbf{conteúdo}.
+\end{Exemplo}
+
+
+\subsubsection{Mais exemplos}
+
+Transmitir e receber textos codificados é uma tarefa que é executada em diversas situações. Os métodos para encriptar e desencriptar as mensagem são variados, mas todos supõe a existência de uma regra, implícita ou explícita, para transformar os textos.
+
+\begin{Exemplo}
+{Um método relativamente básico de codificação consiste em isolar os caracteres nas posições pares  para um lado, e os caracteres nas posições ímpares para outro. Depois juntam-se as duas partes anteriormente obtidas. Podemos então resumir a nossa solução de acordo com o modelo seguinte:
+
+\begin{lstlisting}
+def encripta(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+
+    # caracteres nas posições pares
+
+    # caracteres nas posições ímpares
+
+    # junta tudo
+
+    return texto_encriptado
+\end{lstlisting}
+
+Deste modo, dividimos o problema inicial em três sub-problemas que agora vamos ter que resolver. A ordem pela qual vamos proceder não é única. Por exemplo, podemos começar pelo terceiro sub-problema.
+
+\begin{lstlisting}
+def encripta(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+
+    # caracteres nas posições pares
+
+    # caracteres nas posições ímpares
+
+    texto_encriptado = car_impares + car_pares
+    return texto_encriptado
+\end{lstlisting}
+
+Avançámos pouco. Mas pelo menos temos a garantia que o programa está correcto, \textbf{desde que} as variáveis \texttt{car\_pares} e \texttt{car\_impares}, sejam iguais às cadeias com os caracteres da cadeia inicial nas posições pares e nas posições ímpares, respectivamente. Passemos aos dois sub-problemas por resolver. Na realidade eles são semelhantes e podem ser resolvidos de modo  directo  recorrendo ao operador de fatiamento usado com sequências.
+
+
+\begin{lstlisting}
+def encripta(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+    comp = len(texto_normal)
+    # pares
+    car_pares = texto_normal[0:comp:2]
+    # impares
+    car_impares = texto_normal[1:comp:2]
+    # junta
+    texto_encriptado = car_impares + car_pares
+    return texto_encriptado
+\end{lstlisting}
+
+Podemos, em alternativa, recorrer ao padrão \textbf{ciclo - acumulador - contador}.
+
+\begin{lstlisting}
+def encripta(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+    car_pares = ""
+    car_impares = ""
+    car_conta = 0
+    for car in texto_normal:            
+        if car_conta % 2 == 0: # par ou ímpar?         
+            car_pares = car_pares + car
+        else:
+            car_impares = car_impares + car
+        car_conta = car_conta + 1
+    texto_encriptado = car_impares + car_pares
+    return texto_encriptado
+\end{lstlisting}
+
+Nesta solução temos duas variáveis que assumem o papel de acumuladores, e uma (\texttt{conta}) que faz o papel de \textbf{contador}. No caso \textbf{conta} conta os caracteres já analisados e serve ainda para determinar se a posição é par ou ímpar. Este problema permitiu-nos ilustrar uma metodologia de programação conhecida por \textbf{programação descendente}\marginlabel{Programação Descendente}, também chamada de construção  do topo para a base: decompõe-se um dado problema em sub-problemas, cada um dos quais é resolvido usando a mesma abordagem reducionista, até chegarmos a problemas que se podem resolver de modo directo com as construções da linguagem. No capítulo \ref{cap:desenvolvimento} voltaremos  a falar sobre metodologia da programação.\\}
+\end{Exemplo}
+
+
+Os métodos mais comuns de encriptação baseiam-se na ideia de chave. No método se \textbf{substituição} a chave traduz a ligação entre os caracteres. Por exemplo, uma chave pode fazer corresponder a um \textbf{a} um \textbf{h}, a um \textbf{b} um \textbf{j}, e do mesmo modo para os restantes caracteres. Claro que uma chave para ser usável deve ser uma permutação dos caracteteres que podem aparecer no texto.\\
+
+\begin{Exemplo}
+{Vejamos uma implementação possível do método.
+
+\begin{lstlisting}
+def codifica(texto_normal,chave):
+    """Codifica um texto pelo método de substituição. A chave é 
+    dada por uma correspondência um a um entre caracteres. Supõe que
+    os caracteres são as 26 letras (minúsculas) do alfabeto mais o espaço em branco"""   
+    alfabeto = 'abcdefghijklmnopqrstuvwxyz '
+    texto_encriptado = ''
+    for car in texto_normal:
+        indice = alfabeto.find(car) 
+        texto_encriptado = texto_encriptado + chave[indice]
+    return texto_encriptado
+\end{lstlisting}
+
+Como entrada temos o texto e a chave. Esta não é mais do que uma permutação dos 27 símbolos que podem aparecer no nosso texto. Para obter o texto codificado recorremos ao padrão ciclo - acumulador. O texto é percorrido pelo conteúdo. Para cada caracter do texto inicial, procuramos qual o seu índice na variável  \texttt{alfabeto}. De seguida vamos buscar   na chave o caracter na posição corresponde. s
+
+
+}
+\end{Exemplo}
+
+\section{Range}\label{sec:range}
+
+Carl Gauss foi um grande matemático e físico, tendo vivido entre os finais do século 17 e a primeira metade do século 18. Para além  da sua inteligência era também muito irrequieto. Reza a lenda que um dia, na escola primária, para o manter entretido e não perturbar a aula, o seu professor mandou-o somar todos os inteiros de 1 até 100. Pegou na sua lousa e, segundos depois, respondeu 5050. Tinha acabo de descobrir a fórmula para poder efectuar o cálculo.  Se fosse nos dias de hoje, e não conhecendo a fórmula, qualquer um de nós o que faria era pegar no computador para que este o ajudasse na tarefa. Mesmo assim, seria necessário introduzir os números um a um, uma tarefa um pouco fastidiosa e sujeita a erros. A menos que seja possível que o computador gere a sequência dos inteiros pretendidos. No caso de \python temos a tarefa hiperfacilitada graças a um novo tipo de objectos: \texttt{range}. Os objectos do tipo \texttt{range} são colecções ordenadas, homogénas (todos os seus elementos são do tipo inteiro). Como sempre estes objectos têm identidade, valor e tipo.\\
+
+\begin{lstlisting}
+>>> r = range(4)
+>>> r
+range(0, 4)
+>>> type(r)
+<class 'range'>
+>>> id(r)
+4406725824
+>>> 
+\end{lstlisting}
+
+\texttt{range} é um \textbf{iterador} que devolve os elementos de uma sequência à medida que eles são necessários, evitando deste modo que estes estejam todos em memória. Pode ter um, dois ou três argumentos. Se tiver apenas um argumento, gera a sequência de inteiros entre $0$ e esse número \textbf{exclusivé}; se tiver dois argumentos, gera a sequência de inteiros entre esses dois números, incluindo o de início e excluindo o de fim; se tiver três argumentos, gera os inteiros a partir do primeiro, até ao último \textbf{exclusivé} por saltos do valor do terceiro argumento. Os objectos criados por \texttt{range} são usados basicamente nos ciclos \texttt{for}. Se retomarmos o exemplo de criptografia (ver secção \ref{sec:cadcar}) podemos chegar a soluções diferentes das anteriormente apresentadas, recorrendo ao \textbf{padrão ciclo - acumulador} acima referido: usamos um ciclo que a cada iteração vai acumular numa variável o resultado anterior com o da iteração corrente. Dito isto, olhemos para o código.
+
+\begin{lstlisting}
+def encripta(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+    comp = len(texto_normal)
+    # caracteres nas posições pares
+    car_pares = ""
+    for i in range(0,comp,2):
+        car_pares = car_pares + texto_normal[i] 
+    # caracteres nas posições ímpares
+    car_impares = ""
+    for i in range(1,comp,2):
+        car_impares = car_impares + texto_normal[i]   
+    # junta tudo
+    texto_encriptado = car_impares + car_pares
+    return texto_encriptado
+\end{lstlisting}
+
+
+O iterador \texttt{range} foi  usado para gerar os índices nas posições que nos interessam. Podemos juntar os dois ciclos num só.
+
+\begin{lstlisting}
+def encripta_a(texto_normal):
+    """Encriptação por separação dos caracteres nas posições pares
+    e nas posições ímpares."""
+    comp = len(texto_normal)
+    car_pares = ""
+    car_impares = ""
+    for indice in range(comp):            
+        if indice % 2 == 0: # par ou ímpar?         
+            car_pares = car_pares + texto_normal[indice]
+        else:
+            car_impares = car_impares + texto_normal[indice]
+    texto_encriptado = car_impares + car_pares
+    return texto_encriptado
+\end{lstlisting}
+
+Agora percorremos o texto por índice. Como se vê um mesmo problema pode ter várias soluções alternativas. A nossa escolha dever ser a que apresente  o melhor compromisso entre legibilidade e eficiência\footnote{Existem outros aspectos a ter em conta, como por exemplo, a possibilidade de reutilizar o código.}.\\
+
+Sendo os objectos criados com \texttt{range} sequências é natural que possamos usar as operações sobre sequências. No entanto, devido à natureza destes objectos apenas algumas operações são permitidas. Eis exemplos do que pode ser feito.
+
+\begin{lstlisting}
+>>> r = range(10)
+>>> 3 in r
+True
+>>> r[2]
+2
+>>> r[3:]
+range(3, 10)
+>>>  len(r)
+10
+>>> r.index(3)
+3
+>>> r[-5]
+5
+>>> max(r)
+9
+>>> min(r)
+0
+>>> 
+\end{lstlisting}
+
+Se pretendermos obter explicitamente \textbf{todos} os elementos da sequência podemos fazê-lo usando um construtor de sequências como \texttt{tuple}, de que  falaremos mais aprofundadamente na secção \ref{sec:tuplos}.
+
+
+\begin{lstlisting}
+>>> tuple(range(10))
+(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+>>> tuple(range(5,10))
+(5, 6, 7, 8, 9)
+>>> tuple(range(1,10,2))
+(1, 3, 5, 7, 9)
+>>> tuple(range(-10))
+()
+>>> tuple(range(-10,1))
+(-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0)
+>>> tuple(range(-10, 1, 2))
+(-10, -8, -6, -4, -2, 0)
+>>> 
+\end{lstlisting}
+
+
+\section{Tuplos}\label{sec:tuplos}
+
+Com as cadeias de caracteres  introduzimos sequências cujos elementos  podem ser acedidos numa base individual se o pretendermos. Existem no entanto situações em que este tipo não é de grande ajuda. Com efeito, em muitas aplicações do mundo real os objectos que manipulamos têm uma estrutura mais ou menos complexa, como por exemplo, as coordenadas de um objecto num espaço a $n$ dimensões, os dados de uma conta bancária, ou ainda os valores das cotações de acções e a sua flutuação ao longo do dia. Imaginemos um jogo em que dois agentes habitam um espaço bidimensional, cada um deles possuindo uma arma com um certo alcance. Para saber se a arma pode ser usada, cada agente precisa calcular a distância que o separa do outro agente. Com o que já sabemos podemos efectuar esse cálculo de modo muito simples, recorrendo à formula:
+
+\[ dist(x_1,y_1, x_2,y_2) = \sqrt{( x_2 - x_1)^2 + (y_2 - y_1)^2)}\]
+
+que podemos traduzir num programa:
+
+\begin{lstlisting}
+def dist(x_1,y_1, x_2,y_2):
+    """Cálculo da distância euclidiana entre os pontos 1 e 2."""
+    return math.sqrt((x_2 - x_1)** 2 + (y_2 - y_1)** 2)
+\end{lstlisting}
+
+Não há nada de mal com esta solução, mas se pudéssemos tornar o código mais natural fazendo realçar o facto se tratar de pontos no espaço, seria melhor. Para isso podemos recorrer aos \textbf{tuplos}. Os \textbf{tuplos} são colecções ordenadas e heterogéneas (os seus elementos podem ser de qualquer tipo e diferentes). Quando usamos tuplos  passamos a usar o objecto como um todo, mas  temos que poder aceder às suas componentes.
+
+
+\begin{lstlisting}
+def distancia(ponto_1, ponto_2):
+    """Cálculo da distância euclidiana entre os pontos 1 e 2."""
+    return math.sqrt((ponto_2[0] - ponto_1[0])** 2 + (ponto_2[1] - ponto_1[1])** 2)
+\end{lstlisting}
+
+Cada ponto terá agora que ser representado por um tuplo\footnote{Tuplos formados apenas por sequências de números são um modo natural de representar \textbf{vectores}.}. A \textbf{marca sintática} dos tuplos são os parênteses curvos:
+
+\begin{lstlisting}
+ponto = (1,2,3) # criar um tuplo
+\end{lstlisting}
+
+
+Neste exemplo, os objectos são estruturados, mas homogéneos, isto é todas as componentes são do mesmo tipo, ou de tipos compatíveis, neste exemplo números.  No caso de uma conta bancária, podemos ter, por exemplo, o nome, a idade, a morada, o saldo da conta.  Recorrendo a tuplos podemos armazenar essa informação:
+
+
+\begin{lstlisting}
+>>> conta_1 = ('Ernesto Costa', 59, 'Coimbra', 123.45)
+>>> nome = conta_1[0]
+>>> nome
+'Ernesto Costa'
+>>> 
+\end{lstlisting}
+
+\subsubsection{Operações}
+
+Sendo sequências, os tuplos partilham as operações básicas sobre sequências que já vimos para as cadeias de caracteres e que reproduzimos na tabela \ref{tab:optuplos}
+
+\begin{table}[!htb]
+\caption{Operações para tuplos}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		 \texttt{+} & Concatenação de cadeias de carateres\\
+		\texttt{*}  & Cópias de superfície de uma cadeia \\ 
+		 \texttt{len}  & Comprimento da cadeia\\ 
+		  \texttt{in} & Determina se uma cadeia é sub cadeia de outra\\
+		\texttt{max}  &Qual o maior elemento da cadeia \\ 
+		\texttt{min}  &Qual o menor elemento da cadeia \\ 
+		\texttt{index}  & O índice da primeira ocorrência \\ 
+		 \texttt{count}  & O número de ocorrências\\ 
+		  \texttt{[i:j:k]} &  Fatiamento\\  \hline
+	\end{tabular}
+	\end{center}
+	\label{tab:optuplos}
+\end{table}
+
+Alguns exemplos de utilização.
+
+\begin{lstlisting}
+>>> t_1 = (1,2,3)
+>>> t_2 = (4,5,6,7,8,9)
+>>> t_1 + t_2
+(1, 2, 3, 4, 5, 6, 7, 8, 9)
+>>> t_1 * 2
+(1, 2, 3, 1, 2, 3)
+>>> len(t_2)
+6
+>>> 4 in t_1
+False
+>>> max(t_1)
+3
+>>> min(t_2)
+4
+>>> t_2[2:5]
+(6, 7, 8)
+>>> t_1.count(3)
+1
+>>> t_2.index(5)
+1
+>>> t_1[-1]
+3
+>>> t_2[0:6:2]
+(4, 6, 8)
+>>> 
+\end{lstlisting}
+
+\subsubsection{Empacotamento}
+
+Em certas situações, é possível referirmo-nos a tuplos sem usar a sua marca sintática, os parênteses. Isso pode acontecer quando criamos um tuplo com a instrução de atribuição, ou quando uma função devolve com \texttt{return} mais do que um resultado.
+
+\begin{lstlisting}
+>>> t_3 = 1,2,3,4,5
+>>> t_3
+(1, 2, 3, 4, 5)
+>>> def toto(n):
+...     return n, n**2, n**3
+... 
+>>> res = toto(4)
+>>> res
+(4, 16, 64)
+>>> 
+\end{lstlisting}
+
+Chamamos a este processo empacotamento\footnote{Do inglês \textit{packing}.}. também é possível o processo inverso.
+
+\begin{lstlisting}
+>>> conta_1 = ('Ernesto Costa', 59, 'Coimbra', 123.45)
+>>> nome, idade,morada,saldo = conta_1
+>>> nome
+'Ernesto Costa'
+>>> morada
+'Coimbra'
+>>> saldo
+123.45
+>>> idade
+59
+>>> 
+\end{lstlisting}
+
+É preciso ter em atenção que temos que ter um número de variáveis à esquerda igual ao número de elementos do tuplo.
+ Claro que podemos fazer coisas mais especializadas, como no exemplo seguinte.
+ 
+ \begin{lstlisting}
+>>> dados,saldo = conta_1[:3],conta_1[-1]
+>>> dados
+('Ernesto Costa', 59, 'Coimbra')
+>>> saldo
+123.45
+>>> 
+\end{lstlisting}
+
+
+\subsubsection{Construtor}
+
+O construtor dos tuplos tem o nome da classe, ou seja \texttt{tuple}.  Pode ser usado com ou sem argumento.
+\begin{lstlisting}
+>>> tuplo_4 = tuple()
+>>> tuplo_4
+()
+>>> tuplo_5 = tuple('abc')
+>>> tuplo_5
+('a', 'b', 'c')
+>>> tuplo_6 = tuple('123')
+>>> tuplo_6
+('1', '2', '3')
+>>> tuplo_7 = tuple(123)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'int' object is not iterable
+>>> tuplo_8 = 4,
+>>> tuplo_8
+(4,)
+>>> tuplo_9 = (4,)
+>>> tuplo_9
+(4,)
+>>> 
+\end{lstlisting}
+
+Como a listagem  mostra, sem argumento devolve o tuplo vazio, com argumento, tenta transformar o objecto fornecido num tuplo. Nem sempre é possível, pois o objecto dado como argumento quem tem que ser \textbf{iterável} (ver linhas 10 a 13). As linhas 12 a 19 mostram a particularidade da representação de um tuplo só com um elemento.
+
+
+\subsubsection{Representação}
+
+Já sabemos o que acontece quando criamos um objecto: ele é armazenado na memória. Quando associamos um nome ao objecto passamos a usar o nome para referir o objecto. No caso dos objectos estruturados como os tuplos, com componentes autónomas, o que guardamos na memória é uma \textbf{referência} para cada uma das componentes. A figura \ref{fig:tp} mostra de forma simplificada o que acontece quando criamos o tuplo \texttt{(1,2,3)} e o associamos ao nome \texttt{t}.\\
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{objectos_1/imagens/tuplos_mem.eps}
+\caption{Organização dos tuplos na memória}
+\label{fig:tp}
+\end{center}
+\end{figure}
+
+Um aspecto importante da organização dos objectos na memória é a \textbf{partilha de objectos}, que permite optimizar o espaço ocupado. A listagem abaixo ilustra a situação.  \texttt{a} e \texttt{t} estão ligados a $2$ e, por isso,  a identidade de  \texttt{a} e \texttt{t[1]} é a mesma.
+
+\begin{lstlisting}
+>>> t = (1,2,3)
+>>> id(t)
+4303573232
+>>> id(2)
+4299455840
+>>> id(t[1])
+4299455840
+>>> a = 2
+>>> id(a)
+4299455840
+>>> 
+\end{lstlisting}
+
+A figura \ref{fig:tppart} ilustra a situação.
+
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{objectos_1/imagens/tuplos_sharing.eps}
+\caption{Partilha da memória}
+\label{fig:tppart}
+\end{center}
+\end{figure}
+
+\subsubsection{Embricamento}
+
+Os tuplos são colecções ordenadas de objectos heterogéneos. quando dizemos \textit{objectos} queremos dizer que um tuplo pode ter como elemento um objecto qualquer, incluindo um tuplo!  Aceder a uma componente que é também um objecto estruturado obriga a maiores cuidados, como se ilustra abaixo.
+
+\begin{lstlisting}
+>>> t = ('Coimbra', (40.15,8.27))
+>>> t[1][0]
+40.15
+>>> t[0][3]
+'m'
+>>> tt = ((1,2), (3, ((4,5),6),7))
+>>> tt[1][1][1]
+6
+>>> tt[1][1][0][1]
+5
+>>> 
+\end{lstlisting}
+
+A figura \ref{fig:embric} ilustra a situação para o tuplo \texttt{(1, (1,2),3)}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{objectos_1/imagens/tuplos_embric}
+\caption{Embricamento}
+\label{fig:embric}
+\end{center}
+\end{figure}
+
+\subsubsection{Tuplos com nome}
+
+Imaginemos uma situação em que temos fichas de cidades com a respectiva localização (latitude, longitude), ou a ficha de um cliente bancário, ou qualquer outro tipo de informação em que as componentes têm um nome associado.  Podemos representar  informação com estas características por meio de um tuplo. Por exemplo:
+
+
+\begin{lstlisting}
+>>> ficha_1 = ('Coimbra', 40.15, 8.27)
+>>> ficha_cb_1 = ('Ernesto Costa', 'Coimbra', 59, 100)
+>>> ficha_1[1]
+40.15
+>>> ficha_cb_1[3]
+100
+>>> 
+\end{lstlisting}
+
+Ao representar a informação deste modo resulta claro que perdemos alguma informação, i.e., perdemos a noção do que representa cada uma das componentes (latitude? longitude?). Seria interessante se fosse possível associar um nome representativo a cada um dos elementos e o acesso puder ser feito pelo nome, e não pela posição (índice). Em \python existe um módulo, \texttt{collections} que implementa tuplos com nome.
+
+\begin{lstlisting}
+>>> import collections
+>>> Cidades = collections.namedtuple('Cidades','Nome lat long')
+>>> cid_1 = Cidades(Nome='Coimbra',lat=40.15, log=8.27)
+>>> type(cid_1)
+<class '__main__.Cidades'>
+>>> cid_1.Nome
+'Coimbra'
+>>> cid_1.lat
+40.15
+>>> cid_1.long
+8.27
+>>> cid_2 = Cidades('Lisboa',38.42,9.10)
+>>> cid_3 = Cidades(long=8.40, Nome='Porto', lat=41.08)
+>>> cid_2[1]
+38.42
+>>> cid_3.Nome
+'Porto'
+>>> 
+\end{lstlisting}
+
+A listagem ilustra um aspecto importante: o utilizador pode criar novos tipos, que são implementadas como classes. A linha 2 mostra a criação do construtor do tipo, sendo que neste caso o nome do construtor é o mesmo que o nome do tipo. Este modo de proceder não sendo obrigatório é no entanto boa prática. Fica também claro que podemos aceder aos atributos pelo nome ou da forma usual, e que na criação dos objectos não é obrigatório usar o nome do atributos (linha 12). No entanto quando usamos os nomes a flexibilidade é total, ou seja, podemos indicar as componentes pela ordem que quisermos (linha 13). Esta possibilidade é muito importante em aplicações em que o número de componentes de uma ficha é muito elevado.\\
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Tuplos com nome e classes}
+Podemos criar um tuplo com nome e visualizar a respectiva classe.
+
+\begin{lstlisting}
+>>> OutroPonto = collections.namedtuple('OutroPonto', 'x y z', verbose=True)
+from builtins import property as _property, tuple as _tuple
+from operator import itemgetter as _itemgetter
+from collections import OrderedDict
+
+class OutroPonto(tuple):
+    'OutroPonto(x, y, z)'
+
+    __slots__ = ()
+
+    _fields = ('x', 'y', 'z')
+
+    def __new__(_cls, x, y, z):
+        'Create new instance of OutroPonto(x, y, z)'
+        return _tuple.__new__(_cls, (x, y, z))
+
+    @classmethod
+    def _make(cls, iterable, new=tuple.__new__, len=len):
+        'Make a new OutroPonto object from a sequence or iterable'
+        result = new(cls, iterable)
+        if len(result) != 3:
+            raise TypeError('Expected 3 arguments, got %d' % len(result))
+        return result
+
+    def __repr__(self):
+        'Return a nicely formatted representation string'
+        return self.__class__.__name__ + '(x=%r, y=%r, z=%r)' % self
+
+    def _asdict(self):
+        'Return a new OrderedDict which maps field names to their values'
+        return OrderedDict(zip(self._fields, self))
+
+    __dict__ = property(_asdict)
+
+    def _replace(_self, **kwds):
+        'Return a new OutroPonto object replacing specified fields with new values'
+        result = _self._make(map(kwds.pop, ('x', 'y', 'z'), _self))
+        if kwds:
+            raise ValueError('Got unexpected field names: %r' % list(kwds))
+        return result
+
+    def __getnewargs__(self):
+        'Return self as a plain tuple.  Used by copy and pickle.'
+        return tuple(self)
+
+    x = _property(_itemgetter(0), doc='Alias for field number 0')
+
+    y = _property(_itemgetter(1), doc='Alias for field number 1')
+
+    z = _property(_itemgetter(2), doc='Alias for field number 2')
+
+
+>>> 
+\end{lstlisting}
+
+Quando tratarmos de programação orientada aos objectos o leitor entenderá o que é feito.
+\end{bclogo}
+
+
+
+
+\section{Intermezzo}\label{sec:intermezzo}
+
+Todo o programador se confronta com a questão de escolher, de entre várias soluções para um dado problema, aquela que lhe parece melhor. A escolha é geralmente a que resulta de um compromisso de vários objectivos, por vezes contraditórios: correcção (!), legibilidade, simplicidade, potencial de reutilização, facilidade de manutenção, economia de recursos computacionais, são alguns dos aspectos a considerar. Mesmo quando o \textbf{algoritmo} é o mesmo, as características da linguagem podem sugerir diferentes soluções. Vejamos um exemplo concreto de problema, em que o objectivo primeiro é o de determinar qual o melhor elemento numa colecção.
+
+
+\begin{lstlisting}
+def max_elem_1(elementos,funcao):
+    """Qual o elemento de maior valor de acordo com a função."""
+    # Inicializa
+    melhor_valor = None
+    melhor_elem = None
+    # Testa e actualiza
+    for elem in elementos:
+        valor = funcao(elem)
+        if melhor_valor == None or valor > melhor_valor:
+            # actualiza
+            melhor_valor = valor
+            melhor_elem = elem
+    return melhor_elem
+\end{lstlisting}
+
+Esta é uma solução clássica: analiso todos os elementos de modo ordenado e sempre que tenho um novo melhor actualizo. Notar como se inicializam as variáveis, o que nos obriga a um teste adicional comparando o valor do melhor com \texttt{None}. Mantendo o mesmo princípio podemos efectuar pequenas melhorias, admitindo que a colecção  tem pelo menos um elemento.
+
+\begin{lstlisting}
+def max_elem_2(elementos,funcao):
+    """Qual o elemento de maior valor de acordo com a função."""
+    # Inicializa
+    melhor_elem = elementos[0]
+    melhor_valor = funcao(melhor_elem)
+    # Testa e actualiza
+    for elem in elementos[1:]:
+        valor = funcao(elem)
+        if valor > melhor_valor:
+            # actualiza
+            melhor_valor = valor
+            melhor_elem = elem
+    return melhor_elem 
+\end{lstlisting}
+
+Conhecendo bem a linguagem \python podemos propor uma solução mais legível, reduzindo a solução a uma linha de código.
+
+\begin{lstlisting}
+def max_elem_3(elementos,funcao):
+    """Qual o elemento de maior valor de acordo com a função."""
+    return max(elementos,key=funcao)
+\end{lstlisting}
+
+Nesta solução reencontramos a função \texttt{max} e ficamos a saber que se pode usar um segundo argumento que explicita qual o critério para a comparação. 
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Expressões Geradoras}
+Por estranho que pareça, para um problema tão simples existem outras soluções para este problema. 
+\begin{lstlisting}
+def max_elem_4(elementos,funcao):
+    """Qual o elemento de maior valor de acordo com a função."""
+    valores = (funcao(elem) for elem in elementos)
+    return elementos[valores.index(max(valores))]
+\end{lstlisting}
+
+Esta  solução depende de conhecimento mais profundo da linguagem \python, em particular da existência de \texttt{expressões geradoras}(ver linha 3). Este é um tema mais avançado a que voltaremos mais à frente no livro.
+\end{bclogo}
+
+
+ Uma outra questão que se pode colocar, é a de saber em que medida estas soluções são reutilizáveis? Por exemplo, se pretendermos não apenas o elemento de maior valor mas também o seu valor. As alterações neste caso são mínimas. Mostramos dois exemplos.
+
+\begin{lstlisting}
+def max_elem_valor_1(elementos,funcao):
+    """Devolve o elemento de valor máximo e o rspectivo valor."""
+    # Inicializa
+    melhor_elem = elementos[0]
+    melhor_valor = funcao(melhor_elem)
+    # Testa e actualiza
+    for elem in elementos[1:]:
+        valor = funcao(elem)
+        if valor > melhor_valor:
+            # actualiza
+            melhor_valor = valor
+            melhor_elem = elem
+    return melhor_elem, melhor_valor     
+
+
+def max_elem_valor_2(elementos,funcao):   
+    """Qual o elemento de maior valor de acordo com a função."""
+    melhor_elem = max(elementos,key=funcao) 
+    melhor_valor = funcao(melhor_elem)
+    return melhor_elem, melhor_valor
+\end{lstlisting}
+
+
+%----- os diferentes tipos e as suas propriedades.......
+
+\section{Imutabilidade}\label{sec:imutabilidade}
+
+Na secção \ref{sec:tuplos} referimos a possibilidade de os objectos partilharem zonas da memória. Quais são as consequências possíveis dessa partilha? Consideremos a  situação da listagem \ref{lst:sharing1}.
+
+\begin{lstlisting}[caption=Partilha, label=lst:sharing1]
+>>> t_1 = (1,2,3)
+>>> t_2 = t_1
+>>> t_3 = (1,2,3)
+>>> t_4 = (1,(1,2,3),3)
+>>> a = 2
+>>> b = t_4[1]
+>>>
+\end{lstlisting}
+
+Criamos 5 tuplos (\texttt{t\_1}, \texttt{t\_2}, \texttt{t\_2}, \texttt{t\_2}, e \texttt{b}) e um objecto numérico (\texttt{a}). Temos várias situações de partilha, sendo que esta é feita através das \textbf{referências}, ou seja, das identidades dos objectos. Notar com atenção o que acontece nas três primeiras situações. Do ponto de vista da memória, e de modo muito simplificado\footnote{Sempre que não causar ambiguidade apresentaremos os desenhos simplificados.}, esta fica organizada como ilustra a figura \ref{fig:sharing2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.7]{objectos_1/imagens/sharing2.eps}
+\caption{Partilha da memória}
+\label{fig:sharing2}
+\end{center}
+\end{figure}
+
+Dada a ilustração não nos podemos admirar do resultado de efectuarmos várias consultas às identidades dos objectos.
+
+\begin{lstlisting}
+>>> id(t_1)
+4303573392
+>>> id(t_2)
+4303573392
+>>> id(t_3)
+4303574512
+>>> id(t_4)
+4303574352
+>>> id(a)
+4299455840
+>>> id(b)
+4303573472
+>>> id(t_1[1])
+4299455840
+>>> id(t_3[1])
+4299455840
+>>> id(b[1])
+4299455840
+>>>
+\end{lstlisting}
+
+Vamos então proceder a algumas alterações e analisar as consequências. Se alterarmos \texttt{t\_2}, \texttt{t\_1} também se altera? Se alterarmos  o segundo elemento de \texttt{t\_4}, o que acontece a \texttt{b} ? Alterando \texttt{a} ou \texttt{t\_3} o que acontece ao valor dos outros objectos? A listagem \ref{lst:modif} dá-nos a resposta.
+
+
+\begin{lstlisting}[caption={}, label=lst:modif,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+>>> t_2 = (4,5,6)
+>>> t_1
+(1, 2, 3)
+>>> id(t_2)
+4303574672
+>>> t_4 = (1, (7,8,9),3)
+>>> b
+(1, 2, 3)
+>>> a = 10
+>>> t_1
+(1, 2, 3)
+>>> t_3 = (11, 12, 13)
+>>> 
+\end{lstlisting}
+
+A razão porque estas mudanças \textbf{não} provocam efeitos indesejados, isto é, alterando um objecto alteramos indirectamente outro se partilharem o que foi alterado, reside no facto de os tuplos serem objectos \textbf{imutáveis}\marginlabel{Imutabilidade}: não é possível alterar o seu valor sem alterar a sua identidade, criando assim um \textbf{novo} objecto. Esta propriedade também permite explicar o modo como alteramos parte do objecto. A listagem abaixo mostra o que acontece quando tentamos fazer essa alteração directamente sobre a componente a modificar.
+
+\begin{lstlisting}
+>>> t_4[1] = (14,15,16)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+>>> 
+\end{lstlisting}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcattention]{Imutabilidade}
+Não são só os tuplos que são imutáveis. Os números, as cadeias de caracteres, os \textit{range}, também são imutáveis. 
+\end{bclogo}
+
+% -------------------------------
+Analisemos agora  o caso das cadeias de caracteres.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia = 'Homem Aranha'
+>>> cadeia[6] = 'I'
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+TypeError: 'str' object does not support item assignment
+>>> 
+\end{lstlisting}
+
+Não é possível a alteração!  No entanto podemos ultrapassar em parte esta dificuldade construindo uma \textbf{nova} cadeia e associar o objecto resultante ao mesmo nome.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia = cadeia[:6] + 'I' + cadeia[7:]
+>>> cadeia
+'Homem Iranha'
+>>> 
+\end{lstlisting}
+
+O mesmo processo serve para inserir ou eliminar caracteres ou, generalizando, sub-cadeias de caracteres.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> cadeia = 'Homem Aranha'
+>>> cadeia = cadeia[:6] + 'Quase ' + cadeia[6:]
+>>> cadeia
+'Homem Quase Aranha'
+>>> id(cadeia)
+4303038768
+>>> cadeia = cadeia[:6] + cadeia[12:]
+>>> cadeia
+'Homem Aranha'
+>>> id(cadeia)
+4303023944
+>>> 
+\end{lstlisting}
+
+Como seria de esperar as identidades são diferentes.
+
+% ------------------------------------------
+\subsubsection{Mutabilidade e memória}
+
+Vejamos agora como as coisas se passam ao nível da memória, usando exemplos simples.
+
+\begin{lstlisting}
+>>> t_1 = (1,2,3)
+>>> t_2 = t_1
+>>> id(t_1)
+4303574752
+>>> id(t_2)
+4303574752
+>>> t_2 = (4,5,6)
+>>> t_1
+(1, 2, 3)
+>>> id(t_1)
+4303574752
+>>> id(t_2)
+4303573392
+>>> 
+\end{lstlisting}
+
+Neste caso é todo o objecto que é alterado e a partilha terminou (ver figura \ref{fig:muta1}).
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{objectos_1/imagens/muta1.eps}
+\caption{Mutabilidade (I): antes (A) e depois (B)}
+\label{fig:muta1}
+\end{center}
+\end{figure}
+
+Mas se só alterarmos uma parte, o que acontece?
+
+\begin{lstlisting}
+>>> t_1 = (1,2,3)
+>>> t_2 = t_1
+>>> t_2 = (1,4,3)
+>>> id(t_1[1])
+4299455840
+>>> id(t_2[1])
+4299455904
+>>> id(t_1[0])
+4299455808
+>>> id(t_2[0])
+4299455808
+>>> 
+\end{lstlisting}
+
+Mantém-se a partilha do que não foi alterado!
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{objectos_1/imagens/muta2.eps}
+\caption{Mutabilidade (II): antes (A) e depois (B)}
+\label{fig:muta2}
+\end{center}
+\end{figure}
+
+\subsubsection{NoneType}
+Quando falámos do tipo booleano acentuámos o facto de ser um tipo com apenas dois valores. Existe um outro tipo, \texttt{NoneType} que apenas tem \textbf{um valor}, designado pela constante \texttt{None}. Na realidade \texttt{None} designa a ausência de valor. 
+
+\begin{lstlisting}
+>>> type(None)
+<class 'NoneType'>
+>>> id(None)
+4417401440
+None
+>>>
+\end{lstlisting}
+
+\texttt{None} pode ser usado com utilidade em várias situações, por exemplo  para designar falso :
+
+\begin{lstlisting}
+if None:
+    print('None')
+else:
+    print('Hei!')
+\end{lstlisting}
+
+Ao executar este código é impresso 'Hei!'.
+
+
+\section*{Sumário}\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo introduzimos um grupo de objectos primitivos (números e booleanos) e objectos estruturados simples (cadeias de caracteres, tuplos e range). Identificámos as marcas sintáticas (i.e., os literais) para cada tipo e as operações sobre esses objectos, tendo realçado  o construtor de cada tipo. Referimos a existência de critérios de classificação para os tipos (colecção, ordem, homogeneidade, mutabilidade). Também foi tratada a questão da representação em memória dos objectos, simples e estruturados. Foi introduzido o padrão de programação ciclo - acumulador, e foi feita uma breve referência a aspectos de metodologia da programação
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Tente responder às seguintes questões que foram tratadas neste capítulo.
+
+\begin{enumerate}
+\item O que entende por programação descendente
+\item O que são objectos imutáveis
+\item Qual a diferen\c ca entre a fun\c cão \textbf{range} com um argumento, dois argumentos, ou três argumentos?
+\item O que é uma variável com o papel de contador?
+\item O que é uma variável com o papel de acumulador?
+\item Como se pode se pode modificar uma cadeia de caracteres obtendo uma nova?
+\item O que significa fatiamento?
+\item Qual é o construtor do tipo cadeia de caracteres?
+\item Que diferen\c ca existem  entre os métodos \texttt{find}  e \texttt{index}?
+\end{enumerate}
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+
+\begin{Exercicio}\muitofacil
+
+Arranque o interpretador \python e associe um nome com um objecto do tipo inteiro. Recorra ao comando \texttt{help} para saber mais coisas sobre o objecto. Observe o resultado e tire conclusões.
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\facil
+
+Escreva um programa que calcula a área de um triângulo por recurso à fórmula de Heron. Neste caso, se o triângulo tiver como lados $a$, $b$ e $c$ a área é dada por:
+\[ \text{área} = \sqrt{s \times (s - a)  \times (s - b)  \times (s - c)} \]
+
+\noindent com:
+
+\[s= \frac{a + b + c}{2} \] 
+
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\facil
+
+Suponha que quer colocar uma escada encostada a uma parede de sua casa por forma que ela alcance uma dada altura $alt$. Por razões de seguran\c ca a escada deve fazer um dado ângulo $ang$ com o solo. Escreva um programa que determine o comprimento $comp$  da escada. A rela\c cão entre as três variáveis é dada por:
+
+\[comp = \frac{alt}{seno(ang)} \]
+
+O cálculo do seno é feito em radianos mas  admita que o ângulo é dado pelo utilizador em graus. A rela\c cão é dada por:
+
+\[ radianos = \frac{\pi}{180} \times graus \]
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+O valor do batimento cardíaco máximo tem sido objecto de vários estudos, existindo várias fórmulas que dão o seu valor médio. Uma delas é:
+
+\[ 163 +  1.16 * idade - 0.018 * idade^2\]
+
+Desenvolva um programa que dada a idade calcule o valor médio do batimento cardíaco máximo.
+\end{Exercicio}
+
+\begin{Exercicio}\facil\label{prob:juros}
+
+Admitamos que colocamos uma certa quantidade de dinheiro a render. A fórmula que que nos permite calcular o valor ao fim de vários anos, conhecida a taxa de juro fixa é:
+
+\[  v * ( 1 + t)^a\]
+
+Escreva um programa que conhecido o valor inicial ($v$), a taxa de juro ($t$), e os anos decorridos ($a$), calcula o valor ao fim desses anos. Use este programa para saber ao fim de quanto tempo consegue duplicar o seu dinheiro.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Problema semelhante a \ref{prob:juros} só que agora a taxa pode ser composta várias vezes ao ano. Neste caso a fórmula passa a ser:
+
+\[  v * ( 1 + \frac{t}{n})^{n*a}\]
+
+Faça alguns testes para o caso em que a composição é mensal ($n=12)$ e compare com os resultados obtidos no caso da acumulação ser anual ($n=1$).
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Escreva um programa que permita descodificar um texto que foi codificado com o método da separação entre caracteres nas posições pares e caracteres nas posições ímpares.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Escreva um programa que lhe permita descodificar um texto codificado pelo método da chave de substituição.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Apresentámos um programa que nos permite calcular a cadeia complementar de uma dada cadeia de ADN. Apresente uma solução alternativa ao problema. \textbf{Sugestão:} Pense em usar a instrução condicional \texttt{if}.
+
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que lhe permitir gerar uma cadeia de ADN. O tamanho deve ser um parâmetro do seu programa. \textbf{Sugestão:} Pense em usar o padrão ciclo - acumulador.
+\end{Exercicio}
+
+\begin{Exercicio} \facil
+
+Desenvolva um programa que substitua as ocorrências de vogais numa cadeia de caracteres por espa\c cos em branco.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Escreva um programa que dada uma cadeia de caracteres e um número inteiro positivo,
+imprima todas as suas \textbf{sub-cadeias}  de comprimento igual ao número. Por
+exemplo, para  a cadeia de caracteres 'Monty Python' e comprimento 3,  o resultado será o apresentado na listagem.
+\begin{lstlisting}
+Mon
+ont
+nty
+ty 
+y P
+ Py
+Pyt
+yth
+tho
+hon
+\end{lstlisting}
+\end{Exercicio}
+
+\begin{Exercicio}\medio\label{prob:monty}
+
+Associe uma variável à cadeia de caracteres 'Monty Python'. Escreva um programa que permita obter a saída da listagem abaixo. Trata-se de todos os \textbf{prefixos} da cadeia.\\
+\begin{lstlisting}
+M
+Mo
+Mon
+Mont
+Monty
+Monty 
+Monty P
+Monty Py
+Monty Pyt
+Monty Pyth
+Monty Pytho
+Monty Python
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Semelhante ao problema \ref{prob:monty}, só que agora pretende-se obter na saída todos os \textbf{sufixos}.\\
+
+\begin{lstlisting}
+Monty Python
+Monty Pytho
+Monty Pyth
+Monty Pyt
+Monty Py
+Monty P
+Monty 
+Monty
+Mont
+Mon
+Mo
+M
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{turtle}\facil\label{prob:tarta1}
+
+À semelhan\c ca dos humanos a nossa amiga tartaruga \textbf{tarta} tem um \textbf{código genético} baseado num alfabeto de quatro letras: $\{'f','t','e','d'\}$. Ainda como no caso dos humanos, aquilo que ela é (faz) resulta da \textit{expressão} do seu ADN. Para tal, cada letra está ligada a uma ac\c cão simples : 'f', move-se para a frente, 't', move-se para trás, 'd' roda à direita e, 'e' roda à esquerda. Por exemplo, se o seu ADN for 'feftd' \textbf{tarta} passa o tempo a executar as ac\c cões: para a frente ('f'), roda à esquerda ('e'), para a frente ('f'), para trás ('t') e roda à direita ('d'). \\
+Escreva um \textbf{simulador} que permita mostrar o percurso da nossa amiga, conhecido o seu ADN. Admita que os movimentos são de valor constante, o mesmo sucedendo com as rota\c cões.
+\end{Exercicio}
+
+
+\begin{Exercicio}\modulo{random}\modulo{turtle}\facil\label{prob:tarta2}
+
+Pretendemos um simulador semelhante ao problema \ref{prob:tarta1}, mas em que, agora, os movimentos e as rota\c cões tenham valores aleatórios. Escolha no entanto os valores possíveis dentro de uma gama razoável!
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{random}\modulo{turtle}\facil
+
+Nos problemas \ref{prob:tarta1} e \ref{prob:tarta2} o ADN da tartaruga é determinado à partida. Escreva um simulador em que o ADN é definido primeiro de modo aleatório e depois executado. Também neste caso suponha que os valores das desloca\c cões e rota\c cões podem variar aleatoriamente. O único argumento da fun\c cão deve ser o \textbf{comprimento} do ADN.
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Um método para codificar/descodificar um texto baseia-se na ideia de substituir um caracter pelo caracter que está a uma certa \textbf{distância} dele. Por exemplo, se a distância escolhida for $2$, então o \textbf{c} substitui o \textbf{a}, o  \textbf{d} substitui o \textbf{b} e assim sucessivamente. Escreva um programa para codificar e outro para descodificar recorrendo a este método. A distância deve ser um parâmetro do problema e pode ser positiva ou negativa. Pense como vai resolver o caso dos caracteres nas extremidades do alfabeto.
+\end{Exercicio}
+

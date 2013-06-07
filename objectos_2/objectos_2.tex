@@ -1,0 +1,1552 @@
+%%% cap 05
+
+\chapter{Objectos (II)}\label{cap:objectos2}
+
+\begin{objectivos}
+
+\item introduzir os objectos estruturados lista e dicionário
+\item mostrar por meio de exemplos simples a sua utilidade
+
+\end{objectivos}
+
+\section{Introdu\c cão}
+
+Umas das práticas mais comuns em programa\c cão consiste em associar um nome a um objecto para mais tarde podermos referenciar o objecto por esse nome. A instru\c cão que nos permite fazer isso, já o sabemos, é a instru\c cão de atribui\c cão. Mas o que acontece se quisermos associar vários objectos a um único nome, sendo que entre esses vários objectos existe uma dada rela\c cão? Por exemplo, uma lista ordenada com os nomes e classifica\c cão de uma prova desportiva  ou uma pequena base de dados com os nomes, moradas, idade, data de aniversário e telefone  dos nossos colegas de turma? As listas e os dicionários são dois dos objectos estruturados mais importantes em programa\c cão.  Existem em \python e o sistema fornece um conjunto de opera\c cões elementares sobre objectos desse tipo. Com o seu uso passamos a ter capacidades de armazenamento (memória) acrescidas e, por isso, podemos aspirar a resolver de modo simples problemas mais delicados. É disso que trataremos neste capítulo.
+
+\section{Listas}
+
+Suponhamos que queremos calcular a nota de uma prova em que as perguntas são de escolha múltipla. Uma questão que se nos coloca é como representar a solu\c cão correcta e a resposta do aluno. Com aquilo que já sabemos podemos pensar em usar cadeias de caracteres.  Daí decorre a solu\c cão do programa \ref{lst:nota} sendo que a nota é dada pela propor\c cão de respostas certas.
+
+\begin{lstlisting}[caption=Nota,label=lst:nota]
+def nota(exame):
+    '''Calcula a nota de um exame num teste de escolha múltipla. '''
+    solucao = 'ABBEADDB'
+    conta = 0
+    for i in range(len(solucao)):
+        if exame[i] == solucao[i]:
+            conta = conta + 1
+    return float(conta)/len(solucao)
+\end{lstlisting}
+
+Parece uma solu\c cão aceitável. Mas o que acontece se:
+\begin{itemize}
+\item  as perguntas têm pesos diferentes
+\item usamos números e não letras nas respostas
+\item misturamos letras e números nas respostas
+\end{itemize}
+
+Não são questões sem solu\c cão, mas não parece claro que esta op\c cão seja a melhor. Imaginemos outro problema. Agora pretendemos observar ao longo de um conjunto de dias o número de baleias que aparecem num certo local. Com base nas nossas observa\c cões queremos poder tirar conclusões, como seja o número médio de baleias que aparecem por dia. Temos por isso que guardar os dados recolhidos. Podemos fazê-lo num ficheiro externo, mas nem sempre a informa\c cão  que necessitamos guardar precisa ser mantida permanentemente. É neste contexto que aparecem as \textbf{listas}. As listas são objectos (em \textbf{Python} tudo são objectos!), logo têm identidade valor e tipo. Os elementos das listas são separados por vírgulas.  A marca sintáctica  das listas são os parênteses rectos (ver exemplos  na listagem \ref{lst:bal1}). 
+
+
+\begin{lstlisting}[caption=Baleias,label=lst:bal1]
+>>> baleias = [5,4,7,3,2,3,2,6,4,2,1,7,1,3]
+>>> baleias
+[5, 4, 7, 3, 2, 3, 2, 6, 4, 2, 1, 7, 1, 3]
+>>> id(baleias)
+11797688
+>>> type(baleias)
+<type 'list'>
+>>>
+\end{lstlisting}
+
+A tabela \ref{tab:lit} mostra os literais usados na constru\c cão de diferentes listas.
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		$[733, -15, 0 ]$ & Lista de números \\
+		$['praxe', 'sporting','abracadabra']$ &  Lista de cadeia de caracteres \\ 
+		$[]$& A lista \ldots vazia!\\
+		$[1,[2,3],4]$ & Lista de listas\\
+		$[1,'a','b',3.0+4j]$ & Lista heterogénea \\ 
+		$[x ** 2 \quad \textbf{for} \quad x \quad \textbf{in} \quad range(1,4)]$ & Listas por compreensão \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Literais para Listas}
+\label{tab:lit}
+\end{table}
+
+As listas\marginlabel{Defini\c cão} são colec\c cões ordenadas de objectos, de comprimento variável, acedidas por posi\c cão, heterogéneas e mutáveis. Como no caso das cadeias de caracteres existe uma ordem nas listas, sendo por isso também \textbf{sequências}. O elementos no interior das listas podem ser de qualquer tipo, incluindo listas, o que justifica a característica de serem heterogéneas. Uma segunda característica que as diferencia das cadeias de caracteres e dos tuplos é o facto de serem objectos \textbf{mutáveis}: podemos alterar o seu valor sem alterar a sua identidade. Este  aspecto tem consequências muito relevantes como iremos ver ao longo deste texto.
+
+ 
+ São várias as opera\c cões associadas  às listas algumas das quais partilhadas com as sequências , como se pode ver na tabela \ref{tab:opera}.
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{lll}
+		\rowcolor[gray]{0.7} Nome & Operador & Significado \\ [0.5ex]
+		\textit{Indexa\c cão} & $[<n>]$ & Acede\\
+		\textit{Concatena\c cão} & $L1 + L2$ & Junta \\ 
+		\textit{Repeti\c cão} & $L * n, n * L$& Replica \\
+		\textit{Perten\c ca} & $ in , not\, in$& Testa\\
+		\textit{Comprimento}& $len$& Quantifica\\ 
+		\textit{Fatiamento} &  $[::]$& Parte\\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Opera\c cões sobre Listas}
+\label{tab:opera}
+\end{table}
+
+A listagem \ref{lst:operal} mostra alguns exemplos de uso destas opera\c cões.
+
+\begin{lstlisting}[label=lst:operal]
+>>> [1,2,3][1]
+2
+>>> [1,2,3] + [4,5,6]
+[1, 2, 3, 4, 5, 6]
+>>> ['Ai!'] * 4
+['Ai!', 'Ai!', 'Ai!', 'Ai!']
+>>> len([1,2,3])
+3
+>>> 2 in [1,2,3]
+True
+>>> lista = [1,2,3,4,5,6]
+>>> lista[1:4]
+[2,3,4]
+>>> for i in [1,2,3]:
+... 	print i
+... 
+1
+2
+3
+>>> L=[0,1,2,3,4,5,6,7,8,9]
+>>> L[5]
+5
+>>> L[3:7]
+[3, 4, 5, 6]
+>>> L[::2]
+[0, 2, 4, 6, 8]
+>>> L[::-1]
+[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+>>>
+\end{lstlisting}
+
+Mas como já referimos também existem diferen\c cas importantes entre as listas e as cadeias de caracteres. As listas são \textbf{heterogéneas}: 
+
+\begin{lstlisting}
+>>> lista = [4.34, 'gato', ['eu', 2,'ele'], 3 + 4j]
+>>>
+\end{lstlisting}
+
+Esta lista tem como elementos, números (vírgula flutuante  e complexos) nas posi\c cões 0 e 3, cadeias de caracteres  na posi\c cão 1 e  uma lista de três elementos na posi\c cão 2. Este último elemento tem ele próprio três elementos, duas cadeias de caracteres e um número inteiro.\\
+
+As listas são \textbf{mutáveis}:
+
+\begin{lstlisting}
+>>> lista = [0,1,2,3,4,5,6,7,8,9]
+>>> id(lista)
+4502228072
+>>> lista[5] = 'muta'
+>>> lista
+[0, 1, 2, 3, 4, 'muta', 6, 7, 8, 9]
+>>> id(lista)
+4502228072
+>>> tuplo = (0,1,2,3,4,5,6,7,8,9)
+>>> id(tuplo)
+4500285240
+>>> tuplo[5] = 'não muta'
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+builtins.TypeError: 'tuple' object does not support item assignment
+>>> tuplo = (0,1,2,3,4) + ('não muta',) + (6,7,8,9)
+>>> tuplo
+(0, 1, 2, 3, 4, 'não muta', 6, 7, 8, 9)
+>>> id(tuplo)
+4497755816
+>>> cadeia = 'abcdefhgi'
+>>> id(cadeia)
+4497751096
+>>> cadeia[5] = '5'
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+builtins.TypeError: 'str' object does not support item assignment
+>>> cadeia = cadeia[:5] + '5' + cadeia[6:]
+>>> cadeia
+'abcde5hgi'
+>>> id(cadeia)
+4497765408
+\end{lstlisting}
+
+Posso alterar o valor  da lista \textit{lista} sem alterar a sua identidade, o mesmo não sendo verdadeiro no caso do tuplo \textit{tuplo} e no caso da cadeia de caracteres \textit{cadeia}. 
+
+\subsubsection{Construtor}
+
+Não se estranhará que o nome do construtor das listas seja \texttt{list}. O seu uso é semelhante ao dos construtores de outros tipos de objectos.
+
+\begin{lstlisting}
+>>> lista = list()
+>>> lista
+[]
+>>> lista = list('123')
+>>> lista
+['1', '2', '3']
+>>> lista = list((1,2,3))
+>>> lista
+[1, 2, 3]
+>>> lista = list(range(5))
+>>> lista
+[0, 1, 2, 3, 4]
+>>> lista = list([1,2,3])
+>>> lista
+[1, 2, 3]
+>>> 
+\end{lstlisting}
+
+A primeira situação mostra que o construtor usado sem argumento devolve uma lista especial, a lista vazia, enquanto nas outras situações procura converter o seu argumento numa lista. O argumento deve ser um objecto iterável.
+
+\subsubsection{Mutabilidade e partilha}
+
+Para se compreender melhor as implicações da propriedade de mutabilidade importa ter a no\c cão de que uma lista é guardada em memória como uma \textbf{tabela de referências} para os objectos que compõem a lista. Por exemplo, se criarmos uma lista que tem por elementos os números 1,2 e 3, através da instrução \lstinline !lista = [1,2,3]!, teremos a situa\c cão ilustrada na figura \ref{fig:pont1}.
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/ponteirosb.eps}
+\caption{ A representa\c cão de uma lista simples}
+\label{fig:pont1}
+\end{center}
+\end{figure}
+
+Se agora alterar o segundo elemento de 2 para 4 a nova situa\c cão é retratada na figura \ref{fig:pont2}.
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/ponteirosc.eps}
+\caption{ A lista alterada}
+\label{fig:pont2}
+\end{center}
+\end{figure}
+
+Como se vê pela imagem a referência de toda a lista, isto é a sua identidade, mantem-se! É óbvio que listas mais complexas têm representa\c cões \ldots mais complexas. A  figura \ref{fig:pont3} mostra de modo simplificado\footnote{Sempre que julgarmos conveniente e não afectar o entendimento, usaremos uma notação gráfica simplificada} o caso da lista \lstinline !nova_lista = [1, [2,3,4], [5,6]]!.
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/ponteirosf.eps}
+\caption{ Uma lista mais complexa}
+\label{fig:pont3}
+\end{center}
+\end{figure}
+
+Suponhamos que temos agora dois nomes distintos associados ao mesmo objecto  obtido do modo que a listagem \ref{lst:alias} exemplifica. Esta situação é conhecida na literatura inglesa por \textit{aliasing}.
+
+\begin{lstlisting}[caption=Mutabilidade e Referências, label=lst:alias]
+>>> vogais = ['A','E','I','O','U']
+>>> id(vogais)
+6913560
+>>> mais_vogais = vogais
+>>> id(mais_vogais)
+6913560
+>>> vogais[4] = 'Z'
+>>> vogais
+['A', 'E', 'I', 'O', 'Z']
+>>> mais_vogais
+['A', 'E', 'I', 'O', 'Z']
+>>> 
+\end{lstlisting}
+
+
+A figura \ref{fig:alias2} ilustra a a situação em termos da memória.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{objectos_2/imagens/alias2.eps}
+\caption{\textit{Aliasing}}
+\label{fig:alias2}
+\end{center}
+\end{figure}
+
+Como se pode observar os nomes são \textbf{referências} para o mesmo objecto. Assim, naturalmente,  ao usar um deles para mudar o  valor do objecto o acesso pelo outro nome também encontra o objecto alterado.  Este acontecimento pode  ter efeitos não desejados. Se não queremos que este efeito lateral aconteça, uma solu\c cão é usar um \textbf{cópia}. A listagem \ref{lst:alias3} mostra como o podemos fazer.
+
+\begin{lstlisting}[caption=Mutabilidade e Referências (II), label=lst:alias3]
+>>> vogais = ['A','E','I','O','U']
+>>> id(vogais)
+11791776
+>>> copia = vogais[:] # <--  cópia
+>>> copia
+['A', 'E', 'I', 'O', 'U']
+>>> id(copia)
+11797968
+>>> copia[4] = 'Z'
+>>> copia
+['A', 'E', 'I', 'O', 'Z']
+>>> vogais
+['A', 'E', 'I', 'O', 'U']
+>>>
+\end{lstlisting}
+
+
+Esta situa\c cão pode ser visualizada (ver figura \ref{fig:alias4}).
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/aliasingb.eps}
+\caption{ Alterar sem efeitos não desejados}
+\label{fig:alias4}
+\end{center}
+\end{figure}
+
+Mas cuidado! Esta solu\c cão não é perfeita pois apenas as referências de primeiro nível são alteradas. Assim, se o objecto tiver elementos que são listas e alterarmos elementos destas listas o problema acontece de novo. Vejamos um exemplo.
+
+\begin{lstlisting}
+>>> vogais = ['A','E',['I','O'],'U','Z']
+>>> copia = vogais[:]
+>>> id(vogais)
+4421502088
+>>> id(copia)
+4421503240
+>>> copia[2][1] = 'AI!'
+>>> copia
+['A', 'E', ['I', 'AI!'], 'U', 'Z']
+>>> vogais
+['A', 'E', ['I', 'AI!'], 'U', 'Z']
+>>> 
+\end{lstlisting}
+
+Uma vez mais a visualização da situação em memória ajuda a compreender a raiz do problema, como se ilustra na figura \ref{fig:alias10}.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.4]{objectos_2/imagens/alias10.eps}
+\caption{ Tudo se complica\ldots}
+\label{fig:alias10}
+\end{center}
+\end{figure}
+
+\subsubsection{Cópia profunda}
+Para termos a certeza que não temos nenhuma surpresa devemos fazer uma \textbf{cópia profunda}\footnote{do inglês \textit{deepcopy}.} utilizando o método \texttt{deepcopy} do módulo \texttt{copy}.
+
+\begin{lstlisting}
+>>> import copy
+>>> vogais = ['A','E',['I','O'],'U','Z']
+>>> copia = copy.deepcopy(vogais)
+>>> id(vogais)
+4421484272
+>>> id(copia)
+4421446976
+>>> copia[2][1] = 'AI!'
+>>> copia
+['A', 'E', ['I', 'AI!'], 'U', 'Z']
+>>> vogais
+['A', 'E', ['I', 'O'], 'U', 'Z']
+>>> 
+\end{lstlisting}
+
+O método \texttt{deepcopy} separa completamente as duas estruturas a todos os níveis. A figura \ref{fig:alias11} ilustra isso mesmo.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{objectos_2/imagens/alias11.eps}
+\caption{Sem problema\ldots}
+\label{fig:alias11}
+\end{center}
+\end{figure}
+
+\subsubsection{Mutabilidade e passagem de parâmetros}
+
+Todas estas situações derivam do facto de dois ou mais nomes partilharem (sub-)estruturas através das identidades (referências) dessas (sub-)estruturas.  Quando o utilizador define uma função e mais tarde usa (chama) essa função, acontece um processo idêntico de associação de nomes a estruturas através da partilha da referência para essas estruturas. De novo um exemplo.
+
+\begin{lstlisting}
+>>> def estraga(lst):
+...     lst[2] = 'Ai!'
+...     return lst
+... 
+>>> lista = [1,2,3]
+>>> id(lista)
+4421501800
+>>> id(lst)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'lst' is not defined
+>>> estraga(lista)
+[1, 2, 'Ai!']
+>>> lista
+[1, 2, 'Ai!']
+>>> lst
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'lst' is not defined
+>>> 
+\end{lstlisting}
+
+
+Começamos por definir uma função a associar um objecto ao nome lista. Neste momento, no ambiente corrente, apenas são conhecidos os nomes \textbf{estraga} e \textbf{lista}. É por isso que quando tentamos saber a identidade de \textbf{lst} dá erro. De seguida, quando executamos a função \textbf{estraga} é criado um novo ambiente, ligado ao primeiro, no qual o nome \textbf{lst} tem a mesma identidade que \textbf{estraga}. A alteração que é feita durante a execução de \textbf{estraga} através do nome do parâmetro formal \textbf{lst}, repercute-se em \textbf{lista}. Esta alteração é permanente, isto é, mantém-se mesmo depois do programa terminar e o nome \textbf{lst}  deixar novamente de ser conhecido. A figura \ref{fig:aliasp} mostra a situação no momento em que é feita a chamada da função. Passamos a ter dois ambientes, ligados hierarquicamente, e em cada um deles os nomes que são conhecidos. Fica claro que toda a alteração a \textbf{lst} é feita no objecto partilhado. Por outro lado, quando a execução termina e o ambiente 2 desaparece, passando o ambiente 1 a ser o ambiente corrente, as alterações vão manter-se.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{objectos_2/imagens/alias_proc.eps}
+\caption{Ambientes, objectos e nomes}
+\label{fig:aliasp}
+\end{center}
+\end{figure}
+
+
+\subsection*{Métodos}
+Para além das opera\c cões referidas e comuns às sequências, existem outras, próprias das listas, que mostramos na tabela \ref{tab:metodos}. 
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Método & Operação \\ [0.5ex]
+		\textbf{Não Modificam} &\\
+		\textit{list.index(obj,i=0,j=len(list))} & Menor indice da ocorrência do objecto\\
+		\textit{list.count(obj)} &  Conta o número de vezes \textit{obj} ocorre em \textit{list} \\ 
+		\textbf{Modificam} & \\
+		\textit{list.append(obj)} & Adiciona o objecto no fim da lista \\
+		\textit{list.extend(seq)} & junta \textit{seq} à \textit{list}\\
+		\textit{list.insert(index,obj)}& Insere o objecto na posição dada pelo índice \\ 
+		\textit{list.remove(obj)} & Retira o objecto da lista \\ 
+		\textit{list.pop(index)} & Retira o objecto da lista na posição dada pelo índice\\ 
+		\textit{list.reverse()}& inverte a lista \textit{in situ} \\ 
+		\textit{list.sort(cmp,key,reverse)} & Ordena \textit{in situ} a lista \textit{list}\\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Métodos Pré-Definidos para Listas}	
+\label{tab:metodos}
+\end{table}
+
+As listagens que se apresentam de seguida ilustram a sua utiliza\c cão. Refira-se desde já que alguns destes métodos modificam \textit{in situ} os objectos. Deve-se também ter presente que alguns destes métodos devolvem um valor enquanto que outros não \footnote{Na realidade devolvem o objecto \texttt{None}, e esse facto é fonte de muitas surpresas desagradáveis.}.
+
+\begin{lstlisting}
+>>> L=['eu','sou','eu', 'e','tu', 'es','tu','isto','digo','eu']
+>>> L.count('eu')
+3
+>>> L.index('eu')
+0
+>>> L.append('tu')
+>>> L
+['eu', 'sou', 'eu', 'e', 'tu', 'es', 'tu', 'isto', 'digo', 'eu', 'tu']
+>>> x=L.append(['ou', 'ele'])
+>>> L
+['eu', 'sou', 'eu', 'e', 'tu', 'es', 'tu', 'isto', 'digo', 'eu', 'tu', ['ou', 'ele']]
+>>> x
+>>> print(x)
+None
+>>>
+\end{lstlisting}
+
+O método \texttt{append} acrescentam um elemento no final da lista e devolve o objecto \texttt{None}. É por isso que a variável $x$ fica associada a esse objecto!
+
+\begin{lstlisting}
+>>> L=[1,2,3,4]
+>>> L.insert(2,'a')
+>>> L
+[1, 2, 'a', 3, 4]
+>>> L.remove('a')
+>>> L
+[1, 2, 3, 4]
+>>> L.pop(2)
+3
+>>> L
+[1, 2, 4]
+>>> A=['abc','aaaa','z','b','ccc']
+>>> A.sort(key=len)
+>>> A
+['z', 'b', 'abc', 'ccc', 'aaaa']
+>>> L.sort(reverse=True)
+>>> L
+[4, 2, 1]
+>>>
+\end{lstlisting}
+
+Neste exemplo verifique-se que o método \texttt{pop} devolve um valor: o valor que é eliminado da lista.
+
+\begin{lstlisting}
+>>> A='Estava mesmo a ver que ia dar asneira!'
+>>> L=A.split(' ')
+>>> L
+['Estava', 'mesmo', 'a', 'ver', 'que', 'ia', 'dar', 'asneira!']
+>>> X=' '.join(L)
+>>> X
+'Estava mesmo a ver que ia dar asneira!'
+>>> Y='abc'
+>>> Z=list(Y)
+>>> Z
+['a', 'b', 'c']
+>>> W=str(Z)
+>>> W
+"['a', 'b', 'c']"
+>>>
+\end{lstlisting}
+
+\subsection*{Listas por compreensão} 
+
+Suponhamos que queremos escrever um programa que nos permite construir uma lista com $n$ números inteiros, escolhidos aleatoriamente no intervalo $[1,100]$. Uma solução óbvia seria.
+
+\begin{lstlisting}
+import random
+
+def gera_lista(n):
+    lista = []
+    for i in range(n):
+        lista.append(random.randint(1,100))
+    return lista
+\end{lstlisting}
+
+Para problemas que seguem este padrão \python disponibiliza uma construção, denominada  \textbf{lista por compreensão},  que nos permite escrever programas mais compactos e legíveis. Vejamos a solução para este caso:
+ 
+ \begin{lstlisting}
+def gera_lista_b(n):
+    return [random.randint(1,100) for i in range(n)]
+\end{lstlisting}
+
+
+A forma mais simples de uma lista por compreensão é:\\
+
+\textbf{[ <expressão> for <item> in <iterável> ]}\\
+
+ É tão trivial que pode não fazer nada:
+ \begin{lstlisting}
+>>> [ i for i in [1,2,3]]
+[1, 2, 3]
+>>> 
+\end{lstlisting}
+
+Ou então coisas muito simples, como calcular o quadrado dos elementos numa lista e devolver a lista dos resultados.
+
+\begin{lstlisting}
+>>> [i ** 2 for i in [1,2,3]]
+[1, 4, 9]
+>>> 
+\end{lstlisting}
+
+Mas também pode ter associado um \textbf{filtro}, como formar uma lista com os elementos pares que aparecem noutra lista.
+
+\begin{lstlisting}
+>>> [i for i in [1,2,3,4,5,6] if i % 2 == 0]
+[2, 4, 6]
+>>> 
+\end{lstlisting}
+
+Como as listas por compreensão apenas necessitam de um iterável (por exemplo, cadeia de caracteres, tuplo, lista), e como o seu resultado é uma lista, logo um objecto iterável, podemos ter listas por compreensão \textbf{imbricadas}.
+
+\begin{lstlisting}
+>>> [ [i**2 for i in elem] for elem in [[1,2,3],[4,5,6]]]
+[[1, 4, 9], [16, 25, 36]]
+>>> [i**2 for elem in [[1,2,3],[4,5,6]] for i in elem]
+[1, 4, 9, 16, 25, 36]
+>>>
+\end{lstlisting}
+
+O exemplo acima mostra a importância do modo como se usa esta construção. A segunda forma permite resolver de modo elegante o problema de tornar plana uma lista de listas:
+
+\begin{lstlisting}
+def aplana_lc(lista):
+    """Transforma uma lista de lista numa lista simples."""
+    res = [val for elem in lista for val in elem]
+    return res
+\end{lstlisting}
+
+
+Mais alguns exemplos de utilização:
+
+\begin{lstlisting}
+>>> [ i * j for i in [1,2,3] for j in ['a','b','c']]
+['a', 'b', 'c', 'aa', 'bb', 'cc', 'aaa', 'bbb', 'ccc']
+>>> [i for elem in [[1,-2,3],[-4,5,-6]] for i in elem if i > 0]
+[1, 3, 5]
+>>> 
+\end{lstlisting}
+
+
+Podemos usar as listas por compreensão para determinar a transposta de uma matriz\footnote{A transposta de uma matriz é o que se obtém quando o elemento na posição (i,j) vai para a posição (j,i).} de um modo muito elegante\footnote{Existe um modo de implementar a transposta que usa outras construções da linguagem. Será apresentado mais à frente.}.
+
+\begin{lstlisting}
+def transposta_c(matriz):
+	""" Transposta de uma matriz."""
+	return [[matriz[j][i] for j in range(len(matriz))] for i in range(len(matriz[0]))]
+\end{lstlisting}
+
+
+
+\begin{bclogo}[couleur=black!20, arrondi=0.2,logo=\bcinfo]{Enumerate}
+Quando usada num ciclo \texttt{for}, uma lista pode ser percorrida seja pelo seu conteúdo seja pela posição dos seus elementos. A opção depende do problema. Existem no entanto situações em que nos interessa ter acesso ao elemento \textbf{e} à sua posição. quando isso acontece podemos usar a função pré-definida \texttt{enumerate}. Vejamos o que acontece quando o fazemos.
+
+\begin{lstlisting}
+>>> lista = ['a','b','c']
+>>> for i,v in enumerate(lista):
+...		print(i,v)	
+...
+0 a
+1 b
+2 c
+>>>
+
+Se usarmos como segundo argumento um inteiro positivo a enumeração começa nesse valor. Por defeito essa valor é 0.
+
+\end{lstlisting}
+
+\end{bclogo}
+
+
+\subsection*{Baleias}
+
+Regressemos ao problema das baleias e vejamos como podíamos resolver o nosso problema de análise de dados. Relembremos que temos guardado numa lista o número de baleias vistas numa certa zona ordenada por dias. Um primeiro problema consiste em obter uma caracteriza\c cão dos dados através de medidas de centralidade.  A média, isto é, o número médio de baleias avistadas, dado pela fórmula:
+
+\[\overline{x} = \frac{\sum_{i=1}^n x_i }{n} \]
+
+é um valor comum para a centralidade.
+
+A solu\c cão informática socorre-se de um padrão de desenho comum para ciclos, o padrão \textbf{acumulador}, como se pode ver na listagem \ref{lst:media}.
+
+\begin{lstlisting}[caption=Média, label=lst:media]
+def media(lista):
+    """Calcula a média dos valores contidos na lista."""
+    soma = 0
+    for num in lista:
+        soma = soma + num
+        
+    med = soma / len(lista)
+    return med
+    \end{lstlisting}
+    
+ Esta solu\c cão não é única como se mostra na listagem \ref{lst:media2}\footnote{É possível encontrar ainda outras soluções. Uma delas faz uso da função \texttt{reduce} do módulo \texttt{functools}. Esta função aceita como argumento uma função que aplica ao segundao argumento. Trata-se de uma construção funcional da linguagem \python}.
+  
+\begin{lstlisting}[caption=Média 2, label=lst:media2]
+def media(lista):
+    """Calcula a média dos valores contidos na lista."""
+    return  sum(lista) / len(lista)
+\end{lstlisting}
+
+Outro valor de centralidade é a mediana, que podemos obter por meio do programa simples que se lista em \ref{lst:mediana}.
+
+\begin{lstlisting}[caption=Mediana,label=lst:mediana]
+def mediana(lista):
+    """
+    Calcula a mediana: metade dos valores são inferiores, metade é superior.
+    """
+    lista_aux = lista[:] 
+    lista_aux.sort()
+    meio = len(lista_aux) / 2
+    if len(lista) % 2 == 0:
+        res = (lista_aux[meio-1] + lista_aux[meio]) / 2.0
+    else:
+        res = lista_aux[meio]
+    return res
+\end{lstlisting}
+Notar que temos o cuidado trabalhar sobre um cópia da lista e detemos de prever o caso de o número de elementos ser par ou ímpar.
+
+Uma carateriza\c cão da nossa amostra não pode ficar completa se não medirmos também a dispersão. Por exemplo através da diferen\c ca entre o valor máximo e o valor mínimo:
+
+\begin{lstlisting}
+def amplitude(lista):
+    """Diferença entre valores máximo e mínimo numa lista."""
+    return max(lista) - min(lista)
+\end{lstlisting}
+
+
+
+Mas a medida mais comum usada é o desvio padrão:
+
+\[ \sigma= \sqrt{\frac{\sum_{i=1}^n (x_{i} - \overline{x})^2}{(n - 1)}}\]
+
+que pode ser calculado por recurso ao código \ref{lst:devpad}.
+
+\begin{lstlisting}[caption=Desvio Padrão,label=lst:devpad]
+def desvio_padrao(lista):
+    """Calcula o desvio padrão."""
+    a_media = media(lista)
+    soma = 0
+    for elem in lista:
+        soma = soma + (elem - a_media) ** 2     
+    desvio = math.sqrt(float(soma) / (len(lista) - 1))
+    return desvio
+\end{lstlisting}
+
+Fa\c camos um pequeno desvio dos cálculos para exemplificar como os dados podiam ser \textbf{visualizados}. Para isso vamos usar o módulo \texttt{matplotlib} que nos fornece as funcionalidades necessárias.
+
+\begin{lstlisting}[caption=Visualiza\c cão,label=lst:ver]
+import matplotlib.pyplot 
+plt = matplotlib.pyplot 
+
+def mostra(lista):
+    """Gráfico simples de uma lista de valores."""
+    plt.xlabel('Dias')
+    plt.ylabel('Quantidade')
+    plt.title('Baleias')
+    plt.plot(lista)
+    plt.show()
+\end{lstlisting}
+
+
+Ao correr o programa obtemos a imagem da figura \ref{fig:baleias} (notar que o que se vê depende do valor concreto da lista).
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.4]{objectos_2/imagens/baleias.png}
+\caption{ As Baleias dia a dia}
+\label{fig:baleias}
+\end{center}
+\end{figure}
+
+\section{Dicionários}
+
+Por muito que nos custe, há quem defenda que a ciência do século XXI é a Biologia e não a Ciência dos Computadores. Descobertas recentes como a sequência\c cão do genoma humano vieram dar esperan\c ca aos que acreditam que a descoberta da cura para doen\c cas como o cancro, Alzheimer, Parkinson  ou a Sida, está para breve. Sabemos que um dos processos mais relevantes para os seres vivos é a expressão dos genes contidos nos cromossomas que forma essa grande molécula que é designada por ADN.  Em termos simples, o genoma humano  pode ser identificado a uma longa sequência de quatro letras, que fazem parte do chamado alfabeto da vida: A,T,C e G. Cada letra designa uma base. São subsequências destas letras que formam os genes. A passagem dos genes às proteínas  é um processo complexo mas que pode ser decomposto em duas fases: numa, designada por transcri\c cão, há a transforma\c cão da molécula de ADN numa molécula de ARN. Esta última vê a base Timina ser substituída por outra chamada Uracil (letra U). Na segunda fase dá-se a tradu\c cão do ARN nas proteínas. Estas obtém-se graças ao código genético (ver figura \ref{fig:gencode}): a cada três bases\footnote{Cada tripleto é designado por codão} corresponde um aminoácido . 
+
+
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/gencode.jpg}
+\caption{ Código Genético}
+\label{fig:gencode}
+\end{center}
+\end{figure}
+
+São as sequências de aminoácidos codificados nos gene que originam as proteínas \footnote{Todo este processo é bem mais complexo, mas o leitor compreenderá que descrevê-lo não é o nosso objectivo neste texto sobre programa\c cão!}. A figura \ref{fig:genexp} ilustra estre processo.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=1.2]{objectos_2/imagens/genexp.jpg}
+\caption{ Expressão Genética}
+\label{fig:genexp}
+\end{center}
+\end{figure}
+
+Mas o que é que tudo isto pode ter que ver com a programa\c cão, sinto o leitor a pensar? Bom, existem ficheiros com a sequência total ou parcial de ADN a partir do qual podemos extrair as proteínas correspondentes. Vamos resolver esse problema com a ajuda de um programa  construído usando a idais da programação descendente. Um programa muito simples, lê a cadeia de ADN, transcreve-a, ou seja substitui a Timina pela Uracil e depois traduz com base no código genético. Se representarmos o genoma por uma cadeia de caracteres uma primeira aproxima\c cão à solu\c cão será:
+
+\begin{lstlisting}
+def exp_genes(adn):
+    """ A partir da sequência de ADN determina as proteínas."""
+    arn = transcreve(adn)
+    amino = traduz(arn)
+    return amino
+\end{lstlisting}
+
+O passo seguinte é resolver os dois sub-problemas. Comecemos pela transcri\c cão.
+
+\begin{lstlisting}
+def transcreve(adn):
+    """ substitui T por U no adn."""
+    adn = adn.upper()
+    arn = adn.replace('T','U')
+    return arn
+\end{lstlisting}
+
+
+A tradu\c cão é um pouco mais complexa. Temos que identificar os codões e a partir do código genético gerar os aminoácidos correspondentes. Admitamos que primeiro obtemos os codões. Usamos uma lista para tal. A partir dessa lista fabricamos a lista das proteínas
+\begin{lstlisting}
+def traduz(arn):
+    """A partir do arn devolve a lista de proteínas."""
+    l_cod = codoes(arn)
+    l_amino = amino(l_cod)
+    return l_amino
+\end{lstlisting}
+
+\begin{lstlisting}
+def codoes(arn):
+    """ 
+    Devolve a lista de codões a partir de uma sequência.
+    A sequência é percorrida em grupos de três
+    enquanto é possível.
+    """
+    cod = []
+    for i in range(0,len(arn) - 2,3):
+	cod.append(arn[i:i+3])
+    return cod
+\end{lstlisting}
+
+Já só falta obter os aminoácidos. Mas aqui coloca-se a questão de saber como representar o \textbf{código genético}. Do que conhecemos até aqui os objectos podem ser essencialmente do tipo numérico, cadeias de caracteres, tuplos ou listas. Os números e as cadeiras de caracteres estão naturalmente fora de questão. Ficam as listas. Uma hipótese simples, seria ter uma lista de listas em que cada uma delas seria um par de cadeias de caracteres. O primeiro elemento seria o representante do codão, e o segundo elemento o correspondente aminoácido.
+
+\begin{lstlisting}[caption=código genético,label=lst:cg]
+codigo = [['UUA', 'Leu'], ['UCA','Ser'], \ldots]
+\end{lstlisting}
+
+Mas esta representa\c cão não nos agrada. Por um lado, não é computacionalmente eficiente para o nosso problema. Em segundo lugar, não captura a ideia de mapeamento ou de correspondência entre dois objectos. É para resolver questões desta natureza que surgiram os \textbf{dicionários}. Um dicionário\marginlabel{Defini\c cão} é uma colec\c cões não ordenada, de pares de objectos, de comprimento variável, heterogénea,  mutável, em que o acesso se faz por chave e não por posi\c cão. Um exemplo simples de dicionário:
+
+\begin{lstlisting}
+bases = {'A': 'Adenina', 'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+\end{lstlisting}
+
+Neste exemplo encontramos as marcas sintácticas do  dicionário que são os parênteses. Como nas listas, as vírgulas separam os elementos. Cada elemento tem duas componentes, sendo que o primeiro é a chave e o segundo o valor. A tabela \ref{tab:litdic} mostra outros exemplos.
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Literal & Interpretação  \\ [0.5ex]
+		$\{'porto':'azul','sporting':'verde','benfica:'vermelho'\}$ & Dicionário simples \\
+		$\{\}$& O dicionário \ldots vazio!\\
+		$\{'bolo\_rei':\{'farinha':2,'ovos':6,'passas':0.5\}\}$ & Dicionário com Dicionários\\
+		$\{1:'a','b':3.0+4j\}$ & Dicionário heterogéneo  \\ 
+		$dicio=dict(zip(['praxe','lagartos'],[0,5]))$ & Outro modo de construir \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Literais para dicionários}
+\label{tab:litdic}
+\end{table}
+
+\subsubsection{Construtor}
+
+O construtor do tipo dicionário chama-se \texttt{dict}. Pode ser usado sem argumentos, criando neste caso um dicionário vazio, ou com argumentos. A listagem seguinte ilustra diferentes formas de usar o construtor.
+
+\begin{lstlisting}
+>>> d_1 = dict()
+>>> d_1
+{}
+>>> d_2 = dict.fromkeys([1,2,3])
+>>> d_2
+{1: None, 2: None, 3: None}
+>>> d_3 = dict(nome = 'ernesto', idade=60)
+>>> d_3
+{'idade': 60, 'nome': 'ernesto'}
+>>> d_4 = dict(zip([1,2,3], ['a','b','c']))
+>>> d_4
+{1: 'a', 2: 'b', 3: 'c'}
+>>> d_5 = dict.fromkeys([1,2,3],0)
+>>> d_5
+{1: 0, 2: 0, 3: 0}
+>>> 
+ 
+
+\end{lstlisting}
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,logo=\bcinfo]{  zip}
+Na listagem acima, na linha 10, introduzimos a função \texttt{zip}. A função devolve um iterável a partir de um ou mais iteráveis (e.g., listas,tuplos). Vejamos, com exemplos simples, como funciona.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> lista_1 = [1,2,3]
+>>> lista_2 = [4,5,6]
+>>> lista_3 = [7,8,9]
+>>> junta = zip(lista_1,lista_2)
+>>> junta
+<zip object at 0x102cf41b8>
+>>> next(junta)
+(1, 4)
+>>> next(junta)
+(2, 5)
+>>> next(junta)
+(3, 6)
+>>> next(junta)
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+builtins.StopIteration:
+>>>  for elem in zip(lista_1,lista_3):
+...	print(elem)
+
+(1, 7)
+(2, 8)
+(3, 9)
+>>> list(zip(lista_1,lista_2,lista_3))
+[(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+>>> list(zip(lista_1))
+[(1,), (2,), (3,)]
+\end{lstlisting}
+
+Como se pode ver na linha 5 e 6, \texttt{zip} fabrica um objecto que é um iterável. Para conhecer os elementos em concreto temos várias alternativas. Podemos usar a função \texttt{next}, que nos vai fornecendo os elementos até não haver mais nenhum altura que é levantada uma excepção (linha 13); podemos usar o iterável num ciclo \texttt{for} (linha 17);  podemos ainda envolver a chamada com a função \texttt{list}, como se mostra nas linhas 23 a 25. O utilizador pode, ele próprio definir iteráveis, como se ilustrará mais à frente.
+\end{bclogo}
+
+Como sempre os dicionários, sendo objectos, têm identidade, valor e tipo.
+
+\begin{lstlisting}
+>>> d={0:'zero',1:'um',2:'dois',3:'tres',4:'quatro',5:'cinco'}
+>>> d
+{0: 'zero', 1: 'um', 2: 'dois', 3: 'tres', 4: 'quatro', 5: 'cinco'}
+>>> id(d)
+50632576
+>>> type(d)
+<type 'dict'>
+>>> 
+\end{lstlisting}
+
+Vejamos agora as opera\c cões mais comuns.
+
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{lll}
+		\rowcolor[gray]{0.7} Nome & Operador & Significado \\ [0.5ex]
+		\textit{Indexa\c cão} & $[<chave>]$ & Acede\\
+		\textit{Perten\c ca} & $ in , not\, in$& Testa\\
+		\textit{Comprimento}& $len$& Quantifica\\ 
+	\end{tabular}
+	\end{center}
+\caption{Opera\c cões sobre Dicionários}
+\label{tab:operadic}
+\end{table}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcbook]{Listas e dicionários}
+Comparando com as  listas, notar que o acesso nos dicionários se faz por chave, que a perten\c ca tem uma opera\c cão própria. Não existe a opera\c cão de fatiamento. Se pensarmos bem ela não tem sentido, pois os dicionários não têm ordem.
+Num dicionário os valores podem ser de qualquer tipo. O mesmo já não acontece com as chaves que têm que ser de tipo imutável.
+
+\end{bclogo}
+
+
+
+\subsubsection{Exemplo de utiliza\c cão}
+
+\begin{lstlisting}
+>>> d
+{'A': 'Adenina', 'T': 'Timina'}
+>>> d['A']
+'Adenina'
+>>> d['C']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'C'
+>>> 
+\end{lstlisting}
+
+Tentar obter um valor através de uma chave inexistente dá erro. A heterogeneidade existe nas chaves e nos valores.
+
+\begin{lstlisting}
+>>> dicio={'A':'Adenina',2:'dois',4.6: ‘quatro ponto seis’: 5+4.5j: ‘complexo’}
+>>> dicio
+{'A': 'Adenina', ‘dois’: 2, 'bases': ['a', 't', 'c', 'g']}
+>>> 
+\end{lstlisting}
+
+Sendo mutável, podemos não apenas consultar como também modificar o valor sem alterar a identidade.
+
+
+\begin{lstlisting}
+>>> dicio
+{'A': 'Adenina', 3: 'THREE', 2: 'TWO', 'bases': ['A', 'U', 'C', 'G']}
+>>> dicio.setdefault('T','Timina')
+'Timina'
+>>> dicio
+{'A': 'Adenina', 3: 'THREE', 2: 'TWO', 'bases': ['A', 'U', 'C', 'G'], 'T': 'Timina'}
+>>> dicio.setdefault(2, 'dois')
+'TWO'
+>>> dicio
+{'A': 'Adenina', 'bases': ['A', 'U', 'C', 'G'], 2: 'TWO', 3: 'THREE', 'T': 'Timina'}
+>>> dicio_1 = {'A':'Adenina'}
+>>> dicio_2 = {'C':'Citosina','G': 'Guanina','T':'Timina'}
+>>> dicio_1.update(dicio_2)
+>>> dicio_1
+{'A': 'Adenina', 'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+>>> dicio_2
+{'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+>>> del dicio_1['C']
+>>> dicio_1
+{'A': 'Adenina', 'T': 'Timina', 'G': 'Guanina'}
+>>> del dicio_2
+>>> dicio_2
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+NameError: name 'dicio_2' is not defined
+>>> dicio_1.clear()
+>>> dicio_1
+{}
+>>> dicio_2 = {'C':'Citosina','G': 'Guanina','T':'Timina'}
+>>> dicio_2.pop('T')
+'Timina'
+>>> dicio_2
+{'C': 'Citosina', 'G': 'Guanina'}
+>>> dicio_2.pop('A')
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+KeyError: 'A'
+>>> dicio_2.pop('A','Oops!')
+'Oops!'
+>>> \end{lstlisting}
+
+Alguns métodos característicos dos dicionários.
+
+\begin{lstlisting}
+>>> dicio_2
+{'A': 'Adenina', 'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+>>> dicio_1 = dicio_2.copy()
+>>> dicio_1
+{'A': 'Adenina', 'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+>>> dicio_1.items()
+[('A', 'Adenina'), ('C', 'Citosina'), ('T', 'Timina'), ('G', 'Guanina')]
+>>> dicio_1.keys()
+['A', 'C', 'T', 'G']
+>>> dicio_1.values()
+['Adenina', 'Citosina', 'Timina', 'Guanina']
+>>> 'T' in dicio_1
+True
+>>> 'X' in dicio_1 
+False
+>>> dicio_1.get('T')
+'Timina'
+>>> dicio_1.get('X','Niet')
+'Niet'
+>>> 
+\end{lstlisting}
+
+Podemos também ter opera\c cões de repeti\c cão sobre objectos do tipo dicionário. O ciclo pode ser controlado pelas chaves, pelos valores ou pelos elementos. Nunca pela ordem!
+
+
+\begin{lstlisting}
+>>> d
+{'A': 'Adenina', 'C': 'Citosina', 'T': 'Timina', 'G': 'Guanina'}
+>>> for c in d.keys():
+... 	print(c)
+... 
+A
+C
+T
+G
+>>> for v in d.values():
+... 	print (v)
+... 
+Adenina
+Citosina
+Timina
+Guanina
+>>> for c,v in d.items():
+... 	print ('d[',c,'] = ',v)
+... 
+d[ A ] =  Adenina
+d[ C ] =  Citosina
+d[ T ] =  Timina
+d[ G ] =  Guanina
+>>>
+\end{lstlisting}
+
+\subsubsection{Métodos}
+
+Em resumo, temos um conjunto de métodos, uns de consulta outros de modifica\c cão, como a tabela \ref{tab:metdic} ilustra.
+
+
+
+
+\begin{table}[!htdp]
+
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Método & Operação \\ [0.5ex]
+		\textbf{Não Modificam} &\\
+		\textit{dict.copy()} &  Devolve uma cópia do \textit{dict} \\ 
+		\textit{key in dict} & Verifica a existência da chave \textit{key} em  \textit{dict}\\
+		\textit{dict.items()} & Devolve um iterável de pares (chave,valor) de \textit{dict}\\
+		\textit{dict.keys()} & Devolve um iterável chaves de \textit{dict}\\
+		\textit{dict.values()}& Devolve um iterável de valores de \textit{dict} \\ 
+		\textit{dict.get(key,default=None))}&Devolve o valor  caso exista senão devolve \textit{default} \\ 
+		\textbf{Modificam} &\\
+		\textit{dict.clear()} & Retira todos os elementos de \textit{dict} \\
+		\textit{dict.pop(key,default=None)} & Retira e devolve o elemento de \textit{key} \\
+		\textit{dict.update(dict2)} & Adiciona os pares (chave,valor) de \textit{dict2} a \textit{dict} \\ 
+		\textit{dict.setdefault(key,default=None))}&Como \textit{get} mas actualiza o par com key:default \\ 
+		\textit{del dict[key]} & Retira o item associado a \textit{key}\\
+		\hline
+	\end{tabular}
+	\end{center}
+\caption{Métodos Pré-Definidos para Dicionários}
+\label{tab:metdic}
+\end{table}
+
+\subsection*{Exemplo de Contagem de Bases}
+
+Já aqui referimos que o ADN pode ser descrito por uma cadeia de letras de um alfabeto com apenas quatro elementos:A,T,C e G. Existem bases de dados que descrevem partes do ADN. Quando existe ambiguidade (por exemplo, é uma Adenina ou uma Timina?) usam-se outras letras. A figura \ref{fig:bases} ilustra a situa\c cão e mostra os códigos. Por exemplo, usamos a letra \textbf{N} quando a ambiguidade é total.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/bases.jpg}
+\caption{ Códifica\c cão das Bases}
+\label{fig:bases}
+\end{center}
+\end{figure}
+
+Um problema importante é o de saber quantas bases existem de cada tipo. Uma solu\c cão, admitindo que a sequência está codificada através de uma cadeia de caracteres seria:
+
+\begin{lstlisting}
+>>> seq = "TKKAMRCRAATARKWC"
+>>> A = seq.count("A")
+>>> B = seq.count("B")
+>>> C = seq.count("C")
+>>> D = seq.count("D")
+>>> G = seq.count("G")
+>>> H = seq.count("H")
+>>> K = seq.count("K")
+>>> M = seq.count("M")
+>>> N = seq.count("N")
+>>> R = seq.count("R")
+>>> S = seq.count("S")
+>>> T = seq.count("T")
+>>> V = seq.count("V")
+>>> W = seq.count("W")
+>>> Y = seq.count("Y")
+>>> print( "A =", A, "B =", B, "C =", C, "D =", D, "G =", G, "H =", H, "K =", K, "M =", M, "N =", N, "R =", R, "S =", S, "T =", T, "V =", V, "W =", W, "Y =", Y)
+A = 4 B = 0 C = 2 D = 0 G = 0 H = 0 K = 3 M = 1 N = 0 R = 3 S = 0
+T = 2 V = 0 W = 1 Y = 0
+>>> 
+\end{lstlisting}
+
+Mas admitamos que é uma solu\c cão muito \ldots feia!  Como já sabemos que os dicionários estabelecem correspondências podemos usar um. A chave é o código da base, o valor o número de ocorrências.
+
+\begin{lstlisting}
+>>> seq = "TKKAMRCRAATARKWC"
+>>> counts = {}
+>>> counts["A"] = seq.count("A")
+>>> counts["B"] = seq.count("B")
+>>> counts["C"] = seq.count("C")
+>>> counts["D"] = seq.count("D")
+>>> counts["G"] = seq.count("G")
+>>> counts["H"] = seq.count("H")
+>>> counts["K"] = seq.count("K")
+>>> counts["M"] = seq.count("M")
+>>> counts["N"] = seq.count("N")
+>>> counts["R"] = seq.count("R")
+>>> counts["S"] = seq.count("S")
+>>> counts["T"] = seq.count("T")
+>>> counts["V"] = seq.count("V")
+>>> counts["W"] = seq.count("W")
+>>> counts["Y"] = seq.count("Y")
+>>> print(counts)
+{'A': 4, 'C': 2, 'B': 0, 'D': 0, 'G': 0, 'H': 0, 'K': 3, 'M': 1, 'N': 0, 'S': 0, 'R': 3, 'T': 2, 'W': 1, 'V': 0, 'Y': 0}
+>>> 
+\end{lstlisting}
+
+Alterámos a representa\c cão mas não melhorámos a estética. Simplificando:
+
+\begin{lstlisting}
+>>> seq = "TKKAMRCRAATARKWC"
+>>> counts = {}
+>>> for letter in "ABCDGHKMNRSTVWY":
+...     counts[letter] = seq.count(letter)
+... 
+>>> print(counts)
+{'A': 4, 'C': 2, 'B': 0, 'D': 0, 'G': 0, 'H': 0, 'K': 3, 'M': 1, 'N': 0, 'S': 0, 'R': 3, 'T': 2, 'W': 1, 'V': 0, 'Y': 0}
+>>>
+\end{lstlisting}
+
+Mas ainda podemos fazer melhor eliminando todos os casos em que o valor é 0.
+
+\begin{lstlisting}
+>>> seq = "TKKAMRCRAATARKWC"
+>>> counts = {}
+>>> for base in seq:
+...     if base not in counts:
+...             n = 0
+...     else:
+...             n = counts[base]
+...     counts[base] = n + 1
+... 
+>>> print(counts)
+{'A': 4, 'C': 2, 'K': 3, 'M': 1, 'R': 3, 'T': 2, 'W': 1}
+>>> 
+\end{lstlisting}
+
+Mas podemos chegar a uma excelente solu\c cão recorrendo ao método dos dicionários \texttt{get}.
+
+\begin{lstlisting}
+>>> seq = "TKKAMRCRAATARKWC"
+>>> counts = {}
+>>> for base in seq:
+...   counts[base] = counts.get(base, 0) + 1
+... 
+>>> print(counts)
+{'A': 4, 'C': 2, 'K': 3, 'M': 1, 'R': 3, 'T': 2, 'W': 1}
+>>> 
+\end{lstlisting}
+
+\subsection*{Expressão Genética}
+Estamos agora em condi\c cões de encerrar a questão da expressão genética. Para tal representamos o código genético através de um \ldots dicionário.
+
+\begin{lstlisting}
+def amino(l_codoes):
+    """Converte uma lista de codões na sequência de aminoácidos"""
+    amino={
+        'UUU': 'F', 'UUC': 'F', 'UUA': 'L', 'UUG': 'L',
+        'UCU': 'S', 'UCC': 'S', 'UCA': 'S', 'UCG': 'S',
+        'UAU': 'Y', 'UAC': 'Y', 'UAA': '*', 'UAG': '*',
+        'UGU': 'C', 'UGC': 'C', 'UGA': '*', 'UGG': 'W',
+        'CUU': 'L', 'CUC': 'L', 'CUA': 'L', 'CUG': 'L',
+        'CCU': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
+        'CAU': 'H', 'CAC': 'H', 'CAA': 'Q', 'CAG': 'Q',
+        'CGU': 'R', 'CGC': 'R', 'CGA': 'R', 'CGG': 'R',
+        'AUU': 'I', 'AUC': 'I', 'AUA': 'I', 'AUG': 'M',
+        'ACU': 'T', 'ACC': 'T', 'ACA': 'T', 'ACG': 'T',
+        'AAU': 'N', 'AAC': 'N', 'AAA': 'K', 'AAG': 'K',
+        'AGU': 'S', 'AGC': 'S', 'AGA': 'R', 'AGG': 'R',
+        'GUU': 'V', 'GUC': 'V', 'GUA': 'V', 'GUG': 'V',
+        'GCU': 'A', 'GCC': 'A', 'GCA': 'A', 'GCG': 'A',
+        'GAU': 'D', 'GAC': 'D', 'GAA': 'E', 'GAG': 'E',
+        'GGU': 'G', 'GGC': 'G', 'GGA': 'G', 'GGG': 'G'
+		    }
+    return ''.join([amino[codao] for codao in l_codoes])
+\end{lstlisting}
+
+\subsection*{Seguran\c ca}
+Hoje cada vez mais a questão da seguran\c ca dois equipamentos é crucial. Um modo de os proteger é usar uma combina\c cão de nome de utilizador e código de acesso. Esta correspondência pode ser representada por um dicionário.
+
+\begin{lstlisting}
+def palavra_chave(nome_utilizador, segredo):
+    """
+    Verifica a palavra chave de um utilizador.
+    """
+    codigos = {'ernesto':'toto','patricia':'hello31','ana':'gato56'}
+    if nome_utilizador not in codigos :
+	return 'Não o conheço!'
+    
+    codigo_correcto = codigos[nome_utilizador]
+    if segredo == codigo_correcto:
+	return 'Bem vindo!'
+    else:
+	return 'Enganou-se'
+\end{lstlisting}
+
+\subsection*{Baleias}
+
+Regressemos ao nosso exemplo  das baleias para saber, face aos resultados observados qual é o valor mais frequente, isto é, qual é o valor da \textbf{moda}. A solu\c cão passa por representar os dados da frequência por meio de um dicionário, sendo que a chave é a quantidade observada e o valor é o número de vezes que essa quantidade ocorreu.
+
+\begin{lstlisting}
+def frequencia(valores):
+    """ Cria com dicionário com a frequência da occorrência dos valores. """
+    freq = dict()
+    for item in valores:
+    	freq[item] = freq.get(item,0) + 1
+    return freq
+\end{lstlisting}
+
+Agora o cálculo da moda está facilitado.
+
+\begin{lstlisting}
+def moda(valores):
+    """ Calcula a moda de um conjunto de valores. """
+    dicio_freq = frequencia(valores)
+    # -- porque pode haver mais do que uma moda...
+    lista_valores = list( dicio_freq.values())
+    maxima_freq = max(lista_valores)
+    # -- contrói resultado
+    lista_modas = list()
+    for chave in dicio_freq:
+    	if dicio_freq[chave] == maxima_freq:
+		lista_modas.append(chave)
+    return lista_modas
+\end{lstlisting}
+
+\section{Mais exemplos}
+
+\subsection*{Construir dicionários}
+Existem muitos modos de \textbf{construir dicionários}. Podemos, por exemplo, começar com um dicionário vazio e depois ir acrescentando pares (chave : valor), ou podemos indicar explicitamente os pares na inicialização. Neste último caso as sintaxes possíveis são variadas, como foi ilustrado anteriormente. O que queremos ilustrar aqui é outra possibilidade: temos uma lista que contém \textbf{alternadamente} as chaves e os valores correspondentes e pretendemos, a partir dessa lista, construir o correspondente dicionário. Estamos a admitir que não existem chaves repetidas na lista.
+
+A solução trivial será: 
+\begin{lstlisting}
+def dicio_lista(lista_chaves_valores):
+    """Constrói um dicionário a partir de uma lista com chaves e valores
+    alternados."""
+    dicio ={}
+    for i in range(len(lista_chaves_valores)/2):
+        dicio[lista_chaves_valores[2*i]] = lista_chaves_valores[2*i + 1]
+    return dicio
+\end{lstlisting}
+
+
+Mas podemos fazer melhor usando o método \texttt{zip} e o construtor para dicionários \texttt{dict}:
+\begin{lstlisting}
+def dicio_lista_b(lista_chaves_valores):
+    """Constrói um dicionário a partir de uma lista com chaves e valores
+    alternados."""
+    return dict(zip(lista_chaves_valores[::2], lista_chaves_valores[1::2]))
+\end{lstlisting}
+
+
+Nas duas soluções tivemos que lidar com a separação dos elementos em chaves e valores. As chaves estão nas posições pares e os valores nas posições ímpares da lista. Claramente preferimos a segunda!
+
+\subsection*{Equívocos}
+
+Existem dois métodos que se aplicam a dicionários que, por serem semelhantes, levam a alguns erros. São \texttt{setdefault} e \texttt{get}. Para  explicitar as diferenças vamos considerar um exemplo concreto. Admitamos que estamos a fazer o índice de um livro, isto é queremos associar a cada palavra a indicação das páginas do livro onde essa palavra ocorre. Vamos usar um dicionário para guardar esta associação. Suponhamos que queremos implementar o método que acrescenta uma palavra (e a respectiva página) ao índice. Uma solução trivial seria:
+
+\begin{lstlisting}
+def add_palavra_triv(indice,palavra,pagina):
+    if palavra in indice:
+        indice[palavra].append(pagina)
+    else:
+        indice[palavra] = [pagina]
+\end{lstlisting}
+
+
+Note-se que não é preciso fazer \texttt{if palavra in indice.keys()}. Atente-se ainda no modo distinto como temos que tratar o caso de a palavra estar, ou não, no dicionário. O leitor mais conhecedor de Python pode saber que é possível fazer tudo sem precisar do teste, e achar que usar o \texttt{setdefault} ou o \texttt{get} é o mesmo. Propõe por isso duas soluções alternativas:
+
+\begin{lstlisting}
+def add_palavra_get(indice,palavra, pagina):
+    indice.get(palavra,[]).append(pagina)
+    
+def add_palavra_set(indice,palavra, pagina):
+    indice.setdefault(palavra,[]).append(pagina)
+\end{lstlisting}
+
+
+Mas, para sua surpresa, se executar o código seguinte o resultado não é bem o que estava à espera.
+\begin{lstlisting}
+>>> dic = {'eu':[1,5,7], 'tu': [2,4,7]}
+>>> add_palavra_get(dic, 'eu', 10)
+>>> add_palavra_get(dic, 'ele', 20)
+>>> print(dic)
+{'eu': [1, 5, 7, 10], 'tu': [2, 4, 7]}
+>>> add_palavra_set(dic,'tu', 8) 
+>>> add_palavra_set(dic,'ele', 33) 
+>>> print(dic)
+{'eu': [1, 5, 7, 10], 'tu': [2, 4, 7, 8], 'ele': [33]}
+\end{lstlisting}
+
+
+Fica claro que no caso em que a chave \textbf{não} está no dicionário os dois métodos são diferentes: enquanto \texttt{setdefault} acrescenta o novo par, o mesmo não acontece com o método \texttt{get}.
+
+\subsection*{Árvores Genealógicas}
+
+As árvores genealógicas têm informa\c cões sobre famílias. Admitamos um caso simples em que, num \textbf{dicionário} colocamos pares (progenitor,lista\_descendentes. Por exemplo:
+
+\begin{lstlisting}[caption={Genealogia I}, label=lst:dictcopy, numbers=left, numberstyle=\footnotesize, mathescape]
+dic = {'ernesto':['carlos', 'jorge','ana'], 'carlos':['ricardo', 'joana'],'joana': [], 'jorge':['carla', 'francisca'], 'ana':[]}
+\end{lstlisting}
+
+São muitas as questões que podemos colocar. A mais simples será a de saber quais os descendentes directos de uma dada pessoa:
+
+\begin{lstlisting}[caption={Genealogia II}, label=lst:dictcopy, numbers=left, numberstyle=\footnotesize, mathescape]
+def filhos(dicio,progenitor):
+    """ lista dos filhos."""
+    res= dicio.get(progenitor,None)
+    return res
+\end{lstlisting}
+
+Com base neste modelo ultra-simplificado vamos tentar resolver algumas questões.
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo tratámos de dois tipos especiais de objectos que são colecções: as listas e os dicionários. Vimos as suas características, os métodos que se lhes aplicam. Discutimos ainda as consequências de  listas  e dicionários serem objectos mutáveis. Foram dados alguns exemplos de aplicação.
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+
+\begin{itemize}
+\item O que distingue as listas dos dicionários.
+\item A operação de fatiamento das listas distingue-se da mesma operação para cadeias de caracteres.
+\item Que tipo de objectos pode ser usado como chave de um dicionário. Quais as razões para haver restrições.
+\item Porque não existe operação de fatiamento em dicionários.
+\item Que implicações existem pelo facto de os objectos destes tipos serem mutáveis.
+\item O que entende por cópia  profunda de uma estrutura. Em que situações é útil.
+\item Existem métodos que modificam e que não modificam os objectos. O que os distingue.
+\item O que são listas por compreensão.
+\item O que permite o uso de \texttt{enumerate} num ciclo.
+\item O que permite a função \texttt{zip}
+\item Porque é que em certas situações temos que envolver a chamada da função \texttt{zip} com a função \texttt{list}.
+\end{itemize}
+
+
+\section*{Exercícios}
+
+% Listas
+
+\begin{Exercicio}\facil
+
+Dada uma lista com as idades dos alunos de uma turma, desenvolva um programa para cada um dos seguintes problemas, usando apenas as opera\c cões acima referidas.
+
+\begin{enumerate}
+\item Mostre o número de idades;
+\item Exiba todos as idades da lista;
+\item Exiba todas as idades na ordem inversa à da lista fornecida;
+\item Exiba todas as idades excepto a primeira e a última da lista;
+\item Mostre a idade menor e a maior;
+\item Calcule e mostre a soma dos valores na lista;
+\item Calcule e mostre o número de elementos de valor abaixo de um outro, dado
+como referência.
+\item Verifique se existe algum aluno com 17 anos;
+\end{enumerate}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Desenvolva um programa que dada uma lista de números devolva a \textbf{soma}  dos seus números pares e a \textbf{soma} dos seus números ímpares. A listagem \ref{lst:pgt4} ilustra o que se pretende.
+
+\begin{lstlisting}[caption={Pares e Ímpares}, label=lst:pgt4, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> lst = [1,4,7,9,3,2,8,5,6]
+>>> # ---> Aqui o seu programa de nome pares_impares.
+>>> pares_impares(lst)
+(20, 25)
+>>> 
+\end{lstlisting}
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+Desenvolva um programa que dadas duas listas devolve uma terceira formada pelos elementos das primeiras dispostos de modo alternado. Come\c ca com a primeira lista.. A listagem \ref{lst:pgt4} ilustra o que se pretende.
+
+\begin{lstlisting}[caption={alterna}, label=lst:pgt4, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> l1 = [1,2,3]
+>>> l2 = ['a','b','c']
+>>> # ---> Aqui o seu programa de nome alterna.
+>>> alterna(l1, l2)
+[1,'a',2,'b',3,'c']
+>>> 
+\end{lstlisting}
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Desenvolva um programa que, dados um elemento numérico e uma lista de números, determina \textbf{quantos} elementos da lista são \textbf{menores} do que o número. A listagem \ref{lst:pgt5} ilustra o que se pretende.
+
+\begin{lstlisting}[caption={contar menores}, label=lst:pgt5, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> # ---> Aqui o seu programa de nome conta_menores.
+>>> conta_menores(5,[2,8,6,5,3,2])
+3
+>>> 
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\facil\modulo{random}
+
+Suponha que tem dois dados numerados de 1 a 6. Vai lan\c cá-los sucessivas vezes e guardar os resultados (a soma). Escreva um programa que mostre os resultados dos sucessivos lan\c camentos e determine a percentagem de vezes em que saiu uma soma par.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que receba uma lista de números e calcule a soma cumulativa, i.e., o programa deve retornar uma nova lista em que o elemento  de ordem \textbf{i} é a soma dos primeiros \textbf{i+1} elementos da lista original. Exemplo: para [1,2,3] deve devolver [1,3,6]
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Uma imagem a preto e branco pode ser guardada como uma lista de listas. Cada elemento representa uma linha da imagem. O preto é representado por 1 e o branco por zero. Por exemplo, \lstinline![[0,1,0],[1,1,1],[0,1,0]]! representa uma cruz. Escreva um programa que, dada uma imagem produz o seu \textbf{negativo}, isto é uma nova imagem em que o branco passa a preto e o preto a branco.
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitodificil
+
+Uma imagem a preto e branco pode ser guardada como uma lista de listas. Cada elemento representa uma linha da imagem. O preto é representado por 1 e o branco por zero. Por exemplo, \lstinline![[0,1,0],[1,1,1],[0,1,0]]! representa uma cruz. Escreva um programa que, dada uma imagem a roda $90^{\circ}$ no sentido dos ponteiros do relógio.
+
+\end{Exercicio}
+
+% Dicionários
+
+\begin{Exercicio}\muitodificil
+Suponha que está perdido no meio de uma cidade e não tem GPS para se orientar. Pergunta a um transeunte como pode chegar ao seu destino. Como a cidade é geométrica a resposta é fácil. Recebemos uma sequência de indica\c cões do tipo \textbf{vira à esquerda (\textbf{E}), depois avan\c ca  (\textbf{A}), depois roda à direita  (\textbf{D}), depois avan\c ca  (\textbf{A}), depois avan\c ca de novo  (\textbf{A}), depois recua  (\textbf{R}), \ldots}. Usando o módulo \textbf{turtle} desenvolva um programa, que quando executado,  \textbf{simule} com a tartaruga os seus movimentos quando esta executa os comandos  recebidos.
+A imagem \ref{fig:perdido} mostra o que acontece quando manda correr o programa geral \textbf{main\_tarta()}. Por conveniência de visualiza\c cão marcámos o inicio e o fim do percurso com pontos, verde e vermelho, respectivamente. 
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{objectos_2/imagens/tarta.png}
+\caption{Passeando na cidade}
+\label{fig:perdido}
+\end{center}
+\end{figure}
+
+O seu programa chama-se, no código abaixo, \textbf{navega}.\\\\
+
+\begin{lstlisting}
+def main_tarta():
+    tartaruga = cTurtle.Turtle()
+    tartaruga.setheading(0)
+    comandos = 'ADAEAERDAAEARA'
+    navega(comandos, tartaruga)
+    tartaruga.exitOnClick()
+\end{lstlisting}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Desenvolva um programa que dado um texto, isto é uma cadeia de caracteres, construa um \textbf{dicionário}, com as \textbf{posi\c cões} em que ocorrem as vogais. Note que os caracteres podem ser maiúsculos 
+ ou minúsculos. A listagem \ref{lst:pos} ilustra o pretendido.
+
+\begin{lstlisting}[caption={Índices das ocorrências}, label=lst:pos]
+>>> print posicoes('agora e que vao ser elas, Ai, Ai!')
+Evaluating mt3.py
+{'a': [0, 4, 13, 22], 'A': [26, 30], 'e': [6, 10, 17, 20], 'i': [27, 31], 'o': [2, 14], 'u': [9]}
+>>> 
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+
+
+\begin{Exercicio}\facil
+
+Crie o seguinte dicionário de linguagens de programação e
+respectivos autores:\\
+autor = \{"php":"Rasmus Lerdorf","perl":"Larry Wall","tcl":"John
+Ousterhout",\\"awk":"Brian Kernighan","java":"James
+Gosling","parrot":"Simon Cozens",\\"python":"GuidovanRossum","xpto":"zxcv"\}.\\
+\renewcommand{\labelenumi}{\alph{enumi})}
+\begin{enumerate}
+\item Acrescente um elemento ao dicionário
+\item Altere o autor do python para "Guido van Rossum".
+\item Remova o elemento com chave "xpto".
+\item  Quantos elementos tem o dicionário?
+\item Existe uma entrada para "c++"?
+\end{enumerate}
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+
+Suponha que tem uma pequena loja de vender fruta, e que   construiu uma pequena base de dados para fazer a gestão do stock da fruta. Para cada tipo de fruta tem a indica\c cão da quantidade, em quilos, que tem para venda. Admita que inicialmente tem esses elementos em duas listas. Uma com o nome das frutas e outra com as quantidades. A partir desses dados crie o respectivo dicionário. 
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Suponha que quer tornar a sua gestão da loja de fruta mais eficiente. Para isso, para cada tipo de fruta associa a informa\c cão da quantidade de fruta que \textbf{você} comprou, do pre\c co de compra por quilo, da quantidade que tem em stock e do pre\c co de venda por quilo. Como guardaria esta informa\c cão? Escreva  programas para cada uma destas questões: 
+
+\begin{itemize}
+\item a) Qual o lucro já obtido?
+\item b) Qual a fruta mais cara?
+\end{itemize}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Vamos querer implementar um conversor de datas. Para tal vamos supor que temos guardado num dicionário
+a rela\c cão entre números e dias da semana, dias\_semana=\{1:'Domingo',
+2:'Segunda-Feira', 3:'Terça-feira', ..., 7:'Sábado'\},  e outro para os meses do ano 
+ meses\_ano = \{1: 'Janeiro', 2:'Fevereiro', ..., 12: 'Dezembro'\}. 
+ O formato DS/DM/M/A é um dos que é possível utilizar para representar uma data. Neste formato \emph{DS} corresponde ao valor inteiro do dia da semana (0 a 7), \emph{DM} corresponde valor inteiro do mês e \emph{A} corresponde ao ano. Faça uma função que receba os dois dicionários criados anteriormente e uma cadeia de caracteres com a data no formato DS/DM/M/A, e apresente essa data por extenso.\\
+
+\noindent Exemplo:\\Para a data: "4/5/6/2006" \\
+Quarta-feira, 5 de Junho de 2006
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Escreva uma função que recebe um dicionário, em que cada elemento é formado pela chave, o número do  BI de uma pessoa, e o valor contém informação sobre o sexo, idade, altura e peso,  e devolve um novo dicionário com os rácios de metabolismo basal dessas pessoas. Tenha em conta que o rácio de metabolismo basal é dado por: 66 + (6.3 * peso) + (12.9 * altura) - (6.8 * idade) no caso de ser homem, e 655 + (4.3 * peso) + (4.7 * altura) - (4.7 * idade) no caso de ser mulher.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Escreva uma função que receba um dicionário, em que cada elemento associa o número do Bilhete de Identidade de uma pessoa (chave), com informa\c cão sobre a sua altura e peso, e devolva o mesmo dicionário onde foi acrescentado o índice de massa corporal de cada pessoa. O índice de massa corporal de uma pessoa é calculado dividindo o seu peso pelo quadrado da sua altura.
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+
+Faça um programa que inverta um dicionário, i.e., que coloque os valores como
+chaves e as chaves como valores. Deverá ter em atenção que chaves diferentes
+podem ter o mesmo valor.\\
+Exemplo:\\
+Input:\{'joao':10,'pedro':18, 'tiago':13,'luis':18\}\\
+Output:\{18: ['luis', 'pedro'], 10: ['joao'], 13: ['tiago']\}.
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\facil
+
+Dada umas árvore genealógica, organizada como um dicionário, escreva um programa que determine se duas pessoas são \textbf{irmãos/irmãs}.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Dada umas árvore genealógica, organizada como um dicionário, escreva um programa que determine os \textbf{netos} de uma pessoa, caso existam.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Dada umas árvore genealógica, organizada como um dicionário, escreva um programa que determine o \textbf{progenitor} de uma pessoa.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Dada umas árvore genealógica, organizada como um dicionário, escreva um programa que determine o \textbf{avô/avó} de uma pessoa, caso exista.
+\end{Exercicio}
+
+
+
+\addcontentsline{toc}{section}{Exercícios}

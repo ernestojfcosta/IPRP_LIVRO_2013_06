@@ -1,0 +1,718 @@
+\chapter{Complementos}\label{cap:complementos}
+
+\begin{objectivos}
+\item Aprofundar o conceito de ambiente
+\item Completar a discussão sobre módulos
+\item Apresentar os vários modos definir os parâmetros dos programas
+\item  Introduzir o conceito de alcance das variáveis
+\end{objectivos}
+
+\section{Introdução}
+Agora que sabemos quais são os  elementos de base de uma linguagem de programação e como os podemos usar na resolução de problemas, chegou o momento de aprofundar um pouco os nosso conhecimentos. Começamos por relembrar o que foi dito no capítulo \ref{cap:intro} sobre o que é um programa e como os escrevemos. De um modo um pouco circular um programa em \python é um ficheiro de texto de extensão \texttt{py} contendo no seu interior um conjunto de elementos de programação\footnote{Tecnicamente estamos a falar de módulos.} como se pode ver na figura \ref{fig:programa}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{complementos/imagens/modulo.eps}
+\caption{Um programa}
+\label{fig:programa}
+\end{center}
+\end{figure}
+
+
+
+No exemplo da figura, o ficheiro começa por \textbf{comandos para o sistema}, neste caso indicando como pode encontrar o interpretador \python num ambiente unix e qual a codificação dos caracteres utilizada. De seguida vem um \textbf{comentário geral} que permite explicar qual o objectivo do programa. Em terceiro lugar vem a importação de módulos, seja do sistema seja definidos pelo utilizador. Podemos \textbf{declarar} variáveis , classes e funções, o que fazemos de seguida. Finalmente, temos uma parte que designamos livremente por \textbf{programa principal} e que envolve uma execução condicional. Este modo de organizar os nosso ficheiros não é rígido, embora seja o que se aconselha. Claro que há partes que têm que estar nas posições relativas indicadas, como os comandos do sistema, a documentação e o corpo principal.
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,tailleOndu=1.5,logo=\bcinfo]{Cadeias de Caracteres de Comentário}
+Todas as cadeias de caracteres que aparecem associadas a um objecto \textbf{antes} de que qualquer código executável são conhecidas por cadeias de caracteres de documentação\footnote{Em inglês \textit{docstrings}.},  e são tratadas automaticamente pelos sistemas de documentação como o \texttt{PyDoc}. Por exemplo imaginemos que temos o seguinte ficheiro:
+
+\begin{lstlisting}
+"""
+Para testar a documentação.
+
+minha_doc.py
+"""
+
+__author__ = 'Ernesto Costa'
+
+__version__ = 'June 2013'
+
+def toto(n):
+    """ Imprime o dobro de n."""
+    print(2 * n)
+    
+    
+if __name__ == '__main__':
+    toto(5)  
+\end{lstlisting}
+
+Suponhamos que lançamos o interpretador de \python e importamos o veja-se o que acontece.
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import minha_doc
+>>> print(minha_doc.__doc__)
+
+Para testar a documentação.
+
+minha_doc.py
+
+>>> help(minha_doc)
+Help on module minha_doc:
+
+NAME
+    minha_doc - Para testar a documentação.
+
+DESCRIPTION
+    minha_doc.py
+
+FUNCTIONS
+    toto(n)
+        Imprime o dobro de n.
+
+AUTHOR
+    Ernesto Costa
+
+FILE
+    /Users/ernestojfcosta/minha_doc.py
+
+
+>>> print(minha_doc.toto.__doc__)
+ Imprime o dobro de n.
+\end{lstlisting}
+
+O comentário associado ao ficheiro está guardado no atributo \texttt{\_\_doc\_\_}. Ao usarmos o comando \texttt{help()} chamamos automaticamente a ferramenta \texttt{PyDoc} que lê o ficheiro, extrai dele informação relevante e apresenta-a de modo organizado. Podemos obter também a documentação de outros objectos existentes num ficheiro e que tenham uma cadeia de caracteres de documentação, como se exemplifica para o caso da função \texttt{toto}.
+\end{bclogo}
+
+
+
+\section{Ambiente e Alcance das Variáveis}
+
+
+\section{Módulos}
+Os módulos são uma componente essencial da linguagem \python\footnote{Na realidade as linguagens modernas têm todas um conceito equivalente.}. Na sua versão mais comum são ficheiros de texto de extensão \texttt{.py}. Permitem manter o interpretador com uma dimensão razoável e serem usadas em caso de necessidade. Permitem também que o utilizador, definindo ele próprio módulos, aumente as capacidades da linguagem. Os módulos, vistos desta perspectiva são mais um exemplo do conceito de  abstracção ao definir componentes que são reutilizáveis em diferentes contextos.\\
+
+
+
+Os módulos para serem utilizados têm que ser importados, seja  pelo utilizador seja por outro módulo. A importação é feita como já sabemos de acordo com a sintaxe\marginlabel{import}:
+
+\begin{lstlisting}
+import módulo
+\end{lstlisting}
+
+
+e envolve fundamentalmente três passos:
+
+\begin{itemize}
+\item Procura
+\item Compilação (Eventualmente)
+\item Execução
+\end{itemize}
+
+A procura envolve uma busca \textbf{ordenada} por caminhos possíveis para a localização dos módulos: na directoria actual de trabalho, na variável  \texttt{PYTHONPATH}, caso esta tenha sido definida no nosso ficheiro de configuração, na pasta \texttt{site-packages} e, finalmente em ficheiros de extensão \texttt{.pth} caso existam. Depois de ser encontrado o módulo é compilado para \textit{bytecode}, caso ainda não o tenha sido ou a versão compilada seja mais antiga que o ficheiro fonte. Isto permite carregar de modo mais rápido o módulo, seguindo-se a execução do código nele contido. Depois de importado deste modo todos os nomes são atributos do módulo e passam a ser acedidos através da notação por ponto, envolvendo o uso do nome do módulo, seguido de um ponto, seguido do nome do atributo, como se procura ilustrar na figura \ref{fig:total}, para o caso do método \texttt{sin} do módulo \texttt{math}. Tecnicamente o módulo define um \texttt{espaço de nomes}\marginlabel{Espaço de Nomes}, organizado como um dicionário e que pode ser acedido através do atributo \texttt{\_\_dict\_\_} do módulo.\\
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{complementos/imagens/total.eps}
+\caption{Importação simples}
+\label{fig:total}
+\end{center}
+\end{figure}
+
+ Devemos ter em atenção que os módulos só são importados uma vez. Admitamos que temos o seguinte módulo de nome \texttt{importa.py}, contendo apenas uma atribuição a uma variável \texttt{x}.
+
+\begin{lstlisting}
+x = 'ah!ah!'
+\end{lstlisting}
+
+Vamos agora ver o que acontece quando  importamos duas vezes o módulo e no meio alteramos o valor da variável.
+
+\begin{lstlisting}
+>>> import importa
+>>>importa.x
+'ah!ah!'
+>>> importa.x = 'aeiou' # foi alterado...
+>>> import importa
+>>> importa.x
+'aeiou' #... manteve o valor
+\end{lstlisting}
+
+O valor alterado mantém-se mesmo depois da nossa tentativa de carregar de novo o módulo. Para recuperar o estado inicial do módulo este tem que ser re-importado, usando a função \texttt{reload} do modulo pré-definido \texttt{imp}.
+
+\begin{lstlisting}
+>>> import imp # continuação da listagem anterior.
+>>> imp.reload(importa)
+<module 'importa' from 'importa.py'>
+>>> importa.x
+'ah!ah!' # cá está de novo!
+\end{lstlisting}
+
+ 
+Durante a execução de um módulo todas as atribuições feitas ao nível mais exterior, explícitas como em \lstinline !x = 'Oops'!, ou implícitas como por exemplo numa definição \lstinline !def toto(n)...! fazem com que os respectivos nomes passem a \textbf{atributos} do módulo sendo acedidos por recurso à notação por ponto e pertençam ao espaço de nomes do módulo. Exemplificando:
+
+\begin{lstlisting}
+#módulo.atributo...
+>>> import importa
+>>> importa.x
+'ah!ah!'
+>>> importa.toto('ih!ih!', 3)
+ih!ih!ih!ih!ih!ih!
+\end{lstlisting}
+
+
+
+Admitamos que temos um módulo muito extenso mas que apenas queremos usar um dos seus métodos. Por exemplo, queremos apenas usar o método \texttt{sin} do módulo \texttt{math}. Não faz muito sentido importar \textbf{todo} o módulo, pelo que \python permite efectuar uma importação selectiva. A sua sintaxe é \marginlabel{from}:
+
+\begin{lstlisting}
+from modulo import nome_1, nome_2, ... , nome_n
+\end{lstlisting}
+
+Na realidade esta importação selectiva é apenas uma facilidade que equivale, caso não existisse, a fazermos:
+
+\begin{lstlisting}
+import módulo
+nome_1 = módulo.nome_1
+nome_2 = módulo.nome_2
+del módulo
+\end{lstlisting}
+
+Ou seja, passamos a poder aceder aos atributos assim importados sem os prefixar com o nome do módulo, nome esse que deixa de ser conhecido como disponível, como se exemplifica na listagem seguinte.
+
+\begin{lstlisting}
+>>> from importa import x
+>>> x
+'ah!ah!'
+>>> importa.toto('uiui',2)
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+builtins.NameError: name 'importa' is not defined
+>>>
+\end{lstlisting}
+
+
+Podemos visualizar esta situação como se ilustra na figura \ref{fig:sel1}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{complementos/imagens/selectivo1.eps}
+\caption{Importação selectiva}
+\label{fig:sel1}
+\end{center}
+\end{figure}
+
+No limite podemos importar de forma selectiva \ldots tudo, usando a construção:
+
+\begin{lstlisting}
+from módulo import *
+\end{lstlisting}
+
+Esta forma de fazer não é  aconselhável, pois passando a existir acessíveis de modo directo todos os nomes, as probabilidades de existirem conflitos com objectos distintos com o mesmo nome é grande. No caso de necessitarmos de um número grande de métodos de um módulos devemos usar a primeira versão de importação  que nos obriga a prefixar o nome do método como o nome do módulo evitando assim os problemas.\\
+
+Existe uma variante de importação que podemos usar quando o nome do módulo é muito comprido, ou quando queremos evitar um conflito com um nome existente no programa, ou ainda quando temos que percorrer directorias até chegar ao módulo. A sua    sintaxe\marginlabel{as} é simples:
+
+\begin{lstlisting}
+import nome_grande_do_módulo as nome_p
+from módulo import nome_grande_do_método as nome_p
+\end{lstlisting}
+
+Em todos estes casos o nome inicial é eliminado.  
+Já encontrámos  uma forma incompleta desta variante nalguns programas anteriores, nomeadamente quando fizemos:
+
+\begin{lstlisting}
+import matplotlib.pyplot 
+plt = matplotlib.pyplot
+\end{lstlisting}
+
+É incompleta pois existe uma diferença: procedendo deste modo não eliminamos o nome inicial. 
+\subsubsection{Uso e execução}
+
+Os módulos podem ter uma dupla utilização: podem ser importados,  como foi descrito para um programa usar os métodos que disponibiliza,  ou pode ser executado como sendo ele próprio um programa. Podemos escrever módulos que permitem esta \textbf{dupla} utilização através de um teste ao atributo \texttt{\_\_name\_\_} do modulo:  quando executado este  atributo  é igual a \texttt{\_\_main\_\_}, quando é importado o atributo \texttt{\_\_name\_\_} é igual a o nome do módulo. Vejamos um exemplo concreto.  Comecemos pela definição do módulo.
+
+\begin{lstlisting}
+"""Dupla utilização de um módulo."""
+
+print('O meu nome é: ',__name__)
+print('e fui importado')
+
+if __name__ == '__main__':
+    print(' ... e executado!')
+\end{lstlisting}
+
+Agora a simulação do que acontece quando importamos e quando executamos o módulo.
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import teste # Importar o módulo
+O meu nome é:  teste
+e fui importado
+>>> 
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information.
+[evaluate teste.py] # Executar o módulo
+O meu nome é:  __main__
+e fui importado
+ ... e executado!
+
+\end{lstlisting}
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Pacotes}
+Ao longo do texto temos escrito programas que guardamos em ficheiros de extensão \texttt{.py} e que, por isso, são também módulos que podemos importar. Podemos também importar módulos guardados em pastas ou directorias, que designamos por \textbf{pacotes}. Um pacote não é mais do que uma pasta contendo no seu interior um ficheiro com o nome especial \texttt{\_\_init\_\_}, módulos e eventualmente outros pacotes\footnote{Como se observa trata-se de uma definição recursiva.}. O ficheiro \texttt{\_\_init\_\_} pode estar vazio ou conter código importante que deve ser executado antes de usar os módulos do pacote. Pode também conter informação necessária sobre os módulos a importar quando se usa  a versão \texttt{from .. import *}.\\
+
+Suponhamos que temos a seguinte estrutura do pacote:
+
+\begin{lstlisting}
+A/
+   __init__.py
+   toto.py
+   tete.py
+   B/
+      __init__.py
+      tata.py
+      titi.py
+\end{lstlisting}
+
+Podemos agora usar os vários tipos de \texttt{import} referidos.
+\begin{lstlisting}
+import A.B.titi
+import A.B.titi as titi
+from A.B.titi import baba
+\end{lstlisting}
+\end{bclogo}
+
+\section{Definições e Argumentos}
+
+Já referimos por diversas vezes o princípio PCAP (Primitivas, Composição, Abstracção, Padrão). As \textbf{definições} são um mecanismo fundamental de abstracção em programação. Permitem-nos dominar a complexidade inerente ao desenvolvimento de programas, produzir código modular, reutilizável e capaz de resolver problemas gerais. Recordando a sua sintaxe:
+
+\begin{lstlisting}
+def <nome>(<parâmetros>):
+	<corpo>
+\end{lstlisting}
+
+É preciso usar a palavra reservada \texttt{def} seguida do nome que demos ao programa, seguido de um parênteses de abertura, seguido dos \textbf{parâmetros formais}, eventualmente nenhum, separados por vírgulas, seguida do parênteses de fecho, seguida de dois pontos.  Isto constitui o chamado \textbf{cabeçalho} da definição. Na linha seguinte, e avançado um certo número de posições para a direita, isto é, indentado, vem o \textbf{corpo} do programa, formado por instruções em \python. Sem isto a definição está mal feita e dará erro de sintaxe. 
+As definições são objectos e por isso têm identidade valor e tipo. 
+
+\begin{lstlisting}
+>>> def toto(x):
+...     return 2*x
+... 
+>>> toto
+<function toto at 0x103658a68>
+>>> id(toto)
+4351953512
+>>> type(toto)
+<class 'function'>
+>>> 
+\end{lstlisting}
+
+O nome que damos à função é apenas isso, um nome. Por outro lado, sendo uma definição um objecto pode ter atributos associados. Daí ser possível o que a listagem ilustra.
+
+\begin{lstlisting}
+>>> dobro = toto
+>>> dobro(5)
+10
+>>> id(dobro)
+4351953512
+>>> toto.ano_criacao = 2013
+>>> toto.ano_criacao
+2013
+>>> 
+\end{lstlisting}
+
+
+Quando executamos código que contém uma definição, internamente é feita a associação do nome do programa com um objecto do tipo \texttt{function} que representa a definição, num dado ambiente. Esse objecto tem a identificação do tipo, os parâmetros formais, o corpo da definição e um ponteiro para o ambiente a que pertence. É pois semelhante ao que se passa quando usamos a instrução de atribuição como a figura \ref{fig:def} procura ilustrar para o caso da definição \texttt{toto}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{complementos/imagens/def3.eps}
+\caption{Definições e memória}
+\label{fig:def}
+\end{center}
+\end{figure}
+
+As definições não tinham interesse nenhum se não fossem usadas, processo que normalmente se designa por  \textbf{chamar}\marginlabel{Chamar uma Definição} a definição. Chamamos o programa invocando o seu nome e comunicando os parâmetros reais em cada chamada concreta. No caso mais simples os parâmetros reais são associados   aos parâmetros formais por \textbf{posição}\marginlabel{Posição}: o primeiro parâmetro formal é associado ao primeiro parâmetro real, o segundo parâmetro formal é associado ao segundo parâmetro real, e assim sucessivamente. Decorre deste modo que o número dos parâmetros formais e reais tem que ser o mesmo. Tecnicamente a ligação é feita como se se efectuasse uma atribuição do parâmetro formal ao parâmetro real no início do corpo da definição. Considerando o segundo exemplo da listagem acima (linhas 3 e 4) é como se o corpo da definição fosse:
+
+\begin{lstlisting}
+x = y
+return 2*x
+\end{lstlisting}
+
+
+Os parâmetros reais são \textbf{expressões} que têm um objecto associado. Podem ser mais simples (um nome, uma constante) ou mais complexas, como se ilustra.
+
+\begin{lstlisting}
+>>> dobro(5)
+10
+>>> y = 7
+>>> dobro(y)
+14
+>>> dobro(5+y)
+24
+>>> dobro(dobro(5))
+20
+>>> 
+\end{lstlisting}
+
+Vamos ver com um exemplo concreto, envolvendo o cálculo das raízes de um polinómio do segundo grau, esta ideia de associação e o que se passa antes, durante ou depois da chamada de uma definição. Comecemos pela definição.
+\begin{lstlisting}
+import cmath
+
+def raizes(a,b,c):
+	""" 
+	Calcula as raízes de um polinómio do segundo grau.
+	"""
+	comum =cmath.sqrt(b**2 - 4 * a * c)
+	raiz1= (-b + comum)/ (2 * a)
+	raiz2= (-b - comum)/ (2 * a)
+	return raiz1, raiz2
+\end{lstlisting}
+
+Imaginemos agora que importamos o módulo e efectuamos duas chamadas à definição \texttt{raizes}.
+\begin{lstlisting}
+>>> import raizes
+>>> raizes.raizes(4,8,2) # 4,8 e 2 são os parâmetros reais
+((-0.29289321881345243+0j), (-1.7071067811865475+0j))
+>>> p = 5
+>>> q = 2
+>>> r = 7
+>>> raizes.raizes(p,q,r) # p,q,r  são os parâmetros reais
+((-0.20000000000000001+1.1661903789690602j), (-0.20000000000000001-1.1661903789690602j))
+>>>
+\end{lstlisting}
+
+Antes da chamada, em qualquer das situações temos a situação da figura \ref{fig:call0}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{complementos/imagens/call0.eps}
+\caption{Antes}
+\label{fig:call0}
+\end{center}
+\end{figure}
+
+A situação é depois diversa no primeiro e no segundo casos. No primeiro, quando se dá a chamada os parâmetros formais são inicializados por associação do seu nome aos objectos correspondentes aos parâmetros reais, como se mostra na figura \ref{fig:call1}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{complementos/imagens/call1.eps}
+\caption{No início: caso 1}
+\label{fig:call1}
+\end{center}
+\end{figure}
+
+Já no caso 2 a situação é a retratada pela figura \ref{fig:call2}. Notar que, neste segundo caso, embora a execução da definição ocorra num ambiente diferente daquele onde ocorreu a definição, existe partilha de memória dos objectos.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{complementos/imagens/call2.eps}
+\caption{No início: caso 2}
+\label{fig:call2}
+\end{center}
+\end{figure}
+
+Efectuados os cálculos, quando a chamada termina com a devolução do resultado através da instrução de \texttt{return}, voltamos mos dois casos à mesma situação. Isto é assim porque os objectos que foram passados como argumentos na chamada são imutáveis. Tecnicamente, podemos dizer que efectuámos uma passagem de parâmetros por valor.
+
+\subsubsection{Mutabilidade}
+
+Mas o que acontece se os objectos forem mutáveis, como é o caso, por exemplo, das listas. Vejamos um exemplo.
+
+\begin{lstlisting}
+>>> def teste(x,y):
+... 	print 'entrada'
+... 	x = 2 * x
+... 	y[1] = 'toto'
+... 	print id(x)
+... 	print id(y)
+... 	print 'saída'
+... 	return x,y
+... 
+>>> a = 4
+>>> b = 3 * a
+>>> l = [1,2,3]
+>>> m = l
+>>> p = l[:]
+>>> id(a)
+16793956
+>>> id(b)
+16793860
+>>> id(l)
+11797728
+>>> id(m)
+11797728
+>>> id(p)
+11760344
+>>>
+\end{lstlisting}
+
+Como se pode ver a definição tem dois parâmetros, sendo que o segundo tem que ser uma sequência. Por outro lado, enquanto \texttt{l} e \texttt{m} referenciam o mesmo objecto, já \texttt{p} embora tenha o mesmo valor tem identidade diferente, tendo sido obtido fabricando uma cópia de \texttt{l}. Do ponto de vista gráfico (com simplificações óbvias) a situação antes da chamada é a da figura \ref{fig:muta1}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{complementos/imagens/muta1.eps}
+\caption{Antes da chamada}
+\label{fig:muta1}
+\end{center}
+\end{figure}
+
+E no início? Temos a associação e uma vez mais ambientes diferentes mas partilha da memória dos objectos (ver figura \ref{fig:muta2}.)
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{complementos/imagens/muta2.eps}
+\caption{Chamada: associação dos parâmetros}
+\label{fig:muta2}
+\end{center}
+\end{figure}
+
+O programa prossegue alterando o valor de \texttt{x} e o de \texttt{l}. O efeito desta modificação é diferente pois um dos objectos é imutável e o outro mutável, situação que a figura \ref{fig:muta3} ilustra.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{complementos/imagens/muta3.eps}
+\caption{Durante a execução os objectos são alterados}
+\label{fig:muta3}
+\end{center}
+\end{figure}
+
+
+Mas quando o programa termina a sua execução as alterações ao objecto mutável são permanentes pelo que \texttt{l} e \texttt{m} foram afectados (ver figura \ref{fig:muta4}).
+
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{complementos/imagens/muta4.eps}
+\caption{Após a execução}
+\label{fig:muta4}
+\end{center}
+\end{figure}
+
+Podemos dizer que no caso dos parâmetros que correspondem a objectos mutáveis a passagem de parâmetros é feita por referência pelo que as alterações são permanentes.\\
+
+Se este efeito for indesejado existem algumas formas de o evitar. Uma óbvia é usar na chamada uma \textbf{cópia} do objecto obtida como o fizemos para \texttt{p}.  Outra é efectuar uma cópia no início do corpo da definição (fazendo \lstinline !y = y[:]!). Outra ainda é usar uma sequência sim mas imutável, transformando a lista num tuplo antes de chamar a definição.  Em relação às duas primeiras altrenativas é preciso ter algumas precauções pois o método indicado apenas faz uma cópia ao primeiro nível da estrutura. Todas as alterações mais profundas tornam-se permanentes. Neste caso a única alternativa segura é usar o método \texttt{deepcopy} do módulo do pré-definido \texttt{cópia}. A figura \ref{fig:muta5} mostra as diferenças.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{complementos/imagens/muta5.eps}
+\caption{copy versus deepcopy}
+\label{fig:muta5}
+\end{center}
+\end{figure}
+
+Não somos obrigados a ligar os parâmetros por posição. Também o podemos fazer por \texttt{nome}\marginlabel{nome}. Um exemplo.
+
+\begin{lstlisting}
+>>> def criatura(nome,especie,idade,peso):
+... 	return '%s (%s): %d anos, %d quilos' % (nome,especie,idade,peso)
+... 
+>>> print criatura(nome='Ernesto',especie='Homo Sapiens',idade=57,peso=65)
+Ernesto (Homo Sapiens): 57 anos, 65 quilos
+>>> print criatura(peso=65,nome='Ernesto',idade=57,especie='Homo Sapiens')
+Ernesto (Homo Sapiens): 57 anos, 65 quilos
+>>> 
+\end{lstlisting}
+
+Esta é uma forma de proceder conveniente quando temos muitos parâmetros e não queremos ter que fixar a ordem. 
+
+
+\subsubsection{Parâmetros com valores por defeito}
+
+Sabemos da existência de operadores sobrecarregados.  Por exemplo a listagem abaixo mostra como a operação realmente realizada depende do tipo dos objectos\footnote{Trata-se de uma manifestação de \textbf{polimorfismo} que discutiremos mais à feente no contexto da programação orientada aos objectos.}.
+
+\begin{lstlisting}
+>>> 5 + 6
+11
+>>> 'ab' + 'bc'
+'abbc'
+>>> [1,2,3] + ['a','b','c']
+[1, 2, 3, 'a', 'b', 'c']
+>>> (1,2,3) + ('a', 'b', 'c')
+(1, 2, 3, 'a', 'b', 'c')
+>>> 
+\end{lstlisting}
+
+Questão distinta é a do uso de uma mesma operação mas com o número variável de argumentos. Já vimos que tal é possível quando discutimos o iterador \texttt{range}.
+
+\begin{lstlisting}
+>>> list(range(5))
+[0, 1, 2, 3, 4]
+>>> list(range(2,6))
+[2, 3, 4, 5]
+>>> list(range(2,10,3))
+[2, 5, 8]
+>>> 
+\end{lstlisting}
+
+Para se conseguir este efeito socorremo-nos de parâmetros inicializados com valores por defeito. Vejamos uma solução implementada por nós\footnote{Esta solução não é um iterador.}.
+
+\begin{lstlisting}
+def my_range(inicio,fim=None,incremento=1):
+    """
+    A minha versão da função range para inteiros.
+    """
+    if fim == None:
+        fim = inicio
+        inicio = 0
+    lista = []
+    proximo = inicio
+    while (incremento >= 0 and proximo < fim) or (incremento < 0 and proximo > fim):
+        lista.append(proximo)
+        proximo = proximo +  incremento
+    return lista
+\end{lstlisting}
+
+Caso seja dado com apenas um argumento o valor dado passa a ser o valor final e o valor inicial é zero. O incremento é mantido a um. Com dois argumentos temos esses valores a corresponder ao início e ao fim, e o incremento é um. Se usarmos os três argumentos então serão esses os valores usados. O leitor pode testar e  verificar que funciona.\\
+
+ A utilização de valores por defeito exige algum cuidado. Repare neste caso:
+
+\begin{lstlisting}
+>>> def junta_valores(valores, inicio = []):
+...     inicio.extend(valores)
+...     return inicio
+... 
+>>> junta_valores([1,2,3])
+[1, 2, 3]
+>>> junta_valores([1,2,3])
+[1, 2, 3, 1, 2, 3]
+>>> 
+\end{lstlisting}
+
+O que aconteceu? O problema está em que a ligação do valor por defeito é feita no momento da definição e não no momento da chamada. Deste modo sendo um objecto mutável apenas existirá uma instância do objecto qualquer que seja o número de vezes que efectuamos a chamada. Uma solução será usar como valor por defeito o objecto \texttt{None} e no início do código testar a existência ou não de valor.
+
+\begin{lstlisting}
+>>> def junta_valores(valores, inicio=None):
+...     if inicio == None:
+...             inicio=[]
+...     inicio.extend(valores)
+...     return inicio
+... 
+>>> junta_valores([1,2,3])
+[1, 2, 3]
+>>> junta_valores([1,2,3])
+[1, 2, 3]
+>>> 
+\end{lstlisting}
+
+
+Podemos misturar valores por defeito com argumentos chamados pelo nome.
+
+\begin{lstlisting}
+>>> def func(x,y='toto',z='tete'):
+...     print(x,y,z)
+... 
+>>> func('ah!ah!')
+ah!ah! toto tete
+>>> func('ah!ah!', 'titi')
+ah!ah! titi tete
+>>> func('ah!ah!',z= 'tata')
+ah!ah! toto tata
+>>> 
+\end{lstlisting}
+
+
+\subsubsection{Número variável de argumentos}
+
+No exemplo anterior de valores por defeito podemos \textbf{simular} a existência de um número variável de parâmetros, mas à partida o seu número é fixo. Situação diferente é quando realmente não sabemos no momento da execução quantos argumentos vamos ter. Vejamos um exemplo em concreto: calcular o máximo de um conjunto de valores. Eis uma solução:
+
+
+\begin{lstlisting}
+def my_max(*valores):
+    """
+    Qual o máximo de um número de valores?
+    """
+    if not valores:
+        return None
+    else:
+        maior = valores[0]
+        for val in valores[1:]:
+            if val > maior:
+                maior = val
+        return maior
+\end{lstlisting}
+
+A sintaxe foi aumentada prefixando o nome do parâmetro com um \textbf{asterisco}. Agora, aquando da chamada, todos os valores são juntos num tuplo e o respectivo objecto associado ao (nome do) parâmetro.
+
+\begin{lstlisting}
+>>> print (my_max(1,8,4,10,7,12,7))
+12
+>>> print(my_max(4,10,7))
+10
+\end{lstlisting}
+
+Outra extensão consiste em usar um \textbf{duplo asterisco} antes do (nome do) parâmetro. No entanto este mecanismo só pode ser usado numa chamada com argumentos por nome e origina a construção de um dicionário que depois se associa ao parâmetro formal.  Um exemplo simples.
+
+\begin{lstlisting}
+>>> def func(**args):
+... 	print args
+... 
+>>> func()
+{}
+>>> func(a=1,b=2)
+{'a': 1, 'b': 2}
+>>> 
+\end{lstlisting}
+
+-- Keywordonly --\\
+
+Sintetizamos tudo o que foi dito atrás sobre os argumentos das definições na tabela \ref{tab:args}\footnote{Adaptada de \cite{lutz2009}.} 
+
+\begin{table}[h]
+	\begin{center}
+	\begin{tabular}{ll|}
+		\rowcolor[gray]{0.7} Sintaxe & Responsável  & Significado\\ [0.5ex]
+		\textbf{Não Modificam} &\\
+		\textit{dict.copy()} &  Devolve uma cópia do \textit{dict} \\ 
+		\textit{key in dict} & Verifica a existência da chave \textit{key} em  \textit{dict}\\
+		\textit{dict.items()} & Devolve um iterável de pares (chave,valor) de \textit{dict}\\
+		\textit{dict.keys()} & Devolve um iterável chaves de \textit{dict}\\
+		\textit{dict.values()}& Devolve um iterável de valores de \textit{dict} \\ 
+		\textit{dict.get(key,default=None))}&Devolve o valor  caso exista senão devolve \textit{default} \\ 
+		\textbf{Modificam} &\\
+		\textit{dict.clear()} & Retira todos os elementos de \textit{dict} \\
+		\textit{dict.pop(key,default=None)} & Retira e devolve o elemento de \textit{key} \\
+		\textit{dict.update(dict2)} & Adiciona os pares (chave,valor) de \textit{dict2} a \textit{dict} \\ 
+		\textit{dict.setdefault(key,default=None))}&Como \textit{get} mas actualiza o par com key:default \\ 
+		\textit{del dict[key]} & Retira o item associado a \textit{key}\\
+		\hline
+	\end{tabular}
+	\end{center}
+\caption{Métodos Pré-Definidos para Dicionários}
+\label{tab:metdic}
+\end{table}
+
+-- TabelaFinal\\
+
+
+
+\section{Programação Funcional}
+
+\section{Iteradores e Geradores}
+
+
+
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\facil
+Use a ideia que apresentámos para definir o iterador \texttt{range} para implementar uma versão para o caso de números reais.
+\end{Exercicio}

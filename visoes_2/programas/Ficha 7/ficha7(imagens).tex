@@ -1,0 +1,349 @@
+\documentclass[a4paper,12pt,portuguese]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage[applemac]{inputenc}
+\usepackage{graphicx,color}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{placeins}
+\usepackage{marvosym}
+\usepackage[Lenny]{fncychap}
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+\usepackage{pifont}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage[official]{eurosym}
+
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+\newcommand{\python}{\textbf {Python}}
+
+\lstset{frame=single,language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+%----------------------------------------------
+
+\definecolor{cinza}{rgb}{0.192,0.192,0.192}
+
+\definecolor{orange}{rgb}{1,0.5,0.0}
+
+
+\definecolor{rose}{rgb}{1,0.6,0.6}
+
+\newcommand{\problema}[1]{\noindent \fbox{} \colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Problema #1}}}}
+
+
+\newcommand{\modulo}[1]{\noindent\colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Módulo #1}}}}
+
+\newcommand{\muitofacil}{\noindent \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MF}}}}
+
+\newcommand{\facil}{\noindent \colorbox{green}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{F}}}}
+
+\newcommand{\medio}{\noindent \colorbox{orange}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{M}}}}
+
+\newcommand{\dificil}{\noindent \colorbox{red}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{D}}}}
+
+\newcommand{\muitodificil}{\noindent \colorbox{rose}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MD}}}}
+
+%-----------------------------------------------
+\renewcommand\lstlistingname{Listagem}
+
+\lstset{backgroundcolor=\color{yellow},language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+
+
+%\lstset{language=Python,backgroundcolor=\color{yellow},captionpos=b}
+% ----------------------------------------------------------------
+\newenvironment{objectivos}
+    {\noindent {\bfseries{\Large{Objectivos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+% contador de Exercicios
+\newcounter{exercicio}[chapter]
+\renewcommand\theexercicio{\thechapter.\arabic{exercicio}}
+
+
+\newenvironment{Exercicio}
+{\noindent  \refstepcounter{exercicio}  \colorbox{blue}{  \textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Problema \theexercicio}}}}
+{ \vspace*{0.2cm} \par}
+
+\newenvironment{requisitos}
+    {\noindent {\bfseries{\Large{Requisitos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{materialapoio}
+    {\noindent {\bfseries{\Large{Material de Apoio}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{sol}
+{\noindent  \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Solução}}}}
+{ \vspace*{0.2cm} \par}
+
+
+
+
+\begin{document}
+
+\noindent \rule{\linewidth}{1mm}
+
+\begin{center}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{timbre.eps}
+ \end{figure}
+
+\LARGE{\textbf{\textcolor[rgb]{0.98,0.00,0.00}
+{Introdução à Programação \\ e Resolução de Problemas}}} \\
+\vspace*{0.25cm}2009/2010 \\\vspace*{0.25cm}
+
+\rule{\linewidth}{1mm}
+
+\vspace*{5.0cm} \textcolor[rgb]{0.00,0.40,0.29}{Ficha \#7 }
+
+\vspace*{2.0cm}
+\noindent Ernesto Costa,\\ Luís Macedo, Rogério de Lemos, Vasco Pereira
+\end{center}
+
+\renewcommand\chaptername{Ficha}
+\setcounter{chapter}{6}
+\chapter{Imagina\c cão}
+\setcounter{chapter}{7}
+
+
+
+\begin{objectivos}
+\item Consolidar a matéria dada até ao momento
+\item  Exercitar o uso de ciclos imbricados e passagem de fun\c cões como parâmetros
+\end{objectivos}
+
+\bigskip
+
+\begin{requisitos}
+\item Conceitos anteriores consolidados
+\item Módulos: \textbf{cImage}
+\end{requisitos}
+\bigskip
+
+\begin{materialapoio}
+\item É recomendada a consulta dos slides das aulas teóricas e da bibliografia  indicada.
+\end{materialapoio}
+
+
+
+
+\newpage
+
+\section{Introdu\c cão}
+
+Esta ficha destina-se a insistir nos conceitos já dados e exercitados em fichas anteriores. Iremos fazê-lo no quadro da cria\c cão, visualiza\c cão e manipula\c cão de imagens. Por isso é fundamental ter presente as possibilidades do módulo \textbf{cImage} dado nas aulas teóricas. Os alunos são vivamente aconselhados a consultar esses elementos. O módulo está disponível no \textbf{WoC} no sítio do costume. Para esta ficha serão usadas várias imagens. Algumas estarão também no  \textbf{WoC}. Os(As) alunos(as) podem escolher as suas próprias imagens, desde que respeitem todos os aspectos inerentes ao uso, em espa\c co público, de imagens.  \\
+
+Referimos nas aulas que o módulo \textbf{cImage} disponibiliza três tipos de objectos, instâncias das seguintes classes:
+
+\begin{itemize}
+\item \textbf{Pixel}: cada objecto é um tuplo com informa\c cão referente ao canal de cor vermelho, verde e azul (modelo \textbf{RGB}).
+\item \textbf{FileImage}: objecto do tipo ficheiro de imagem, criado a partir de uma imagem em disco.
+\item \textbf{EmptyImage}: objecto do tipo ficheiro de imagem, inicialmente vazia.
+\item \textbf{ImageWin}: objecto de tipo janela, que serve de contentor para as imagens serem vizualizadas.
+\end{itemize}
+
+São possíveis diversas opera\c cões sobre estes objectos, seja de consulta seja de manipula\c cão. O programa que se apresenta de seguida ilustra o exemplo mais simples de mostrar uma imagem \textbf{JPEG} guardada no disco.
+
+\begin{lstlisting}
+def mostra_imagem(img_fich):
+    imagem = cImage.FileImage(img_fich)
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    
+    janela = cImage.ImageWin('Imagem', largura,altura)
+    imagem.draw(janela)
+    janela.exitOnClick()
+\end{lstlisting}
+
+A partir do ficheiro criamos um objecto do tipo imagem de ficheiro. De seguida calculamos as suas dimensões (largura e altura). Esses valores são importantes para sabermos a dimensão da janela a criar. Feita essa cria\c cão podemos mandar mostrar a imagem. Finalmente, com o método \textbf{exitOnClick} podemos terminar o processo com um simples clicar do rato na janela.\\
+
+A cria\c cão de imagens obedece a um padrão simples que o programa abaixo ilustra.
+
+\begin{lstlisting}
+def cria_imagem_cor_1(largura,altura):
+    janela = cImage.ImageWin('Teste 1',largura,altura)
+    imagem = cImage.EmptyImage(largura,altura)
+    pixel_branco = cImage.Pixel(255,204,102)
+    for coluna in range(largura):
+        for linha in range(altura):
+            imagem.setPixel(coluna,linha,pixel_branco)
+    imagem.draw(janela)
+    janela.exitOnClick()
+\end{lstlisting}
+
+Neste exemplo, são dadas as dimensões da imagem. Por isso come\c camos por criar um objecto janela e outro ficheiro de imagem vazio, com essas dimensões. De seguida, determinamos, \textbf{neste caso} que todos os pixeis são iguais, pelo que só criamos um objecto do tipo \textbf{Pixel}. A partir daí trata-se apenas de colocar o mesmo píxel em todas as posi\c cões da imagem. Isso obriga a dois ciclos \textbf{for} imbricados, isto é, um dentro do outro. No final desta opera\c cão desenhamos a imagem e, finalmente, determinamos que se concluí o processo com um clicar na janela.\\
+
+Posto isto, vamos aos exercícios.
+
+
+
+\newpage
+\section{Preliminares}
+
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que lhe permita replicar uma imagem formando um mosaico. A figura \ref{fig:mos} mostra um exemplo de dimensão $ 3 \times 2$.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.5]{/tempo/imagens/escher_mosaico.jpg}
+\caption{{\bf Olha o mosaico!}}
+\label{fig:mos}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Pretende colorir o chão da sua cozinha com quadrados coloridos. As cores devem ser colocadas de acordo com um padrão. A figura \ref{fig:mos2} mostra um exemplo possível. A escolha das \textbf{duas} cores é sua!
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{imagens/mosaico2.jpg}
+\caption{{\bf Que mau gosto \ldots}}
+\label{fig:mos2}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+Desenvolva o respectivo programa. Procure que a sua solu\c cão seja modular.
+
+\FloatBarrier
+\newpage
+
+\begin{Exercicio}\medio \label{exo:mond}
+
+Mondrian foi um famoso pintor holandês. As suas pinturas geométricas são conhecidas de todos. Desenvolva um programa que  permita ao computador ser um (fraco) imitador do pintor. A imagem que queremos reproduzir é a da figura \ref{fig:mond}.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.5]{imagens/mondrian1.jpg}
+\caption{{\bf Um verdadeiro Mondrian}}
+\label{fig:mond}
+\end{center}
+\end{figure}
+
+
+Não deve ter preocupa\c cões de perfei\c cão, mas sim de criar um programa o mais modular possível.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Com base nas primitivas  desenvolvidas no exercício \ref{exo:mond}, desenvolva um programa que desenhe um razoável \textbf{falso}  Mondrian. É livre de criar outras primitivas geométricas. O que se pretende é que no final o quadro possa ser reconhecido como passível de ter sido pintado por Mondrian.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio \label{exo:recta}
+
+Desenvolva um programa que lhe permita desenhar uma linha recta numa janela, conhecidas as coordenadas de dois dos seus pontos. Relembramos que a equa\c cão de uma recta é dada por:
+\[ y = \frac{y_{2} - y_{1}}{x_{2} - x_{1}} \times (x - x_{1}) + y_{1} \]
+
+\end{Exercicio}
+
+\newpage
+
+\begin{Exercicio}\facil
+
+Com base na sua solu\c cão para o exercício \ref{exo:recta}, desenvolva um programa para desenhar um quadrado.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que lhe permita desenhar um arco de circunferência com uma dada amplitude, conhecidos também as coordenadas do centro e o raio. Deve ser genérico: no limite deve permitir desenhar uma circunferência!
+
+\end{Exercicio}
+
+\newpage
+\section{Manipula\c cões e Experiências}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que a partir de uma imagem fabrique a correspondente versão a preto e branco. Para o conseguir deve \textbf{converter} os píxeis para a escala de cinzentos e depois comparar o valor obtido com um limiar. Os valores maiores do que o limiar ficarão a branco e os inferiores ou iguais ficarão a preto. A conversão de um pixel para escala de cinzentos é trivial: considera-se a média dos valores nos três canais de cor: vermelho, verde e azul como se indica na listagem seguinte.
+
+\begin{lstlisting}
+def pixel_cinzento(pixel):
+    """ Converte um pixel para escala de cinzentos."""
+    vermelho = pixel.getRed()
+    verde = pixel.getGreen()
+    azul = pixel.getBlue()
+    
+    int_media = (vermelho + verde + azul) / 3
+    novo_pixel = cImage.Pixel(int_media,int_media, int_media)
+    return novo_pixel
+   \end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que lhe permita variar a intensidade dos pixeis de modo \textbf{independente}, isto é, a varia\c cão no vermelho, no verde e no azul pode ser diferente.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que lhe permita pegar numa imagem e fabricar o seu espelho horizontal, com base na metade superior. A figura \ref{fig:esp} ilustra o pretendido.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.2]{imagens/esphs2.jpg}
+\caption{{\bf Espelho meu: diz-me \ldots}}
+\label{fig:esp}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\dificil \label{exo:roda90}
+
+Desenvolva um programa que dada uma imagem a roda de 90 graus. O sentido é à sua escolha.
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Pretende-se um programa que permita pegar em duas imagens e fabricar uma terceira. Desenvolva o programa de forma modular de modo a controlar o processo que usa para combinar os pixeis das imagens. A título de exemplo, na imagem \ref{fig:funde} apresentamos uma combina\c cão entre Einstein e Gandhi.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.2]{imagens/funde_e_g_media.jpg}
+\caption{{\bf Gandstein}}
+\label{fig:funde}
+\end{center}
+\end{figure}
+
+\FloatBarrier
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\medio
+
+Nas aulas falámos no conceito de Kernel (ou filtro, ou máscara) e mostrámos como o conceito podia ser usado para detectar os contornos de uma figura. Vamos agora explorar vários tipos de filtros. Fa\c ca uma pesquisa no \textbf{Google} pelas palavras \textbf{convolution} e \textbf{kernel} e descubra diferentes filtros (alguns exemplos são \textit{blur},\textit{sharpen} ou ainda \textit{mean}). Escolha as imagens do seu agrado e aplique  sobre  elas o respectivo. Visualize o resultado.
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitodificil
+
+Neste exemplo pretendemos resolver uma questão semelhante à do exemplo \ref{exo:roda90}. Só que, agora, pretende-se que a rota\c cão possa ser de um ângulo arbitrário. \textbf{Nota:} A resolu\c cão desta questão obriga a saber algo sobre transla\c cão de sistemas de eixos, de trignometria e de álgebra.
+\end{Exercicio}
+
+\end{document} 

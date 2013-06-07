@@ -1,0 +1,38 @@
+class Turtle{ // Turtle Graphics 2006/01
+    float phase = 1;
+   
+    void pd( float x1 , float y1 ){//Pen Up ����0,0 �^�� width/2,height/2
+         pushMatrix();
+         translate(x1, y1);
+      }
+      
+      void pu(){ //Pen Down 
+         popMatrix();
+      }
+
+      void fd(float d){ //Forward �O�i�A����
+       line( 0,0,0,-d);
+       translate( 0,-d);  
+     }
+
+    void bk(float d){ //Back ��ށA����
+        line( 0,0,0,d);
+	translate( 0,d);  
+    }
+    
+    void gf(float d){ //Go Forward �ړ��O�i�A����Ȃ�
+       translate( 0,-d);  
+     }
+     
+    void rt(float r) {// Right Rotate�E��]�i�p�x�j
+         rotate(radians(r * phase) );
+    }
+    
+     void lt(float r) {//Left Rotate ����]�i�p�x�j
+         rotate(radians(-r * phase));
+    }
+    
+    void rv(){// Reverse ���E���]
+        phase = phase * -1;
+    }
+}//

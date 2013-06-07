@@ -1,0 +1,478 @@
+\chapter{O módulo \texttt{turtle}}\label{annex:turtle}
+
+\section{Introdu\c cão}
+
+O módulo \texttt{turtle} permite efectuar desenhos. Baseia-se na ideia de uma \textbf{tartaruga} que se passeia sob nosso controlo numa \textbf{janela}, podendo deixar um rasto visível. Para isso tem uma\textbf{caneta}. Sempre que a caneta está em baixo e a tartaruga caminha, lá aparece o rasto. Existem comandos sobre a tartaruga, comandos sobre a caneta e comandos sobre a janela. As operações estão implementadas em duplicado, num caso, numa lógica de programação procedimental (i.e., funções) e, noutro caso, numa lógica orientada aos objectos (i.e., métodos). Sempre que quisermos usar mais do que uma tartaruga temos que recorrer ao modo orientado aos objectos. Quando instala o Python fica com a possibilidade de importar de imediato o módulo \textbf{turtle}, pois actualmente o módulo faz parte dos módulos pré-definidos. Vamos descrever os comandos essenciais do módulo, na versão procedimental\footnote{no caso dos métodos equivalentes apenas tem que acrescentar o parâmetro \textit{self}.}. Uma descrição completa pode ser consultada no manual da linguagem.
+
+\begin{comment}
+Comecemos com um exemplo simples que nos permite desenhar um quadrado, com um determinado lado. Para além disso controlamos o local onde é desenhado e a sua orienta\c cão. O código aparece na listagem \ref{lst:tarta1}.
+
+\begin{lstlisting}[caption={Sai um quadrado \ldots}, label=lst:tarta1, numbers=left, numberstyle=\footnotesize, mathescape]
+import turtle
+
+def quadrado(lado,pos, angulo):
+    """
+    Desenha um quadrado com o comprimento de lado, o vértice inferior
+    esquerdo em pos e  direcção inicial angulo.
+    """
+    # Preparação
+    turtle.up()
+    turtle.goto(pos)
+    turtle.setheading(angulo)
+    turtle.down()
+    
+    # desenha quadrado
+    for conta in range(4):
+        turtle.forward(lado)
+        turtle.right(90)
+    turtle.hideturtle()
+\end{lstlisting}
+
+Analisemos o seu funcionamento. Numa primeira parte, preparamos o programa para uma correcta execu\c cão: levantamos a caneta (linha 9), vamos para a posi\c cão que nos é indicada na forma \textbf{x,y} (linha 10), orientamos a caneta (linha 11) e colocamo-la em baixo para desenhar (linha 12). Depois é trivial. Repetimos quatro vezes desenhar um lado (linha 16) e rodar 90 graus para a direita (linha 17) . A figura \ref{fig:tarta1} mostra o exemplo de uma execu\c cão quando o lado é 50 a posi\c cão (-50,50) e o ângulo 35 graus.\\
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{annex_2/imagens/tartaquad.pdf}
+\caption{{\bf Quadrado}}
+\label{fig:tarta1}
+\end{center}
+\end{figure}
+
+Neste exemplo usámos um conjunto de \textbf{fun\c cões} disponibilizadas pelo módulo \textbf{turtle}. Usando a instru\c cão \textbf{import turtle}, somos obrigados a pré-fixar o nomes   dessas opera\c cões  com o nome do módulo  quando se trata do seu \textbf{uso}. O mesmo resultado pode ser obtido recorrendo a objectos do tipo \textbf{Turtle}, criados explicitamente por nós. Neste caso passamos a usar os \textbf{métodos} associados aos objectos  desse tipo. Os nomes (e funcionalidades) são basicamente os  mesmos. A listagem \ref{lst:quad2} mostra o código.
+
+\begin{lstlisting}[caption={Saia um quadrado \ldots}, label=lst:quad2, numbers=left, numberstyle=\footnotesize, mathescape]
+import turtle
+
+def quadrado(tartaruga,lado,pos,angulo):
+    """ Usa a tartaruga para desenhar um quadrado de lado
+    lado e orientação inicial ângulo.
+    """
+    # Preparação 
+    tartaruga.up() 
+    tartaruga.goto(pos) 
+    tartaruga.setheading(angulo) 
+    tartaruga.down() 
+ 
+    # desenha quadrado 
+    for conta in range(4): 
+        tartaruga.forward(lado) 
+        tartaruga.right(90) 
+    tartaruga.hideturtle() 
+
+def main0():
+    tarta = turtle.Turtle()
+    quadrado(tarta,100,(50,50),45)
+    turtle.exitonclick()
+    \end{lstlisting}
+
+Se os métodos e as fun\c cões fazem o mesmo, então qual a vantagem de ter ambos? A resposta é simples: basta imaginar que se tem mais do que uma tartaruga que quer comandar de modo autónomo! A classe \textbf{Turtle} permite isso ao poder originar tantos objectos, i.e., tartarugas, quantos queiramos. Vejamos (ver listagem \ref{lst:tarta3}) um exemplo simples, agora com circunferências.
+
+\begin{lstlisting}[caption={Saiam dois quadrados \ldots}, label=lst:tarta3, numbers=left, numberstyle=\footnotesize, mathescape]
+import turtle
+
+def circunferencia(tartaruga,raio, posicao):
+    # Preparação
+    tartaruga.up() 
+    tartaruga.goto(posicao) 
+    tartaruga.down() 
+    
+    # desenha
+    tartaruga.circle(raio)
+    
+    tartaruga.hideturtle()
+        
+def main():
+    tarta1 = turtle.Turtle()
+    tarta1.begin_fill()
+    tarta1.pen(shown=True,pendown=False,pencolor='blue',fillcolor='blue', speed=5)
+    circunferencia(tarta1,30,(50,50))
+    tarta1.end_fill()
+    
+    tarta2 = turtle.Turtle()
+    tarta2.begin_fill()
+    tarta2.pen(shown=False,pendown=False,pencolor='red',fillcolor='red', speed=2)
+    circunferencia(tarta2, 100, (-100,-100))
+    tarta2.end_fill()
+    turtle.exitonclick()
+\end{lstlisting}
+
+E a respectiva imagem, que se mostra na figura \ref{fig:circunf1}.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.4]{annex_2/imagens/circunferencias.eps}
+\caption{{\bf Duas Circunferências}}
+\label{fig:circunf1}
+\end{center}
+\end{figure}
+\newpage
+
+\end{comment}
+
+%% -------------------------------------------------------------------
+
+\section{Tartaruga}
+
+\subsection{Movimento e Orientação}
+
+Os movimentos básicos podem ser feitos em fun\c cão da direc\c cão actual da tartaruga, ou em fun\c cão do ponto de chegada.
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+
+forward(unidades) ou fd(unidades) & Avan\c ca na direc\c cão em que se encontra tantas unidades\\ \hline
+back(unidades) ou bk(unidades)& Recua na direc\c cão em que se encontra tantas unidades\\ \hline
+goto(pos,y=None) & Movimenta a tartaruga para a posi\c cão indicada \\ \hline
+setx(x) & Movimenta a tartaruga para a posi\c c\cão de coordenada x. y mantém-se. \\ \hline
+sety(y) & Movimenta a tartaruga para a posi\c cão de coordenada y. x  mantém-se. \\ \hline
+speed(veloc=None) & Sem argumento, devolve. Com argumento, altera velocidade. Valor entre 0 e 10.\\ \hline
+delay(atraso = None) & Sem nada devolve, com valor altera. Em milisegundos.\\ \hline
+\end{tabular}
+\end{center}
+\label{tab:move}
+\caption{Movimentos}
+\end{table}
+
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+ Exemplo Movimento & 
+ \begin{lstlisting}
+turtle.forward(50)
+turtle.goto((50,50))
+turtle.back(25)
+turtle.goto(25,75)
+turtle.setx(75)
+turtle.sety(25)
+ \end{lstlisting}\\  \hline
+ \end{tabular}
+\end{center}
+\end{table}
+
+\begin{comment}
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{annex_2/imagens/img211.eps}
+\caption{{\bf Movimentos básicos}}
+\label{fig:img211}
+\end{center}
+\end{figure}
+\end{comment}
+
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+right(angulo) & Roda para a direita o ângulo.\\ \hline
+left(ângulo) & Roda para a esquerda o ângulo.\\ \hline
+setheading(ângulo) & Orienta\c cão absoluta \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:rota}
+\caption{Orientação}
+\end{table}
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+ Exemplo Orientação & 
+ \begin{lstlisting}
+>>> import turtle
+>>> turtle.heading()
+0.0
+>>> turtle.right(45)
+>>> turtle.heading()
+315.0
+>>> 
+ \end{lstlisting} \\ \hline
+ \end{tabular}
+\end{center}
+\end{table}
+
+\FloatBarrier
+
+\subsection{Desenho}
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+circle(raio,amplitude) & Desenha um círculo ou um arco de círculo.\\ \hline
+dot(tamanho=None, *cor) & Desenha um ponto na posi\c cão em que se encontra.\\ \hline
+stamp() & Desenha a forma da tartaruga na posi\c cão em que se encontra. Devolve id.\\ \hline
+clearstamp(stampid) & Limpa a forma da tartaruga na posi\c cão stampid.\\ \hline
+\end{tabular}
+\end{center}
+\label{tab:des1}
+\caption{Desenho}
+\end{table}
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+argumentos & número\\ \hline
+argumentos opcionais & número, inteiro \\ \hline
+chamada & circle(número)  \# círculo completo\\ \hline
+& circle(número, número) \# arco \\ \hline
+& circle(número, número, inteiro)\\ \hline
+ Exemplo Círculo & 
+ \begin{lstlisting}
+>>> turtle.circle(50)
+>>> turtle.circle(120,180) # semi-círculo
+>>> 
+ \end{lstlisting}\\  \hline
+ \end{tabular}
+\end{center}
+\end{table}
+
+
+\subsection{Estado}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+position() & Devolve a posi\c cão actual da tartaruga na forma de um tuplo (x,y).\\ \hline
+towards(pos,y=None)  & Devolve o ângulo entre a orienta\c cão actual da tartaruga e  a posi\c cão passada como argumento.\\ \hline
+xcor() & Devolve a posi\c cão da tartaruga relativa ao eixo dos x. \\ \hline
+ycor() & Devolve a posi\c cão da tartaruga relativa ao eixo dos y. \\ \hline
+heading() & Devolve a orienta\c cão actual da tartaruga. \\ \hline
+distance(pos,y=None) & Devolve a distância entre a posi\c cão actual da tartaruga e a posi\c cão passada como parâmetro.\\ \hline
+\end{tabular}
+\end{center}
+\label{tab:tar}
+\caption{Estado da tartaruga}
+\end{table}%
+
+
+\FloatBarrier
+
+
+\subsection{Visibilidade}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+hideturtle() ou ht() & Esconde a tartaruga. \\ \hline
+showturtle() &  Indica se a tartaruga está visível. \\ \hline
+isvisible() & Indica se a tartaruga está visível. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:vistar}
+\caption{Visibilidade}
+\end{table}%
+
+
+\subsection{Aspecto}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+shape(nome=None) & Define a forma da tartaruga. \\ \hline
+resizemode{mode} & Permite alterar dimensões de acordo com mode. \\ \hline
+shapesize(f1,f2,o) & Altera a forma. depende de resizemode(mode). \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:asptar}
+\caption{Aspecto da tartaruga}
+\end{table}%
+
+\subsection{Medidas}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+degrees(circulo = 360.0) & Altera para graus.\\ \hline
+radians() & Altera para radianos.\\ \hline
+\end{tabular}
+\end{center}
+\label{tab:med}
+\caption{Medidas}
+\end{table}
+
+\FloatBarrier
+
+% ---------------------------------------------------------------------
+\section{Caneta}
+
+\subsection{Estado}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+
+down() ou pd()& Coloca a caneta em baixo.\\ \hline
+up()  ou pu() & Coloca a caneta no ar.\\ \hline
+pen() & Devolve ou define os atributos da caneta.\\ \hline
+pensize(n) & Define a dimensão da caneta. \\ \hline
+isdown() & diz se a caneta está em baixo. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:can}
+\caption{Estado da caneta}
+\end{table}%
+
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+argumentos & diversos tipos\\ \hline
+argumentos opcionais & número, inteiro \\ \hline
+chamada & pen()  \# consulta\\ \hline
+& pen(fillcolor='black', pencolor='red',pensize=10 ) \# define alguns atributos para todas as canetas \\ \hline
+& tarta.color('yellow','') \# Define atributo para uma caneta específica\\ \hline
+ Exemplo & 
+ \begin{lstlisting}
+>>> turtle.pen(fillcolor="black", pencolor="red", pensize=10)
+>>> sorted(turtle.pen().items())
+[('fillcolor', 'black'), ('outline', 1), ('pencolor', 'red'),
+ ('pendown', True), ('pensize', 10), ('resizemode', 'noresize'),
+ ('shown', True), ('speed', 9), ('stretchfactor', (1, 1)), ('tilt', 0)]
+>>> penstate=turtle.pen()
+>>> turtle.color("yellow", "")
+>>> turtle.penup()
+>>> sorted(turtle.pen().items())
+[('fillcolor', ''), ('outline', 1), ('pencolor', 'yellow'),
+ ('pendown', False), ('pensize', 10), ('resizemode', 'noresize'),
+ ('shown', True), ('speed', 9), ('stretchfactor', (1, 1)), ('tilt', 0)]
+>>> turtle.pen(penstate, fillcolor="green")
+>>> sorted(turtle.pen().items())
+[('fillcolor', 'green'), ('outline', 1), ('pencolor', 'red'),
+ ('pendown', True), ('pensize', 10), ('resizemode', 'noresize'),
+ ('shown', True), ('speed', 9), ('stretchfactor', (1, 1)), ('tilt', 0)]
+
+ \end{lstlisting}\\  \hline
+ \end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Controlo da cor}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+pencolor(*args) & Altera a cor da caneta. \\ \hline
+fillcolor(*args) & Define a cor de preenchimento.\\ \hline
+color(*args) & Sem parâmetros devolve as cores da caneta e de preenchimento. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:cor}
+\caption{Cor}
+\end{table}
+
+\FloatBarrier
+
+\subsection{Preenchimento}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+begin\_fill()& A chamar para activar preenchimento.\\ \hline
+end\_fill() & A chamar para desactivar preenchimento.\\ \hline
+filling() & Devolve se está a preencher ou não. \\ \hline
+write(text, move, align, font) & Escreve text na posição da tartaruga. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:pre}
+\caption{Preenchimento}
+\end{table}%
+
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{4cm}|>{\small}p{9cm}|} \hline
+ Exemplo  Preenchimento& 
+ \begin{lstlisting}
+>>> turtle.begin_fill()
+>>> for i in range(4):
+... 	turtle.forward(100)
+... 	turtle.right(90)
+... 
+>>> turtle.end_fill()
+>>> 
+ \end{lstlisting}\\  \hline
+ \end{tabular}
+\end{center}
+\end{table}
+
+\FloatBarrier
+
+% ---------------------------------------------------------------------
+
+\section{Janela}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+bye() & Fecha janela.\\ \hline
+exitonclick() & Fecha janela controlado pelo rato. \\ \hline
+setup(L, A, IX, IY) & Define tamanho e posição da janela \\ \hline
+title(cadeia) & Define título da janela igual a cadeia. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:janela}
+\caption{Específico da Janela}
+\end{table}%
+
+
+% ------------------------------------------------------
+
+
+
+
+
+\FloatBarrier
+
+
+
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+ bgcolor(args) & Define a cor de fundo.\\ \hline
+ bgpic(args) & Define uma imagem de fundo.\\ \hline
+clearscreen() &  Limpa a janela.\\ \hline
+screensize(l,a,cor)& Define tamanho e cor de fundo \\ \hline
+\hspace{0pt}setworldcoordinates (llx,lly,urx,ury) & Altera o sistemas de coordenadas.  \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:cor}
+\caption{Controlo da janela}
+\end{table}%
+
+\FloatBarrier
+
+
+
+\section{Eventos}
+
+\begin{table}[!htdp]
+\begin{center}
+\begin{tabular}{|>{\bfseries\small}p{5cm}|>{\small}p{8cm}|} \hline
+\rowcolor{melao}Nome & \textbf{Descri\c cão}\\ \hline \hline
+ onscreenclick(fun,btw,add)&  Reage ao rato dentro da janela. \\ \hline
+onkeypress(fun,arg) & Reage a carregar numa tecla. \\ \hline
+onkeyrelease(fun,arg)& Reage a libertar uma tecla. \\ \hline
+ listen(x,y)& Dá o foco de atenção ao teclado. \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:eventos}
+\caption{Eventos}
+\end{table}%
+
+
+
+
+

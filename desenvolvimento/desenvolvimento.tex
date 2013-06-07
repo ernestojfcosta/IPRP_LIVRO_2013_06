@@ -1,0 +1,1386 @@
+%%% cap desenvolvimento
+
+\chapter{Desenvolvimento}\label{cap:desenvolvimento}
+
+\begin{objectivos}
+\item Revisão dos diferentes aspectos da linguagem \python
+\item Apresentação de princípios de construção de programas
+\item Exemplos de aplicação
+\end{objectivos}
+
+\section{Introdução}
+
+A actividade de programação está a meio caminho entre a ciência e a arte. Ciência, porque exige disciplina e rigor, arte, porque motiva para (e potencia) a actividade criativa. Para uns um programador é como um escultor que passo a passo transforma uma pedra numa estátua esbelta. Para outros o programador é alguém quem brinca com blocos de diferentes formas e funcionalidades como se fossem pe\c cas de \textit{Lego}. Realmente programar não é fácil. Temos que por em jogo simultaneamente conhecimentos (1)  sobre o domínio do problema, (2) sobre a linguagem de program\c cão  a usar e (3) sobre o processo de constru\c cão da solu\c cão. Mas toda esta complexidade pode ser dominada. Neste capítulo vamos estar concentrados na forma como se pode usar este conhecimento diverso para desenvolver programas com qualidade, qualidade essa medida através da verificação de um conjunto preciso de características. No final do processo de desenvolvimento de um programa, queremos que estes estejam correctos, sejam de fácil leitura, fáceis de manter perante a mudança, e que exijam poucos recursos (espaço de memória, tempo de computação). Grande parte das vezes estes objectivos são contraditórios entre si. Por exemplo, acontece com frequência que a legibilidade do código tenha que ser sacrificada em detrimento da eficiência. A única coisa de que não se pode abdicar é da \ldots correção. Iremos ilustrar boas práticas de programação partindo de um  ponto de vista pragmático, ou seja, através de exemplos. Começaremos com os aspectos de síntese  dos programas para depois nos debruçarmos sobre questões de análise, seja de complexidade seja de correcção.
+%------
+\section{Síntese: desenvolvimento de programas}
+\subsection{Um Problema Simples}\label{sec:pira1}
+
+Suponhamos que alguém nos diz que pretende um programa para desenhar o objecto que vemos na figura \ref{fig:pira1}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/piramide.jpg}
+\caption{Que linda pirâmide}
+\label{fig:pira1}
+\end{center}
+\end{figure}
+
+A primeira questão que seguramente nos colocamos é a de saber se é \textbf{exactamente esta} pirâmide cujo desenho se pretende. Dir-nos-ão que não. A altura da pirâmide pode ser qualquer. Feita esta clarifica\c cão o nosso segundo pensamento deverá ser algo como: quais sãos os \textbf{dados} do problema? Qual o \textbf{resultado} pretendido? O que sei sobre o \textbf{domínio} que me possa ajudar a transformar os dados no resultado? É aqui que temos que come\c car a alinhar umas ideias. Fazer um desenho pode ajudar. Assim a figura \ref{fig:des1} tenta clarificar a questão.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/piramide1.eps}
+\caption{Um desenho diz mais do que mil palavras?}
+\label{fig:des1}
+\end{center}
+\end{figure}
+
+Vamos supor que decidimos recorrer ao módulo \textbf{turtle}\footnote{Neste momento em todo o rigor a decisão pelo módulo \textbf{turtle} não era ainda necessária. Igualmente o facto de apresentarmos a solu\c cão já em \textbf{Python} não é fundamental. No nosso caso consideramos que a linguagem \textbf{Python} é a que melhor permite expressar psedo-código!} para efectivar o desenho. Isso permite um primeiro esbo\c co do programa como se mostra na listagem \ref{lst:prog1}.
+
+\begin{lstlisting}[caption='Devagar se vai ao longe \ldots', label=lst:prog1]
+from turtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	return 'Fim'
+\end{lstlisting}
+
+Chegou a altura de lembrar uma frase famosa do pai da linguística moderna, Ferdinand de Saussure, que dizia que é o ponto de vista que cria o objecto. Assim vou olhar para a pirâmide \textbf{como se fosse} uma sequência ordenada de linhas que crescem de cima para baixo. Implícito nesta forma de ver estão decisões (vou desenhar de cima para baixo) e abstra\c cões (não vejo os quadrados mas apenas linhas de tamanho distinto). A partir daqui é fácil chegar à conclusão de que uma maneira simples de resolver o problema é dividi-lo em sub-problemas em que cada um consiste no desenho de uma linha. Daí a segunda versão do nosso programa.
+
+\begin{lstlisting}[caption='Continuemos\ldots', label=lst:prog2]
+from turtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+\end{lstlisting}
+
+Não é difícil entender o recurso ao ciclo \textbf{for}: afinal trata-se de uma ac\c cão que é repetida um número conhecido de vezes! A figura \ref{fig:des2} ilustra o mecanismo de decomposi\c cão do problema e delega\c cão da solu\c cão parcial.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/piramide2.eps}
+\caption{Onde estamos \ldots}
+\label{fig:des2}
+\end{center}
+\end{figure}
+
+É tempo de pensarmos nas linhas. Agora podemos olhar mais de perto e \textit{reparar} que as linhas são feitas de \ldots quadrados! Como anteriormente é fácil concluir (basta olhar para a figura \ref{fig:pira1}) que na linha \textbf{i} são desenhados \textbf{i} quadrados.  Então já não nos espantaremos com a proposta de programa \ref{lst:prog3}.
+
+\begin{lstlisting}[caption='Chegaram os quadrados \ldots', label=lst:prog3]
+from turtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+	return 'Fim'
+\end{lstlisting}
+
+Como desenhar um quadrado em \textbf{turtle}? Todos sabemos, espero bem. Eis uma hipótese de código:
+
+\begin{lstlisting}[caption='Um quadrado de lado 20 \ldots', label=lst:prog4]
+def desenha_quadrado():
+	for i in range(4):
+		fd(20)
+		rt(90)
+	return 'Fim'
+\end{lstlisting}
+
+Mas e se quisermos desenhar sucessivas pirâmides com níveis e lados distintos. Bom, uma solu\c cão muito simples será associar um nome ao valor do lado e depois usar o nome na defini\c cão \footnote{O leitor atento poderá perguntar porque não fazemos como no caso dos níveis tornando o \textbf{lado} um \textbf{parâmetro} do programa \textbf{desenha\_quadrado}? Podíamos fazer, sim senhor. Isso obriga a outras mudan\c cas no resto do programa. Deixamos ao leitor a tarefa de seguir por esse caminho.}. Está na hora de juntar tudo e testar o programa. A listagem \ref{lst:prog5} mostra o programa, enquanto a figura \ref{fig:des3} dá uma ideia das dependências entre partes do programa. 
+
+\begin{lstlisting}[caption='Tudo junto \ldots', label=lst:prog5]
+from turtle import *
+
+lado = 20
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+\end{lstlisting}
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/piramide3.eps}
+\caption{O primeiro produto}
+\label{fig:des3}
+\end{center}
+\end{figure}
+
+Quando executamos o programa acontece no entanto que vemos a nossa tartaruga, à maneira de Sísifo, a desenhar sempre o mesmo quadrado apresentando no final  o resultado que a figura \ref{fig:quad1} ilustra. Aqui tem que entrar o nosso conhecimento sobre o módulo \textbf{turtle}. Acontece que a tartaruga é colocada inicialmente no ponto de coordenadas $(0,0)$. Desenhado o primeiro quadrado da primeira linha a posi\c cão final da tartaruga é a mesma, pelo que ele come\c ca a desenhar o quadrado seguinte na mesma posi\c cão. Temos portanto duas questões distintas: nem desenha linha a linha, nem, para uma dada linha desenha a sucessão de quadrados. Este é um problema que já sabíamos que era necessário resolver. Apenas não nos quisemos preocupar logo com esta questão. Está agora na hora da o fazer.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/quad1.jpg}
+\caption{Mas que lindo ... quadrado!}
+\label{fig:quad1}
+\end{center}
+\end{figure}
+
+Comecemos com o problema de desenhar uma linha de quadrados. A questão é que precisamos de fazer avan\c car a posi\c cão da tartaruga cada vez que se pretender desenhar um quadrado novo. Tratando-se de uma linha horizontal basta para tal alterar a coordenada \textbf{x} da tartaruga. De quanto? Bom pela figura \ref{fig:pira1} é evidente que esse valor é igual ao valor do lado! Feitas as altera\c cões temos uma nova versão coma a listagem \ref{lst:prog6} ilustra.
+
+
+\begin{lstlisting}[caption='Um problema já está resolvido \ldots', label=lst:prog6]
+from turtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def main():
+	piramide(3)
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Ao executarmos o programa (com o número de níveis igual a 3) o nosso programa desenha \textbf{numa mesma linha} seis quadrados,  como se pode ver na figura \ref{fig:quad2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/quad2.jpg}
+\caption{Tanto quadrado \ldots fora do sítio!}
+\label{fig:quad2}
+\end{center}
+\end{figure}
+
+Este resultado era de esperar. É desenhado o quadrado da primeira linha, mais dois da segunda e mais três da terceira. É manifesto que temos que fazer o nosso programa \textit{mudar de linha} no momento certo. E esse instante é sempre que eu desenhar uma linha. Qual o valor que se deve \textit{descer}? O valor do lado. Esta é a parte fácil. 
+
+
+\begin{lstlisting}[caption='Mudar de linha \ldots', label=lst:prog7]
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		pd()
+	return 'Fim'
+\end{lstlisting}
+
+Mas se corremos de novo o programa o que sê é o que mostramos na figura \ref{fig:quad4}. Está melhor mas não chega!
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/quad4.jpg}
+\caption{Mudar de linha só não chega \ldots}
+\label{fig:quad4}
+\end{center}
+\end{figure}
+
+
+A figura \ref{fig:quad4}  mostra que é preciso fazer \textit{recuar} a coordenada \textbf{x} cada vez que se desenha uma linha. Mas quanto? Bom analisando a figura vemos que tal depende do tamanho da linha anteriormente desenhada. Daí que a solu\c cão correcta seja a que se apresenta na listagem \ref{lst:prog8}.
+
+\begin{lstlisting}[caption='Versão final', label=lst:prog8]
+from turtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		setx(xcor() - i * lado - float(lado)/2)
+		pd()
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def main():
+	piramide(3)
+	ht()
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Executado o programa obtemos o lindo resultado da figura \ref{fig:quad3}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/quad3.jpg}
+\caption{Agora sim!}
+\label{fig:quad3}
+\end{center}
+\end{figure}
+
+Podemos continuar a melhorar o programa introduzindo varia\c cões a nosso gosto e relacionadas, neste caso, com a possibilidades oferecidas pelo módulo \textbf{turtle}. Ilustramos uma situa\c cão (listagem \ref{lst:prog9} e figura \ref{fig:quad5}) em que introduzimos um pouco de cor e aumentámos a dimensão do tra\c co da caneta.
+
+\begin{lstlisting}[caption='Versão coloridal', label=lst:prog9]
+from random import randint
+from turtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		setx(xcor() - i * lado - float(lado)/2)
+		pd()
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		#desenha_quadrado() # preto e branco
+		quadrado() # a cores
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def quadrado():
+	# desenha
+	r=randint(0,255)
+	g=randint(0,255)
+	b=randint(0,255)
+	fillcolor(r,g,b)
+	fill(True)
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	fill(False)
+	return 'Fim'
+	
+def main():
+	pencolor('blue')
+	pensize(3)
+	colormode(255)
+	piramide(5)
+	ht()
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/quad5.jpg}
+\caption{Pirâmide colorida}
+\label{fig:quad5}
+\end{center}
+\end{figure}
+
+\subsection*{O ponto de vista cria o objecto}
+
+Na secção \ref{sec:pira1} citámos Ferdinand de Saussure e a sua frase famosa \textit{é o ponto de vista que cria o objecto}. Usámos a cita\c cão para  explicar como é que o modo como olhamos para um problema determina em parte a forma como o resolvemos. No exemplo da sec\c cão \ref{sec:pira1} vimos primeiro uma pirâmide feita de linhas, linhas que mais tarde apareceram como sequências de quadrados. Mas imaginemos que olhávamos para a figura de outro modo. Suponhamos que consideramos que afinal estamos na presen\c ca de diagonais de tamanho decrescente (da esquerda para a direita), como ilustra a figura \ref{fig:pirdiag}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/pirdiago.eps}
+\caption{A pirâmide vista de outro modo \ldots}
+\label{fig:pirdiag}
+\end{center}
+\end{figure}
+
+Seguindo o método já utilizado fácil é chegar a um primeiro esbo\c co de programa como o que apresentamos na listagem \ref{lst:diag}.
+
+\begin{lstlisting}[caption='Primeira aproxima\c cão', label=lst:diag]
+from turtle import *
+
+lado=30
+setx(0)
+sety(0)
+
+def pir(niv):
+	for i in range(niv,0,-1):
+		diagonal(i)
+		
+def diagonal(n):
+	for i in range(n):
+		quadrado()
+
+		
+def quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+\end{lstlisting}
+
+Se mandarmos executar é evidente que não vai dar por razões semelhantes à versão baseada em linhas horizontais. É preciso que as diagonais \textit{avancem} da esquerda para a direita e que sejam formadas por quadrados. Isso leva-nos à versão completa dada na listagem \ref{lst:diag2}.
+
+\begin{lstlisting}[caption='Versão final', label=lst:diag2]
+from turtle import *
+
+lado=30
+setx(0)
+sety(0)
+
+def pir(niv):
+	for i in range(niv,0,-1):
+		diagonal(i)
+		pu()
+		setx(xcor() - (i * float(lado)/2) + lado)
+		sety(ycor() - i * lado)
+		pd()
+		
+def diagonal(n):
+	for i in range(n):
+		quadrado()
+		pu()
+		setx(xcor() + float(lado)/2)
+		sety(ycor() + lado)
+		pd() 
+		
+def quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+		
+		
+def main():
+	pir(5)
+	ht()
+	raw_input()
+	
+
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Fica ao cuidado do leitor explorar outras \textit{visões}.
+
+
+\subsection{Uma questão de consenso}
+
+Vamos agora mudar de domínio, entrando no território da Biologia, mas mantendo a mesma ideia de introduzir princípios sólidos de construção de programas. Comecemos pelo enunciado do problema. Em Biologia existe algo que se chama \textbf{sequência de consenso}. Em termos simples (simplistas?) uma sequência de consenso é um \textbf{padrão} de ADN presente na região dos promotores de uma extensa cadeia de ADN e que determina a possibilidade de  liga\c cão com determinadas enzimas para se dar início ao processo de transcri\c cão do ADN ele próprio uma das etapas da transcri\c cão genética. Dizemos padrão pois o que efectivamente ocorre na região do promotor não é exactamente a sequência de consenso mas uma sequência muito ''parecida''. Um Informático diria simplesmente que uma sequência de consenso é uma palavra (ou \textbf{cadeia de caracteres}) sobre um alfabeto de quatro letras $\Sigma=\{A,T,C,G\}$. Cada uma dessas letras simboliza uma base azotada: Adenina, Timina, Citosina e Guanina. O nosso exercício de programa\c cão pode ser \textbf{especificado} de modo simples: dada um conjunto de sequências de ADN, todas de igual tamanho, construir uma nova sequência do mesmo tamanho em que  a base presente numa dada posi\c cão será a base que aparece com maior frequência nessa posi\c cão em todas as sequências iniciais. Vamos chamar a essa sequência, sequência de consenso. \\
+
+Para clarificar apresentamos um exemplo.
+
+Para a entrada:
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics{desenvolvimento/imagens/entrada.eps}
+\end{center}
+\end{figure}
+
+a saída correspondente deve ser:
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics{desenvolvimento/imagens/saida.eps}
+\end{center}
+\end{figure}
+
+\subsection*{A solu\c cão}
+
+Dissemos na introdução deste capítulo, que um programador tanto é visto como um escultor como alguém que brinca com \textit{Legos}. Isso corresponde a dois estilos de programa\c cão: do topo para a base, por vezes designada por \textbf{Programa\c cão Descendente} ou da base para o topo, e aqui falamos de \textbf{Programa\c cão Ascendente}. Com o tempo e a experiência um programador socorre-se das duas abordagens. Referimos ainda que programar pressupõe três aspectos:
+
+\begin{itemize}
+\item Conhecimento sobre o domínio do problema
+\item Conhecimento sobre a linguagem de programa\c cão
+\item Conhecimento sobre o processo de programa\c cão
+\end{itemize}
+
+Para este problema o primeiro aspecto é pouco relevante. Trata-se de cadeias de caracteres que representam peda\c cos de ADN. Já os outros dois são fundamentais. Iremos come\c car por nos concentrar no último: o processo.\\
+
+A primeira coisa em que um programador pensa, conhecida a especifica\c cão, é se pode construir uma descri\c cão \textbf{abstracta} da solu\c cão. Nessa tarefa o programador deve tentar afastar ao máximo o seu pensamento da linguagem de programa\c cão concreta que vai usar. Admitamos que decidimos construir a sequência de consenso, posi\c cão a posi\c cão \footnote{Não esquecer que se trata de uma sequência, logo existe uma ordem.}. Por cada posi\c cão teremos que analisar todas as sequências e determinar a base mais frequente. Sabido qual é, acrescentamos à nossa solu\c cão parcial. Podemos descrever este processo de modo simples.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def consensus(lseq):
+    """
+    Constrói a sequência de consenso a partir de uma lista de sequências
+    de ADN de igual comprimento.
+    """
+    # 1. Inicializa a sequência de consenso
+    # 2. Por cada posição da sequência
+        # 2.1. Calcula qual a base mais frequente para a posição corrente
+        # 2.2. Actualiza a sequência de consenso com a base encontrada
+    # 3. Devolve sequência de consenso completa
+    return # Sequência
+\end{lstlisting}
+
+
+
+Avancemos um pouco mais tornando claro que vamos trabalhar para uma dada posi\c cão por análise das sequências, uma a uma. Vejamos como podemos detalhar o cálculo da base mais frequente.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def consensus(lseq):
+    """
+    Constrói a sequência de consenso a partir de uma lista de sequências
+    de ADN de igual comprimento.
+    """
+    # 1. Inicializa a sequência de consenso
+    # 2. Por cada posição da sequência
+        # 2.1. Calcula qual a base mais frequente para a posição corrente
+        # Inicializa contadores das bases
+        # Para cada sequência
+           # Determinina a base e actualiza o respectivo contador
+        # Determina a base que ocorre mais vezes
+        # 2.2. Actualiza a sequência de consenso com a base encontrada
+    # 3. Devolve sequência de consenso completa
+    return # Sequência
+\end{lstlisting}
+
+
+
+Do código resulta fácil ver quais foram as op\c cões tomadas: usar contadores para as bases que vão sendo actualizados à medida que determinamos qual a base presente numa dada posi\c cão de cada sequência.\\
+
+
+Podemos come\c car a escolher a forma de guardar os objecto manipulados. A sequência de consenso será uma \textbf{cadeia de caracteres}. Ao olharmos para a figura \ref{lst:cons3} o leitor dirá que avan\c cámos pouco. É verdade. Mas estamos a van\c car de forma segura.
+
+\begin{lstlisting}[caption={Usar cadeias de caracteres}, label=lst:cons3,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def consensus(lseq):
+    """
+    Constrói a sequência de consenso a partir de uma lista de sequências
+    de ADN de igual comprimento.
+    """
+    # 1. Inicializa a sequência de consenso
+    cons = ''
+    # 2. Por cada posição da sequência
+        # 2.1. Calcula qual a base mais frequente para a posição corrente
+        # Inicializa contadores das bases
+        # Para cada sequência
+           # Determinina a base e actualiza o respectivo contador
+        # Determina a base que ocorre mais vezes
+        # 2.2. Actualiza a sequência de consenso com a base encontrada
+        cons = cons + base # A base é uma cadeia de comprimento um
+    # 3. Devolve sequência de consenso completa
+    return cons
+\end{lstlisting}
+
+
+
+Qual deve ser o nosso próximo passo? O mais importante consiste em  usar um \textbf{dicionário} para guardar a informa\c cao sobre o número de ocorrências de cada base azotada numa dada posi\c cão para todas as sequências. Porquê um dicionário? Bem, sabíamos que precisávamos de estabelecer uma correspondência entre as bases e o seu número de ocorrências. A única estrutura em Python que nos permite fazer isso de modo eficiente e elegante são os dicionários. Aqui entra em jogo claramente o nosso conhecimento da linguagem (ponto (2) dos pré-requisitos para bem programar). Noutra linguagem poderia ser outra a op\c cão. Isto porque esta op\c cão faz com que a no\c cão de ordem desapare\c ca o que pode (e vai) tornar o problema de encontrar a base mais frequente uma questão mais delicada. Vejamos então como ficamos.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def consensus(lseq):
+    """
+    Constrói a sequência de consenso a partir de uma lista de sequências
+    de ADN de igual comprimento.
+    """
+    # 1. Inicializa a sequência de consenso
+    cons = ''
+    # 2. Por cada posição da sequência
+    for pos in range(len(lseq[0])):
+        # 2.1. Calcula qual a base mais frequente para a posição corrente
+        # Inicializa contadores das bases
+        dicio_bases = {'A':0,'C':0,'T':0,'G':0}
+        # Para cada sequência
+           # Determinina a base e actualiza o respectivo contador
+        # Determina a base que ocorre mais vezes
+        # 2.2. Actualiza a sequência de consenso com a base encontrada
+        cons = cons + base # A base é uma cadeia de comprimento um
+    # 3. Devolve sequência de consenso completa
+    return cons
+\end{lstlisting}
+
+
+Tudo agora se precipita. Fica fácil a actualiza\c cão do dicionário. No entanto deixamos ainda por resolver o problema de saber como é que retiro do dicionário a base mais frequente. Fica para tratarmos a seguir.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def consensus(lseq):
+    """
+    Constrói a sequência de consenso a partir de uma lista de sequências
+    de ADN de igual comprimento.
+    """
+    # 1. Inicializa a sequência de consenso
+    cons = ''
+    # 2. Por cada posição da sequência
+    for pos in range(len(lseq[0])):
+        # 2.1. Calcula qual a base mais frequente para a posição corrente
+        # Inicializa contadores das bases
+        dicio_bases = {'A':0,'C':0,'T':0,'G':0}
+        # Para cada sequência
+        for seq in lseq:
+           # Determinina a base e actualiza o respectivo contador
+            dicio_bases[seq[pos]] = dicio_bases[seq[pos]] + 1
+        # Determina a base que ocorre mais vezes
+        base = max_ocorre(dicio_bases)
+        # 2.2. Actualiza a sequência de consenso com a base encontrada
+        cons = cons + base # A base é uma cadeia de comprimento um
+    # 3. Devolve sequência de consenso completa
+    return cons
+
+def max_ocorre(dicio):
+    """Chave de máximo valor associado."""
+    pass
+\end{lstlisting}
+
+
+Vamos então tratar agora da questão em falta. Aqui o conhecimento da linguagem uma vez mais pode facilitar (ou dificultar, depende do ponto de vista) a nossa última tarefa. O problema que temos entre mãos é na realidade o de ordenar um dicionário por ordem decrescente dos valores para depois ir extrair a chave respectiva. Mas como se os dicionários são objectos sem ordem? Bom, a solu\c cão mais simples é converter o dicionário para outro tipo de objecto onde a ordem seja relevante e manipular esse outro objecto. É o que fazemos com a instru\c cão \lstinline !items= list(dicio.items())!. E como calculamos o elemento de maior valor? Bem, ordenamos a lista de tuplos por ordem decrescente da segunda componente de cada tuplo. Fácil, certo?!
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def max_ocorre(dicio):
+    """Chave de máximo valor associado."""
+    items = list(dicio.items())
+    items.sort(key=itemgetter(1), reverse=True)
+    return items[0][0]
+\end{lstlisting}
+
+Juntemos agora tudo. \textit{Et voilá!}
+
+\begin{lstlisting}[caption='Cálculo da sequência de consenso']
+from operator import itemgetter
+
+def consensus(lseq):
+	"""Constrói a sequeência de consenso
+	a partir de uma lista de sequências de ADN 
+	de igual comprimento.
+	"""
+	# 1. inicializa sequência de consenso
+	cons = '' # vai ser uma string
+	# 2. por cada posição da sequência
+	for pos in range(len(lseq[0])): # entrada uma lista
+		# 2.1 calcula qual a base mais frequente para a posição corrente
+		# inicializa contadores das bases
+		dicio_bases={'A':0,'C':0,'T':0,'G':0} # uso um dicionário para contar
+		# para cada sequência
+		for seq in lseq: 
+			# determina a base por cada sequência e actualiza o seu contador
+			dicio_bases[seq[pos]]=dicio_bases[seq[pos]] + 1
+		# determina a base que ocorre mais vezes
+		base=max_ocorre(dicio_bases)
+		# 2.2 actualiza a sequência de consenso na posição corrente
+		cons = cons + base # a base será um caracter
+	# 3. Devolve a sequência de consenso completa
+	return cons
+
+
+def max_ocorre(dicio):
+    """Chave de máximo valor associado."""
+    items = list(dicio.items())
+    items.sort(key=itemgetter(1), reverse=True)
+    return items[0][0]
+\end{lstlisting}
+
+
+
+\begin{comment}
+\subsection*{Que alternativas?}
+\subsubsection{A base mais frequente}
+Tendo agora o programa a funcionar podemos dedicar a nossa aten\c cão à sua análise e eventual altera\c cão. Já dissemos que o uso de dicionários está relacionado com as potencialidades da linguagem \texttt{Python}. Mas será que há outros modos de resolver a questão de ordenar um dicionário por valor? A resposta é afirmativa! Vejamos como.\\
+
+\begin{lstlisting}[caption='Ordenar um dicionário por valor']
+
+from operator import itemgetter
+# ---- 
+# ordena um dicionário por valor
+lista=sorted(dict_freq.items(),key=itemgetter(1),reverse=True)
+# retira a chave do maior
+maximo=lista[0][0]
+\end{lstlisting}
+
+
+O comando \texttt{sorted()} tem três argumentos. O objecto a ordenar do  tipo sequência , a chave que vai ser usada para ordenar e a indica\c cão se o ordenamento é ascendente ou descendente. No nosso caso dada a estrutura do objecto com que lidamos, uma sequência de tuplos em que cada tuplo é um par \texttt{(chave,valor)} o ordenamento faz-se comparando o segundo elemento do par. Daí o argumento \texttt{key=itemgetter(1)}. Como queremos o maior à cabe\c ca colocamos o terceiro argumento como \texttt{reverse=True}. Claro que se não soubermos que existe o comando \texttt{sorted()} e o módulo \texttt{operator} com o método \texttt{itemgetter} não conseguimos chegar a esta solu\c cão que numa linha apenas resolve uma questão aparentemente complexa.  Isto chama a aten\c cão de que a programa\c cão é uma actividade árdua e que obriga ao conhecimento profundo da linguagem e das suas potencialidades. O que só se consegue \ldots praticando! \\
+
+Mas ainda podíamos fazer diferente e talvez mais claro pois não precisamos de ordenar de modo inverso. Usando a fun\c cão pré-definida \texttt{max()} teremos:
+
+\begin{lstlisting}[caption='O maior valor']
+def max_ocorre_1(dicio):
+	maior=max(dicio.items(),key=itemgetter(1))
+	return maior[0]	
+\end{lstlisting}
+
+Se calhar agora o leitor já percebe porque também falamos de arte quando nos referimos à programa\c cão!\\
+
+Mais algumas observa\c cões. Estamos condenados a usar uma cadeia de caracteres para guardar a solu\c cão? Não. Podíamos por exemplo usar uma lista de caracteres e depois no final usar o método \texttt{join()}. Os dados têm que ser introduzidos na forma de lista de sequências? Mais uma vez a resposta é negativa. Podíamos por exemplo usar a possibilidade de uma fun\c cão ter um \textbf{número de argumentos variável} para introduzir os dados. Iríamos no entanto ter na mesma uma sequência pois no final todos os argumentos iriam ser agrupados num tuplo. Eis um exemplo simples da uiliza\c cão de argumentos em número variável.
+
+\begin{lstlisting}[caption='Argumentos variáveis']
+def teste1(*num):
+	return 'Máximo de %s é %d' % (num,max(num))
+
+def teste2(*num):
+	return sum(num)
+
+
+if __name__ == '__main__':
+	print 'MAX'
+	print teste1(1)
+	print teste1(1,3,2)
+	print teste1(7,3,6)
+	print 'SOMA'
+	print teste2(1)
+	print teste2(1,3,2)
+	print teste2(7,3,6)
+\end{lstlisting}
+
+\begin{lstlisting}[caption='Resultado da Execu\c cão']
+PyMate r8111 running Python 2.5.1 (/usr/bin/env python)
+>>> argvar.py
+
+MAX
+Máximo de (1,) é 1
+Máximo de (1, 3, 2) é 3
+Máximo de (7, 3, 6) é 7
+SOMA
+1
+6
+16
+Program exited.
+
+\end{lstlisting}
+
+O leitor atento terá notado que o tuplo só com um elemento aparece como \texttt{(1,)}. Uma vírgula a seguir ao elemento! Também não passou despercebido como se consegue este ``truque'': colocar um asterisco '*' antes do nome do argumento. Se calhar está na hora de ir ao manual da linguagem e ver o que são os objectos a que vimos chamando tuplos e as opera\c cões que  com eles podemos fazer e o que é isso de argumentos variáveis. Lá o aguardarão outras surpresas.
+\end{comment}
+
+\subsubsection{Mais do que as quatro bases}
+
+Quando se resolve o problema do \textbf{alinhamento de sequências} pode acontecer que apare\c cam símbolos como \texttt{-} conhecido em inglês por \textit{gap}. Numa base de dados sobre sequências de ADN podemos encontrar o símbolo \texttt{N}. Que fazer ao nosso programa para não se deixar impressionar por estes símbolos? É simples.
+
+\begin{lstlisting}[caption='Filtra símbolos']
+def consensus(lseq):
+	"""Constrói a sequeência de consenso
+	a partir de uma lista de sequências de ADN 
+	de igual comprimento.
+	"""
+	assert mesmo_tam(lseq) == True, 'CUIDADO: as sequências têm que ter o mesm o tamanho'
+	# 1. inicializa sequência de consenso
+	cons = '' # vai ser uma string
+	# 2. por cada posição da sequência
+	for pos in range(len(lseq[0])): # entrada uma lista
+		# 2.1 calcula qual a base mais frequente para a posição corrente
+		# inicializa contadores das bases
+		dicio_bases={'A':0,'C':0,'T':0,'G':0} # uso um dicionário para contar
+		# para cada sequência
+		for seq in lseq: 
+			# determina a base por cada sequência e actualiza o seu contador
+			# ignora o que não interessa
+			if seq[pos] in ['-','N']:
+				continue
+			else:
+				dicio_bases[seq[pos]]=dicio_bases[seq[pos]] + 1
+		# determina a base que ocorre mais vezes
+		base=max_ocorre(dicio_bases)
+		# 2.2 actualiza a sequência de consenso na posição corrente
+		cons = cons + base # a base será um caracter
+	# 3. Devolve a sequência de consenso completa
+	return cons
+\end{lstlisting}
+
+Uma boa constru\c cão do programa torna a sua manuten\c cão mais fácil! Outra prova disso? Alterar de modo a que os caracteres possam ser maiúsculos ou minúsculos. Apenas uma linha adicional de código!!
+
+\begin{lstlisting}[caption='O ``tamanho`` não é importante']
+def consensus(lseq):
+	"""Constrói a sequeência de consenso
+	a partir de uma lista de sequências de ADN 
+	de igual comprimento.
+	"""
+	assert mesmo_tam(lseq) == True, 'CUIDADO: as sequências têm que ter o mesm o tamanho'
+	# 1. inicializa sequência de consenso
+	cons = '' # vai ser uma string
+	# 2. por cada posição da sequência
+	for pos in range(len(lseq[0])): # entrada uma lista
+		# 2.1 calcula qual a base mais frequente para a posição corrente
+		# inicializa contadores das bases
+		dicio_bases={'A':0,'C':0,'T':0,'G':0} # uso um dicionário para contar
+		# para cada sequência
+		for seq in lseq: 
+			# determina a base por cada sequência e actualiza o seu contador
+			# ignora o que não interessa
+			seq=seq.upper()
+			if seq[pos] in ['-','N']:
+				continue
+			else:
+				dicio_bases[seq[pos]]=dicio_bases[seq[pos]] + 1
+		# determina a base que ocorre mais vezes
+		base=max_ocorre(dicio_bases)
+		# 2.2 actualiza a sequência de consenso na posição corrente
+		cons = cons + base # a base será um caracter
+	# 3. Devolve a sequência de consenso completa
+	return cons
+\end{lstlisting}
+
+
+Pode testar à vontade. Já agora e antes de abandonar esta parte: porque é que usamos a instru\c cão \lstinline !seq=seq.upper()! e não apenas \lstinline !seq.upper()! Pense um pouco antes de ir ver a nota de rodapé. \footnote{Porque as cadeias de carateres são objectos imutáveis!}
+
+
+\subsection{Protec\c cões}
+
+A especifica\c cão diz-nos que as sequências têm que ter todas o mesmo comprimento. E se não tiverem, o que acontece? Depende. Devido ao modo como está implementado só se dá conta do problema se existir uma sequência com menos bases do que a primeira!
+
+\begin{lstlisting}[caption='Um bug??']
+if __name__ == '__main__':
+	print consensus(['ATTCG','AGCTTT','TTCCTT'])
+	print consensus(['ATTCG','AGCT','TTCC'])
+	
+
+### Execu\c cão
+
+PyMate r8111 running Python 2.5.1 (/usr/bin/env python)
+>>> programar.py
+
+ATCCT
+IndexError: string index out of range
+
+module body	  in programar.py at line 58
+function consensus	  in programar.py at line 28
+Program exited.
+\end{lstlisting}
+
+Isto chama a aten\c cão para duas coisas: devemos testar \textbf{e} proteger os programas. Para testar uma técnica simples é conhecida por \textbf{tests unitários}. \texttt{Python} tem mesmo um módulo para isso, inspirado na linguagem \texttt{Smalltalk} e chamado de \texttt{unittest}. Está fora de questão falarmos agora dele. Vamos por um caminho mais simples refugiando-nos no comando \texttt{assert()}.
+
+\begin{lstlisting}[caption='Uso de assert']
+if __name__ == '__main__':
+	assert(consensus(['ATTCG','AGCTTT','TTCCTT']) == 'ATCCT')
+	# G é o que ocorre mais: na realidade é o único!
+	assert(consensus(['ATTCG','AGCT','TTCC']) == 'ATCCG')
+	
+#--- Correr e apanhar o erro
+
+PyMate r8111 running Python 2.5.1 (/usr/bin/env python)
+>>> protege.py
+
+IndexError: string index out of range
+
+module body	  in protege.py at line 61
+function consensus	  in protege.py at line 30
+Program exited.
+
+\end{lstlisting}	
+
+A mensagem de erro não é famosa mas podemos alterar isso.
+
+\begin{lstlisting}[caption='Um pouco melhor']
+if __name__ == '__main__':
+	assert(consensus(['ATTCG','AGCTTT','TTCCTT']) == 'ATCCT')
+	# G é o que ocorre mais: na realidade é o único!
+	try:
+		consensus(['ATTCG','AGCT','TTCC'])
+	except IndexError:
+		print '*** ERRO *** \nAs sequências têm que ter os mesmo comprimento'
+
+#--- Correndo
+
+PyMate r8111 running Python 2.5.1 (/usr/bin/env python)
+>>> protege.py
+
+*** ERRO *** 
+As sequências têm que ter os mesmo comprimento
+Program exited.
+\end{lstlisting}
+
+Sempre é uma mensagem mais inteligível. Além disso podemos verificar que os testes também podem servir de \textbf{documenta\c cão} do programa. Mas podemos colocar a protec\c cão no \textbf{interior} do programa. Admitamos que temos uma fun\c cão que nos diz se numa sequência todos os elementos têm o mesmo comprimento \footnote{Pode ser um bom exercício  \ldots.}. Basta alterar o códido do seguinte modo.
+
+\begin{lstlisting}[caption='Protega-se...']
+def consensus(lseq):
+	"""Constrói a sequeência de consenso
+	a partir de uma lista de sequências de ADN 
+	de igual comprimento.
+	"""
+	# Estou protegido...
+	assert mesmo_tam(lseq) == True, 'CUIDADO: as sequências têm que ter o mesmo tamanho'
+	# 1. inicializa sequência de consenso
+	cons = '' # vai ser uma string
+	# 2. por cada posição da sequência
+	for pos in range(len(lseq[0])): # entrada uma lista
+		# 2.1 calcula qual a base mais frequente para a posição corrente
+		# inicializa contadores das bases
+		dicio_bases={'A':0,'C':0,'T':0,'G':0} # uso um dicionário para contar
+		# para cada sequência
+		for seq in lseq: 
+			# determina a base por cada sequência e actualiza o seu contador
+			dicio_bases[seq[pos]]=dicio_bases[seq[pos]] + 1
+		# determina a base que ocorre mais vezes
+		base=max_ocorre(dicio_bases)
+		# 2.2 actualiza a sequência de consenso na posição corrente
+		cons = cons + base # a base será um caracter
+	# 3. Devolve a sequência de consenso completa
+	return cons
+	
+# -- Correr
+	
+if __name__ == '__main__':
+	print consensus(['ATTCG','AGCTTT','TTCCTT'])
+	print consensus(['ATTCG','AGCT','TTCC'])
+	
+#-- Resultado
+
+PyMate r8111 running Python 2.5.1 (/usr/bin/env python)
+>>> protege.py
+
+AssertionError: CUIDADO: as sequências têm que ter o mesmo tamanho
+
+module body	  in protege.py at line 63
+function consensus	  in protege.py at line 20
+Program exited.
+\end{lstlisting}
+
+
+
+\subsection{Novo exemplo: quadrado mágico}
+
+Um \textbf{quadrado mágico} é uma matriz quadrada $n \times n$,  contendo \textbf{todos} os números inteiros positivos de $1$ a $n^2$ , de tal modo que a soma dos valores em cada coluna, linha ou diagonal é o mesmo. A esse número chamamos \textbf{número mágico}. Eis um exemplo, com $n=3$, em que o número mágico é igual a 15.
+
+\[
+\begin{bmatrix}
+4 & 9 & 2 \\
+3 & 5 & 7\\
+8 & 1 & 6\\
+\end{bmatrix}
+\]
+
+O nosso objectivo é  escrever um programa que nos permita \textbf{verificar} se um dado quadrado é, ou não, mágico. No caso da resposta ser positiva, queremos também identificar o respectivo número mágico.\\
+
+\subsection{Princípios}
+
+Como acontece com qualquer problema de programação, o nosso primeiro passo consiste em determinar se entendemos o enunciado. De seguida precisamos  identificar os dados e o resultado pretendido e como serão comunicados (ou extraídos) ao (do) programa. No nosso caso vamos adoptar um padrão clássico:
+
+\begin{lstlisting}
+def quad_magico(quadrado):
+	...
+	return resposta, num_magico
+\end{lstlisting}
+
+O que mostraremos a seguir ilustra como podemos resolver o problema avançando por passos pequenos, mas seguros, e recorrendo a camadas da abstracção. Mas fica desde já o aviso: não há  uma solução única. Na realidade a programação é também uma arte e um compromisso entre coisas por vezes conflituosas como a elegância, a a eficiência ou a legibilidade.
+
+\subsection{Primeira Versão}\label{sec:pri}
+
+
+Vamos começar por tentar chegar à solução \textbf{sem} pensar na representação. Proceder deste modo pode parecer contra natura, mas é um excelente método de programação. Traduz a ideia de construir o programa com base em camadas de abstracção. Fixemo-nos por agora apenas no facto de a verificação que temos que fazer obrigar a analisar \textbf{no máximo} três situações: (1) as somas por linha têm todas o mesmo valor, o  número mágico; (2) as somas por  colunas têm todas o mesmo  valor, o número mágico; (3) as somas das duas diagonais têm todas o mesmo valor, o valor do número mágico. Esta decomposição segue naturalmente o enunciado. Torna-se claro que precisamos de calcular em primeiro lugar o valor do \textbf{número mágico}. Daqui resulta um primeiro \textbf{esqueleto} de programa:
+
+\begin{lstlisting}
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	# Verifica colunas
+	# Verifica diagonais
+	return resposta, num_magico
+\end{lstlisting}
+
+Não avançamos muito, é verdade. Mas olhando para este primeiro esboço temos a confiança de que não fizemos nada de errado. Para que a resposta ao problema seja positiva é preciso que as \textbf{três} condições se verifiquem. Mas para que a resposta seja negativa basta que \textbf{uma}  delas não se verifique. Isso leva-nos a propor a seguinte solução:
+
+\begin{lstlisting}
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not linhas(quadrado,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	elif not colunas(quadrado, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		return diagonals(quadrate,num_magico), num_magico
+	#return resposta, num_magico
+\end{lstlisting}
+
+Esta solução leva-nos a alterar ligeiramente a solução anterior, pois desaparece a última instrução uma vez que o resultado é dado dentro do \texttt{if}. O que temos de nos convencer é que esta solução funciona, no pressuposto de que as definições auxiliares \texttt{nm},  \texttt{linhas}, \texttt{colunas} e \texttt{diagonais} funcionam correctamente. A primeira deve devolver o valor do número mágico, enquanto as restantes três  devolvem um valor booleano: \texttt{True}, se todas as somas (linhas, colunas ou diagonais) forem iguais ao número mágico, \texttt{False}, se essa situação não se verificar. O interessante é que com este modo de proceder até podemos testar o programas globalmente, \texttt{mesmo sem ter definido} em concreto as funções auxiliares. Igualmente podemos testar a lógica do nosso programa sem termos decidido o modo como representamos o quadrado.
+
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not linhas(quadrado,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	elif not colunas(quadrado, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		return diagonais(quadrado,num_magico), num_magico
+	#return resposta, num_magico
+	
+def nm(quadrado):
+	pass
+
+def linhas(quadrado,num_magic):
+	pass
+
+def colunas(quadrado, num_magic):
+	pass
+
+def diagonais(quadrado,num_magic):
+	pass
+
+
+if __name__ == '__main__':
+	quadrado = []
+	print(quadrado_magico(quadrado))
+\end{lstlisting}
+
+Notar como se pode definir uma função que não faz nada, colocando no seu corpo a instrução \texttt{pass}. Ao executarmos o programa o resultado será:
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> [evaluate my_quad_magic.py]
+(False, None)
+>>> 
+\end{lstlisting}
+
+Vamos prosseguir com a nossa solução. Concentremo-nos no caso da definição auxiliar \texttt{linhas}. Será que podemos construir esta função também por etapas, usando camadas de abstracção? A resposta é afirmativa. A nossa estratégia será a de verificar se todas as linhas têm uma soma igual à do número mágico, abandonando o programa com uma resposta negativa na primeira ocasião em que essa verificação dê um resultado negativo.
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def linhas(quadrado,num_magic):
+	for linha in lin(quadrado):
+		if soma(linha) != num_magic:
+			return False
+	return True
+
+def lin(quadrado):
+	return []
+\end{lstlisting}
+
+Notar que a função auxiliar \texttt{lin} tem que devolver provisoriamente uma lista vazia (ou um tuplo vazio, ou uma cadeia vazia), porque na nossa solução impomos que o que devolve seja um objecto iterável usado no ciclo \texttt{for}. Como é evidente a mesma estratégia pode ser usada para as duas funções auxiliares \texttt{colunas} e \texttt{diagonais}:
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def linhas(quadrado,num_magic):
+	for linha in lin(quadrado):
+		if soma(linha) != num_magic:
+			return False
+	return True
+
+def lin(quadrado):
+	return []
+
+def colunas(quadrado, num_magic):
+	for coluna in col(quadrado):
+		if soma(coluna) != num_magic:
+			return False
+	return True
+
+def col(quadrado):
+	return []
+	
+def diagonais(quadrado,num_magic):
+	for diagonal in diag(quadrado):
+		if soma(diagonal) != num_magic:
+			return False
+	return True
+
+def diag(quadrado):
+	return []
+\end{lstlisting}
+
+A partir desta altura não podemos protelar mais a questão de saber como vamos \textbf{representar} o quadrado. Nesta versão vamos optar por fazê-lo através de uma \textbf{lista de listas}. Por exemplo:
+
+\begin{lstlisting}
+quadrado = [[4,9,2],[3,5,7],[8,1,6]]
+\end{lstlisting}
+
+Será o modo de representar um quadrado mágico de $3 \times 3$, em que cada elemento da lista representa uma linha. 
+
+\subsection{Linhas}
+
+Com esta representação podemos logo avançar para a solução da função \texttt{lin}:
+
+\begin{lstlisting}
+def lin(quadrado):
+	return quadrado
+\end{lstlisting}
+
+Trivial! Na realidade, devido à representação usada esta função na prática não faz nada. Os outros casos já obrigam a um pouco de reflexão. Comecemos pelas colunas. 
+
+\subsection{Colunas}
+
+Se olharmos para o quadrado como se fosse uma matriz (no sentido matemático do termo), então o nosso problema consiste em obter a matriz \textbf{transposta}, ou seja, trocar as linhas pelas colunas:
+
+
+\begin{lstlisting}
+quadrado = [[4,9,2],[3,5,7],[8,1,6]]
+transposta = [[4,3,8],[9,5,1],[2,7,6]]
+\end{lstlisting}
+
+De um modo geral, temos que trocar o elemento $mat[i][j]$ com o elemento $mat[j][i]$.
+
+
+\begin{lstlisting}
+def col(quadrado):
+	mat = []
+	for i in range(len(quadrado)):
+		linha_i = []
+		for j in range(len(quadrado[0])):
+			linha_i.append(quadrado[j][i])
+		mat.append(linha_i)
+	return mat
+\end{lstlisting}
+
+
+Esta versão é simples mas pouco eficiente. Se pensarmos bem a transposta de uma matriz quadrada pode ser obtida fazendo uma troca entre elementos simétricos relativamente à diagonal principal (ver figura \ref{fig:mat}).
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/matriz.eps}
+\caption{Simetrias}
+\label{fig:mat}
+\end{center}
+\end{figure}
+
+Uma solução mais económica é aquela que vai apenas percorrer tantas posições quantas as que existem  numa das matrizes triangulares. Vejamos uma tentativa.
+
+\begin{lstlisting}
+def col_d(quadrado):
+	mat = quadrado[:]
+	for i in range(len(quadrado)):
+		for j in range(i+1,len(quadrado[0])):
+			mat[i][j] = quadrado[j][i]
+			mat[j][i] = quadrado[i][j]
+	return mat
+\end{lstlisting}
+
+Atente-se no modo como o \texttt{j} varia, começando a partir de \texttt{i+1}, garantindo assim que é a matriz triangular que é percorrida.
+Parece tudo bem. Mas quando executamos, o que acontece?
+
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information.
+>>> [evaluate my_quad_magic.py]
+[[4, 9, 2], [3, 5, 7], [8, 1, 6]] 
+[[4, 3, 8], [3, 5, 1], [8, 1, 6]]
+>>> 
+\end{lstlisting}
+
+Faz bem o primeiro caso mas os resultados seguintes estão errados. O que se passa? Temos que olhar para o modo como os objectos estão \textbf{representados} na memória do computador.
+
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{desenvolvimento/imagens/matriz2.eps}
+\caption{Representação de uma lista de listas}
+\label{fig:mat2}
+\end{center}
+\end{figure}
+
+
+Da figura \ref{fig:mat2} resulta claro que se é verdade que a instrução \texttt{mat = quadrado[:]} associa \texttt{mat} a uma cópia do quadrado, essa cópia é apenas ao primeiro nível da lista de listas. Dizemos que fizemos uma \textbf{cópia de superfície} (\textit{shallow copy}). Deste modo, qualquer modificação que é feita no \textbf{interior} da estrutura através de um dos nomes afecta \textbf{globalmente} o objecto. Como consequência, as alterações a \texttt{mat} também alteram \texttt{quadrado}. \\
+
+Mas existe solução para o problema. O módulo \texttt{copy}  tem uma função, \texttt{deepcopy}, que permite realizar uma cópia profunda, separando completamente os objectos na memória. Agora apenas partilham os objectos primitivos imutáveis, neste caso os números inteiros. Usando-o podemos implementar correctamente a nossa solução.
+
+\begin{lstlisting}
+import copy
+
+def col_d(quadrado):
+	mat = copy.deepcopy(quadrado)
+	for i in range(len(quadrado)):
+		for j in range(i+1,len(quadrado[0])):
+			mat[i][j] = quadrado[j][i]
+			mat[j][i] = quadrado[i][j]
+	return mat
+\end{lstlisting}
+
+A figura \ref{fig:mat3} mostra o resultado de optarmos por \texttt{deepcopy}.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{desenvolvimento/imagens/matriz3.eps}
+\caption{Representação de uma lista de listas: recurso a deepcopy}
+\label{fig:mat3}
+\end{center}
+\end{figure}
+
+\subsection{Diagonais}
+
+Ainda nos falta  o problema das diagonais. Independentemente da dimensão do quadrado, só existem duas diagonais principais. Se nos reportarmos à figura \ref{fig:mat} verificamos facilmente a relação dos \textbf{índices} linha/coluna nas diagonais: ou são iguais ou a sua soma é igual à dimensão do quadrado menos um. Daqui resulta o programa:
+
+\begin{lstlisting}
+def diag(quadrado):
+	diag_1 = []
+	diag_2 = []
+	for i in range(len(quadrado)):
+		for j in range(len(quadrado[0])):
+			if i == j:
+				diag_1.append(quadrado[i][j])
+			if (i+j) == (len(quadrado) - 1):
+				diag_2.append(quadrado[i][j])
+	return [diag_1, diag_2]
+\end{lstlisting}
+
+Veja-se com atenção a solução, em particular o recurso a dois \texttt{if}: existe um valor que pertence às duas diagonais.
+
+\subsection{Número Mágico}
+
+A obtenção do número mágico\footnote{Para um quadrado mágico dito normal.} é mais simples pois obedece à fórmula:
+
+\[ nm(n) = \sum_{i=o}^{n^2} i = \frac{1}{2} \times n \times (n^2 +1) = \frac{1}{2} \times (n^3 + n) \]
+
+Da fórmula resulta o programa:
+
+\begin{lstlisting}
+def nm(quadrado):
+	linhas = len(quadrado)
+	colunas = len(quadrado[0])
+	return (linhas ** 3 + colunas) / 2
+\end{lstlisting}
+
+\subsection{Juntando as peças}
+
+Ainda nos falta para concluir definir a função \texttt{soma}. Trata-se de um problema trivial, apresentando-se duas soluções possíveis\footnote{Ainda existem mais alternativas, mas fica para  o leitor a sua descoberta.}.
+
+\begin{lstlisting}
+def soma(lista):
+	return sum(lista)
+
+def soma_b(lista):
+	total = 0
+	for elem in lista:
+		total = total + elem
+	return total
+\end{lstlisting}
+
+Posto isto, o programa final:
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+"""Quadrado Mágico. 
+Programação descendente.
+"""
+
+__author__ = 'Ernesto Costa'
+__date__ = 'April 2013'
+
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not linhas(quadrado,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	elif not colunas(quadrado, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		return diagonais(quadrado,num_magico), num_magico
+
+# -- Número Mágico
+def nm(quadrado):
+	linhas = len(quadrado)
+	colunas = len(quadrado[0])
+	return (linhas ** 3 + colunas) / 2
+
+# -- Linhas
+def linhas(quadrado,num_magic):
+	for linha in lin(quadrado):
+		if soma(linha) != num_magic:
+			return False
+	return True
+
+def lin(quadrado):
+	return quadrado
+	
+# -- Colunas
+def colunas(quadrado, num_magic):
+	for coluna in col(quadrado):
+		if soma(coluna) != num_magic:
+			return False
+	return True
+
+def col(quadrado):
+	mat = []
+	for i in range(len(quadrado)):
+		linha_i = []
+		for j in range(len(quadrado[0])):
+			linha_i.append(quadrado[j][i])
+		mat.append(linha_i)
+	return mat
+
+# -- Diagonais
+def diagonais(quadrado,num_magic):
+	for diagonal in diag(quadrado):
+		if soma(diagonal) != num_magic:
+			return False
+	return True
+
+def diag(quadrado):
+	diag_1 = []
+	diag_2 = []
+	for i in range(len(quadrado)):
+		for j in range(len(quadrado[0])):
+			if i == j:
+				diag_1.append(quadrado[i][j])
+			if (i+j) == (len(quadrado) - 1):
+				diag_2.append(quadrado[i][j])
+	return [diag_1, diag_2]
+
+
+def soma(lista):
+	return sum(lista)
+	
+# -- Para testar
+if __name__ == '__main__':
+	quadrado_f = [[4,1,2],[3,5,7],[8,9,6]]
+	quadrado_3 = [[4,9,2],[3,5,7],[8,1,6]]
+	quadrado_4 = [[16,3,2,13],[5,10,11,8],[9,6,7,12],[4,15,14,1]]
+	quadrado_5 = [[17,24,1,8,15],[23,5,7,14,16],[4,6,13,20,22],
+		[10,12,19,21,3],[11,18,25,2,9]]
+
+	print quadrado_magico(quadrado_5)
+\end{lstlisting}
+
+
+%---------------
+\section{Análise: complexidade}
+
+-- time / profiling
+
+-- complexidade\\
+
+-- notação\\
+
+
+
+\section{Análise: correcção}
+
+-- invariantes
+
+-- testes
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+Este texto é um discurso sobre programação. Recorrendo a exemplos conhecido simples mostrámos como se pode dominar a complexidade. Durante o desenvolvimento do programa falamos também de alternativas possíveis, que obrigam a conhecer um pouco mais dos conceitos da linguagem.
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Este capítulo debruçou-se sobre o modo como se pode dominar a complexidade inerente à construção de programas por recurso a uma abordagem simples de decomposição de um problema em sub-problemas. Não existem elementos novos do ponto de vista conceptual pelo que deve procurar saber se entendeu ou não o processo.
+
+\begin{itemize}
+\item Que diferentes tipos de conhecimento são postos em jogo quando se está a desenvolver um programa.
+\item Que objectivos, por vezes contraditórios, se procura alcançar quando se constrói um programa.
+\item Como se tem confiança de que o programa final está correcto. Como se testa.
+\item Como se pode proteger um programa. 
+\end{itemize}
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+
+
+
+\begin{Exercicio}\facil
+Desenvolva um programa que lhe permita imprimir uma tabuada para os números até um dado $n$.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Suponha que tem que manter actualizada uma classificação de uma corrida de ciclismo do tipo contra-relógio individual. Admita, para facilitar, que cada concorrente é caracterizado pelo nome, equipa e tempo gasto. Desenvolva o respectivo programa.
+
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+Todos conhecemos o jogo do \textbf{Mastermind}. Um jogador A  dispõe de um conjunto colorido de piões. Um segundo jogador, B, dispõe igualmente de um conjunto de piões coloridos dos quais escolhe um subconjunto que dispõe de forma ordenada sem conhecimento do primeiro jogador. O objectivo é o jogador A descobrir a sequência escolhida pelo jogador B, no menor número de tentativas. Por cada tentativa o jogador A recebe uma indicação do jogador B acerca  da qualidade da sua tentativa: quantas cores \textbf{e} posições acertou e quantas cores acertou sem acertar na posição. Queremos implementar um \textbf{simulador} para este jogo. O computador faz o papel do jogador B, enquanto que um humano assumirá o papel de jogador A. O número de cores diferentes, o comprimento da sequência escondida e o número de jogadas máximas possível são parâmetros do programa. A figura \ref{fig:master} ilustra um caso simples após duas jogadas.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{desenvolvimento/imagens/mastermind.eps}
+\caption{Mastermind}
+\label{fig:master}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+\end{Exercicio}
+

@@ -1,0 +1,237 @@
+# -*- coding: mac-roman -*-
+
+# hangman
+
+# Ernesto Costa - Outubro 2006
+
+from xturtle import *
+
+from random import *
+
+#--- Programa principal
+
+def main():
+	reset()
+	hideturtle()
+	pendown()
+	# desenha
+	forca()
+	corpo()
+	
+	#mensagens
+	
+	color('black')
+	goto(100,0)
+	write("HANGAM IS WAITTING!",align='left')
+	
+	#gera palavra
+	pal=gera_palavra()
+	comp=len(pal)
+	
+	
+	# in’cio
+	posx=-200
+	posy=60
+	goto(posx,posy)
+	write('PALAVRA: ',align='left',font=('Arial',12,'normal'))
+	posx= posx +60
+	for i in range(comp):
+		posx=posx+10
+		goto(posx,posy)
+		write('_  ',align='left',font=('Arial',12,'normal'))
+		
+	# Testado
+	posx =-200
+	posy =40
+	goto(posx,posy)
+	write('TESTADAS: ',align='left',font=('Arial',12,'normal'))
+	
+	#adivinha
+	
+	posx =-200
+	posy =20
+	goto(posx,posy)
+	write('NOVA LETRA?: _  ',align='left',font=('Arial',12,'normal'))
+	
+	
+	# teste
+	
+	testadas=[]
+	falha = 0
+	lista_car=list(pal)
+	while falha != 7:
+		L=raw_input("Que caracter? ").upper()
+		testadas = testadas + [L]
+		# acresecenta em testadas
+		if L in lista_car:
+			pos = lista_car.index(L) # a rever pois se houver elementos repetidos...
+			# insere em palavra
+		else:
+			falha = falha +1
+			# altera figura
+			# if falha ==1:
+				# pernad
+			#...
+	print pal
+	print testadas
+		
+	
+	raw_input("Prima <enter> para terminar! ")
+
+#--- desenho 
+
+def forca():
+	""" desenha a forca.
+	"""
+	color("red")
+	forward(80)
+	backward(40)
+	left(90)
+	forward(170)
+	right(90)
+	forward(60)
+	right(90)
+	forward(20)
+	color("black")
+	setheading(0)
+
+#--- O corpo
+
+# Desenha corpo
+
+def corpo():
+	color("green")
+	pendown()
+	cabeca()
+	pescoco()
+	tronco()
+	pernad()
+	bracod()
+	pernae()
+	bracoe()
+	return 0
+	
+
+def cabeca():
+	penup()
+	goto(115,135)
+	right(90)
+	figura_curva(2,8,45)
+	penup()
+	setheading(0)
+	return 0
+
+
+	
+def pescoco():
+	goto(100,120)
+	pendown()
+	right(90)
+	forward(10)
+	penup()
+	setheading(0)
+	return 0
+	
+def tronco():
+	penup()
+	backward(20)
+	pendown()
+	forward(40)
+	right(90)
+	forward(60)
+	right(90)
+	forward(40)
+	right(90)
+	forward(60)
+	right(90)
+	penup()
+	setheading(0)
+	return 0
+
+	
+	
+def bracod():
+	goto(120,100)
+	pendown()
+	left(45)
+	forward(30)
+	backward(10)
+	left(30)
+	forward(10)
+	backward(10)
+	right(60)
+	forward(10)
+	backward(10)
+	left(30)
+	backward(20)
+	setheading(0)
+	penup()
+	return 0
+
+def bracoe():
+	goto(80,100)
+	pendown()
+	left(135)
+	forward(30)
+	backward(10)
+	left(30)
+	forward(10)
+	backward(10)
+	right(60)
+	forward(10)
+	backward(10)
+	left(30)
+	backward(20)
+	setheading(0)
+	penup()
+	return 0
+
+def pernad():
+	goto(110,50)
+	pendown()
+	right(90)
+	forward(20)
+	left(90)
+	forward(10)
+	penup()
+	setheading(0)
+	return 0
+
+def pernae():
+	goto(90,50)
+	pendown()
+	right(90)
+	forward(20)
+	right(90)
+	forward(10)
+	penup()
+	setheading(0)
+	return 0
+
+#--- Apaga
+
+def ganhapernad():
+	color("black")
+	goto(110,150)
+	pernad()
+	setheading(0)
+	return 0
+
+# auxiliares para o corpo
+def figura_curva(avanca,roda,repete):
+	pendown()
+	for i in range(repete):
+		forward(avanca)
+		right(roda)
+		
+#--- gerador de palavras
+
+def gera_palavra():
+	lista_pal=['CASA', 'PRAXE','COIMBRA', 'BICICLETA', 'MAR', 'SPORTING','ALIEN','PAPA','CASAR']
+	indice=randint(1,len(lista_pal)-1)
+	return lista_pal[indice]
+
+
+		
+main()
+

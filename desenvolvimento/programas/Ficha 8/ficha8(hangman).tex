@@ -1,0 +1,438 @@
+\documentclass[a4paper,12pt,portuguese]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage[applemac]{inputenc}
+\usepackage{graphicx,color}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{subfigure}
+\usepackage{placeins}
+\usepackage{marvosym}
+\usepackage[Lenny]{fncychap}
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+\usepackage{pifont}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage[official]{eurosym}
+
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+\newcommand{\python}{\textbf {Python}}
+
+\lstset{frame=single,language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+%----------------------------------------------
+
+\definecolor{cinza}{rgb}{0.192,0.192,0.192}
+
+\definecolor{orange}{rgb}{1,0.5,0.0}
+
+
+\definecolor{rose}{rgb}{1,0.6,0.6}
+
+\newcommand{\problema}[1]{\noindent \fbox{} \colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Problema #1}}}}
+
+
+\newcommand{\modulo}[1]{\noindent\colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Módulo #1}}}}
+
+\newcommand{\muitofacil}{\noindent \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MF}}}}
+
+\newcommand{\facil}{\noindent \colorbox{green}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{F}}}}
+
+\newcommand{\medio}{\noindent \colorbox{orange}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{M}}}}
+
+\newcommand{\dificil}{\noindent \colorbox{red}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{D}}}}
+
+\newcommand{\muitodificil}{\noindent \colorbox{rose}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{MD}}}}
+
+%-----------------------------------------------
+\renewcommand\lstlistingname{Listagem}
+
+\lstset{language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+
+
+%\lstset{language=Python,backgroundcolor=\color{yellow},captionpos=b}
+% ----------------------------------------------------------------
+\newenvironment{objectivos}
+    {\noindent {\bfseries{\Large{Objectivos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+% contador de Exercicios
+\newcounter{exercicio}[chapter]
+\renewcommand\theexercicio{\thechapter.\arabic{exercicio}}
+
+
+\newenvironment{Exercicio}
+{\noindent  \refstepcounter{exercicio}  \colorbox{blue}{  \textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Problema \theexercicio}}}}
+{ \vspace*{0.2cm} \par}
+
+\newenvironment{requisitos}
+    {\noindent {\bfseries{\Large{Requisitos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{materialapoio}
+    {\noindent {\bfseries{\Large{Material de Apoio}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{sol}
+{\noindent  \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Solução}}}}
+{ \vspace*{0.2cm} \par}
+
+
+
+
+\begin{document}
+
+\noindent \rule{\linewidth}{1mm}
+
+\begin{center}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{timbre.eps}
+ \end{figure}
+
+\LARGE{\textbf{\textcolor[rgb]{0.98,0.00,0.00}
+{Introdução à Programação \\ e Resolução de Problemas}}} \\
+\vspace*{0.25cm}2009/2010 \\\vspace*{0.25cm}
+
+\rule{\linewidth}{1mm}
+
+\vspace*{5.0cm} \textcolor[rgb]{0.00,0.40,0.29}{Ficha \#8 }
+
+\vspace*{2.0cm}
+\noindent Ernesto Costa,\\ Luís Macedo, Rogério de Lemos, Vasco Pereira
+\end{center}
+
+\renewcommand\chaptername{Ficha}
+\setcounter{chapter}{7}
+\chapter{Enforcado}
+\setcounter{chapter}{8}
+
+
+
+\begin{objectivos}
+\item Exercitar conceitos de program\c cão descendente e incremental
+\item  Exercitar a defini\c cão de interfaces e a reutiliza\c cão de código
+\item Consolidar o uso de ficheiros, dicionários, entrada e saída de dados e, ainda, de listas e de cadeias de caracteres
+\item Motivar para o recurso a \textbf{excep\c cões}.
+\end{objectivos}
+
+\bigskip
+
+\begin{requisitos}
+\item Conceitos anteriores consolidados
+\item Módulos: \textbf{cTurtle}
+\end{requisitos}
+\bigskip
+
+\begin{materialapoio}
+\item É recomendada a consulta dos slides das aulas teóricas, dos textos de apoio que se encontram no \textbf{WoC} e da bibliografia  indicada.
+\end{materialapoio}
+
+
+
+
+\newpage
+
+\section{Introdu\c cão}
+
+Todos jogámos em crian\c ca ao jogo do enforcado (\textit{hangman}): uma pessoa escolhe uma palavra que uma segunda tenta adivinhar indicando, caracter a caracter, a sua composi\c cão. Por cada caracter falhado, aparece uma parte do nosso corpo agarrado a uma forca (ver figura \ref{fig:enf}). Simpático! O objectivo desta ficha é desenvolver um programa que permita jogar no computador o jogo. O computador define a palavra, o utilizador tenta adivinhar. O problema serve de pretexto para aprofundar o conhecimento da linguagem \textbf{Python} e exercitar competências no desenvolvimento de programas. Vamos ter que \textbf{dominar a complexidade} aproximando-nos passa a passo de uma  solu\c cão razoável. Não se espere uma solu\c cão única! Havendo várias alternativas para diversos passos do programa  estas devem ser ponderadas.
+
+\begin{figure}[!htbp]
+\centering
+\subfigure[No início]{\includegraphics[scale=0.7]{imagens/enforcado0.jpg}} \quad
+\subfigure[No meio]{\includegraphics[scale=0.7]{imagens/enforcado1.jpg}} \quad
+\subfigure[No fim??]{\includegraphics[scale=0.7]{imagens/enforcado2.jpg}} 
+\caption{{\bf Enforcado}}
+\label{fig:enf}
+\end{figure}
+
+Ao longo da ficha iremos fazer melhoramentos a partir das versões anteriormente desenvolvidas.
+
+
+\section{Questões marginais \ldots ou talvez não!}
+
+Antes de passarmos à resolu\c cão do problema do enforcado vamos tentar resolver algumas questões. Estes problemas devem ser resolvidos \textbf{antes} da aula.
+
+\begin{Exercicio}\facil
+
+As listas e as cadeias de caracteres são tipos de objectos. Em certas circunstâncias, é possível passar de uma cadeia de caracteres a uma lista e vice-versa. Exemplifique, isto é, teste no computador como pode:
+
+\begin{itemize}
+\item  transformar uma cadeia de caracteres numa lista
+\item transformar uma lista de cadeias de caracteres numa única cadeia da caracteres.
+\end{itemize}
+
+\end{Exercicio}
+
+
+
+
+
+\begin{Exercicio}\facil\label{exo:prot1}
+
+Suponha que está a pedir dados ao utilizador. Admita ainda que esses dados devem ser números inteiros num dado intervalo. Cada vez que o utilizador se engana, indicando um número fora do intervalo, o número não é guardado e o pedido deve ser repetido. Desenvolva um pequeno programa que permita fazer esta \textbf{protec\c cão da entrada dos dados}. a listagem \ref{lst:prot1} ilustra o que se pretende.
+
+\begin{lstlisting}[caption={Proteger os dados.}, label=lst:prot1, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> 
+Evaluating untitled-1.py
+Um número inteiro no intervalo [-30,30]: 20
+Um número inteiro no intervalo [-30,30]: -50
+ERRO: o número deve estar no intervalo [-30,30]!!
+Um número inteiro no intervalo [-30,30]: 60
+ERRO: o número deve estar no intervalo [-30,30]!!
+Um número inteiro no intervalo [-30,30]: 4
+Um número inteiro no intervalo [-30,30]: 3
+[20, 4, 3]
+>>> 
+\end{lstlisting}
+
+\end{Exercicio}
+
+\newpage
+
+\begin{Exercicio}\facil
+
+Pretende-se melhorar o problema \ref{exo:prot1}, filtrando também os valores repetidos. Implemente o respectivo programa. A listagem \ref{lst:prot2} ilustra o que se pretende.
+
+\begin{lstlisting}[caption={Proteger os dados (2).}, label=lst:prot2, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> 
+Evaluating ficha8.py
+Um número inteiro no intervalo [-30,30]: 4
+Um número inteiro no intervalo [-30,30]: 4
+ERRO: o número 4 já existe!!
+Um número inteiro no intervalo [-30,30]: 3
+Um número inteiro no intervalo [-30,30]: -50
+ERRO: o número deve estar no intervalo [-30,30]!!
+Um número inteiro no intervalo [-30,30]: 2
+[4, 3, 2]
+>>> 
+\end{lstlisting}
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil\label{exo:pares1}
+
+Suponha que tem duas listas. Uma tem nomes de pessoas do sexo masculino, a outra tem nomes de pessoas do sexo feminino. Vai organizar uma festa e quer convidar \textbf{igual} número de homens e de mulheres. Não tem lugar para todos e, por isso, apenas vai convidar alguns. Como não tem critério para os distinguir, afinal são todos seus amigos, a escolha de quem virá será \textbf{aleatória}. O mesmo procedimento será adoptado para a distribui\c cão pela mesa de jantar. A única \textbf{restri\c cão} é que vai querer juntar um homem com uma mulher. Escreva um programa para resolver esta questão, isto é, dadas as duas listas, devolve uma lista de pares (mulher, homem).
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Problema semelhante ao \ref{exo:pares1}, só que agora a informa\c cão sobre os nomes encontra-se em dois ficheiros: um com nomes de mulheres, outro com nomes de homens.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Em ficha anterior vimos como podemos fazer um \textbf{dicionário de frequências de ocorrências}. Por exemplo, se tivermos uma lista com números, queremos construir um dicionário em que cada chave é um dos números da lista e o valor associado é o número de vezes que o número está na lista. Vamos fazer algo de semelhante. No entanto, agora o que queremos é associar a cada chave os \textbf{índices} da sua ocorrência na lista. O programa deve funcionar seja com  números, seja com cadeias de caracteres. A listagem \ref{lst:dic1} ilustra o pretendido.
+
+\begin{lstlisting}[caption={Dicionário de frequências}, label=lst:dic1, numbers=left, numberstyle=\footnotesize, mathescape]
+>>>print dic_freq('abaabcba')
+{'a': [0, 2, 3, 7], 'c': [5], 'b': [1, 4, 6]}
+>>>
+\end{lstlisting}
+
+\end{Exercicio}
+
+\section{Solu\c cão básica}
+
+Retomemos o problema do enforcado. Antes de come\c car a resolver o exercício \ref{exo:bas} leia, por favor, todas as perguntas para perceber melhor o que se entende por solu\c cão básica.
+
+\begin{Exercicio} \medio \label{exo:bas}
+
+Pretende-se desenvolver um programa simples para o jogo do enforcado. Nesta fase apenas se pretende poder jogar o jogo usando o computador. \textbf{Não} temos pretensões de ter um \textbf{interface gráfico} desenvolvido. Vejamos o que se pretende através de pequenas listagens resultantes da interac\c cão.
+
+Quando tudo corre bem para o utilizador.
+
+\begin{lstlisting}[caption={Quando se acerta.}, label=lst:def1, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> 
+Evaluating hang_0.py
+Palavra:
+_ _ _ _ _ _ _ _ _ _
+
+Escolha uma letra: a
+Palavra:
+a _ a _ a _ a _ _ a
+
+Escolha uma letra: b
+Palavra:
+a b a _ a _ a b _ a
+
+Escolha uma letra: c
+Palavra:
+a b a c a _ a b _ a
+
+Escolha uma letra: d
+Palavra:
+a b a c a d a b _ a
+
+Escolha uma letra: r
+
+Uau! Acertou!
+Palavra:
+a b a c a d a b r a
+\end{lstlisting}
+
+A listagem acima mostra que o programa tem um comportamento repetitivo. Vemos, por exemplo, que entre a linha 3 e 6 é-nos mostrado o estado actual da palavra que queremos adivinhar (linha 3-4) e a escolha que fazemos para a letra (linha 6).  Quando na etapa seguinte retomamos a visualiza\c cão da palavra já se reflecte o facto de termos acertado na letra (linha 8).
+
+Quando tudo corre mal:
+\begin{lstlisting}[caption={Quando se erra (listagem incompleta).}, label=lst:def1, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> 
+Evaluating hang_0.py
+Palavra:
+_ _ _ _ _ _ _ _ _ _ _
+
+Escolha uma letra: x
+Palavra:
+_ _ _ _ _ _ _ _ _ _ _
+
+... semelhante
+
+Escolha uma letra: g
+Palavra:
+_ _ _ _ _ _ _ _ _ _ _
+
+Escolha uma letra: k
+Palavra:
+_ _ _ _ _ _ _ _ _ _ _
+
+Escolha uma letra: s
+Oops! Esgotaram-se as suas hipóteses...
+A palavra secreta era: 
+Palavra:
+r i n o c e r o n t e
+
+See you!
+\end{lstlisting}
+
+Na linha 10 \textbf{escrevemos} semelhante para indicar que não se mostram muitas das escolhas. Note-se a mensagem final (linhas 21-26)
+
+Quando repetimos letras:
+\begin{lstlisting}[caption={Quando se erra (listagem incompleta).}, label=lst:def1, numbers=left, numberstyle=\footnotesize, mathescape]
+>>> 
+Evaluating hang_0.py
+Palavra:
+_ _ _ _ _ _ _ _ _
+
+Escolha uma letra: a
+Palavra:
+_ _ _ _ _ _ _ _ a
+
+Escolha uma letra: a
+
+*** Letra já usada. Escolha outra sff!***
+Escolha uma letra: b
+Palavra:
+_ _ _ _ _ _ _ _ a
+
+Escolha uma letra: e
+Palavra:
+e _ _ _ _ _ _ _ a
+\end{lstlisting}
+
+Entre as linhas 10 e 13 exemplificamos o que acontece quando indicamos uma letra que já anteriormente tinha sido escolhida.\\
+Agora é preciso meter as mãos ao trabalho. Para escrever programas com alguma dimensão e complexidade é preciso \textbf{pensar} antes de come\c car a escrever o código. Convém esquecer \textbf{todos} os detalhes e iniciar a busca da solu\c cão identificando os objectos e uma solu\c cão global. Por exemplo, precisamos de determinar:
+
+\begin{itemize}
+\item Como escolhe o computador a palavra secreta?
+\item Como representar \textbf{internamente} a palavra secreta, fixa ao longo do programa, e a solu\c cão parcial que o utilizador foi construindo?
+\item Em que situa\c cões pode terminar o programa?
+\item Qual a lógica geral do programa?
+\end{itemize}
+ 
+ \noindent e outras coisas que poderão surgir. No início não deve ter receio de colocar muitas questões. Mais tarde vai \textit{arrumar a casa}, ficando apenas com algumas dessas questões para responder. Um esqueleto de programa principal pode ser o da listagem \ref{lst:hang}.
+ \begin{lstlisting}[caption={Enforcado: aspecto geral.}, label=lst:hang, numbers=left, numberstyle=\footnotesize, mathescape]
+ def hangman():
+    # inicialização
+    # --- palavra secreta e representacão dos objectos
+    # --- parâmetros
+
+   repete :
+        # estado actual
+        # escolhe letra
+        # analisa resposta
+        # actualiza estado
+        
+    # mensagem final
+\end{lstlisting}
+
+Não se iniba de procurar algo diferente! O que cada um destes passos deve fazer é, mais ou menos, auto explicativo. Durante a aula irá ser chamado a fazer o que falta, discutindo as alternativas que se colocam a cada passo. \textbf{Aten\c cão}: se não dominar Python a sua solu\c cão será seguramente mais pobre!
+
+\end{Exercicio}
+
+\section{Complementos fáceis}
+
+Obtido um programa funcional, está na hora de melhorar a solu\c cão inicial. Será tanto mais fácil, quanto mais modular for o código. As altera\c cões sugeridas não são as únicas possíveis e, mesmo estas não têm necessariamente uma solu\c cão única. Programar significa também estar sempre a fazer \textbf{op\c cões}!\\
+
+
+\begin{Exercicio} \facil
+
+Altera a solu\c cão para que seja possível jogar repetidas vezes o jogo e não apenas uma vez.
+
+\end{Exercicio}
+
+
+
+\begin{Exercicio} \facil
+
+Tente introduzir o conceito de \textbf{estado} do jogo. Por exemplo, o estado pode caracterizar o número de tentativas já efectuadas,  as letras usadas e as erradas, a palavra com as letras já adivinhadas, etc. Use essa no\c cão para tornar o programa mais legível e modular.
+\end{Exercicio}
+
+
+
+\begin{Exercicio} \facil
+
+Altere o programa para que diferentes jogadores o possam usar, guardando informa\c cão \textbf{estatística} sobre o desempenho dos diferentes jogadores. Por exemplo: número de jogos efectuados, quantas vezes acertou, número de jogadas necessário para acertar, etc.
+
+\end{Exercicio}
+
+\begin{Exercicio} \facil
+
+Introduza o conceito de \textbf{nível} do jogador. Por exemplo, os jogadores podem ser divididos em três categorias: iniciado, normal, perito. A escolha de um nível pelo utilizador tem implica\c cões quanto à dificuldade da palavra a adivinhar e ao número de tentativas que são dadas ao utilizador. Pense numa solu\c cão simples e equilibrada.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Altere o programa de modo a detectar quando o jogador já não tem hipótese de acertar em fun\c cão do número de tentativas e das letras por adivinhar. Deve então terminar o jogo.
+\end{Exercicio}
+
+\section{Introduzir visualiza\c cão}
+
+\begin{Exercicio} \medio
+
+Bom, está na hora de pensar numa intera\c cão \textbf{parcialmente} visual. Adapte o código de modo a que vá sendo desenhado o homem na forca. Tem liberdade de escolher a solu\c cão. Na figura \ref{fig:enf} mostramos uma possibilidade. Para melhor ter a no\c cão das propor\c cões a figura \ref{fig:enf1} dá pistas para construir o desenho.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{imagens/enforcado3.jpg}
+\caption{{\bf Enforcado: desenho}}
+\label{fig:enf1}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\section{Usar excep\c cões}
+
+
+
+\begin{Exercicio} \dificil
+
+Em que medida o seu programa é robusto? Tente fazer a protec\c cão dos dados. Pense na possibilidade de usar o mecanismo de \textbf{excep\c cões}.  Não tendo sido matéria dada deve procurar estudar o que são socorrendo-se dos docentes para tirar dúvidas.
+\end{Exercicio}
+
+\end{document} 

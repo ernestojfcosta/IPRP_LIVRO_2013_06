@@ -1,0 +1,254 @@
+\documentclass[a4paper,12pt,portuguese]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx,color}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{marvosym}
+\usepackage[Lenny]{fncychap}
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+\usepackage{pifont}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage[official]{eurosym}
+
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+\newcommand{\python}{\textbf {Python}}
+%----------------------------------------------
+
+\definecolor{cinza}{rgb}{0.192,0.192,0.192}
+
+\definecolor{orange}{rgb}{1,0.5,0.0}
+
+\newcommand{\problema}[1]{\noindent \fbox{} \colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Problema #1}}}}
+
+
+\newcommand{\modulo}[1]{\noindent\colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Módulo #1}}}}
+
+\newcommand{\facil}{\noindent \colorbox{green}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{F}}}}
+
+\newcommand{\medio}{\noindent \colorbox{orange}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{M}}}}
+
+\newcommand{\dificil}{\noindent \colorbox{red}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{D}}}}
+
+%-----------------------------------------------
+\renewcommand\lstlistingname{Listagem}
+
+\lstset{backgroundcolor=\color{yellow},language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+
+
+%\lstset{language=Python,backgroundcolor=\color{yellow},captionpos=b}
+% ----------------------------------------------------------------
+\newenvironment{objectivos}
+    {\noindent {\bfseries{\Large{Objectivos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+% contador de Exercicios
+\newcounter{exercicio}[chapter]
+\renewcommand\theexercicio{\thechapter.\arabic{exercicio}}
+
+
+\newenvironment{Exercicio}
+{\noindent  \refstepcounter{exercicio}  \colorbox{blue}{  \textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Problema \theexercicio}}}}
+{ \vspace*{0.2cm} \par}
+
+\newenvironment{requisitos}
+    {\noindent {\bfseries{\Large{Requisitos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{materialapoio}
+    {\noindent {\bfseries{\Large{Material de Apoio}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{sol}
+{\noindent  \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Solução}}}}
+{ \vspace*{0.2cm} \par}
+
+
+
+
+\begin{document}
+
+\noindent \rule{\linewidth}{1mm}
+
+\begin{center}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{timbre.eps}
+ \end{figure}
+
+\LARGE{\textbf{\textcolor[rgb]{0.98,0.00,0.00}
+{Introdução à Programação \\ e Resolução de Problemas}}} \\
+\vspace*{0.25cm}2009/2010 \\\vspace*{0.25cm}
+
+\rule{\linewidth}{1mm}
+
+\vspace*{5.0cm} \textcolor[rgb]{0.00,0.40,0.29}{Ficha \#8 }
+
+\vspace*{2.0cm}
+\noindent Ernesto Costa,\\ Luís Macedo, Rogério de Lemos, Vasco Pereira
+\end{center}
+
+\renewcommand\chaptername{Ficha}
+\setcounter{chapter}{7}
+\chapter{Mastermind}
+\setcounter{chapter}{8}
+
+
+
+\begin{objectivos}
+
+\item Consolidar a matéria dada até ao momento
+\item Exercitar a resolução de problemas
+\item Exercitar selecções, estruturas de controlo e listas
+\item Tratamento básico de excepções
+\item Construir o jogo do Mastermind
+\end{objectivos}
+
+\bigskip
+
+\begin{requisitos}
+\item Conhecimento de tipos de dados, definições, instruções de selecção e controlo, listas
+\item Módulos: random
+\end{requisitos}
+\bigskip
+
+\begin{materialapoio}
+\item É recomendada a consulta dos slides das aulas teóricas e da bibliografia neles indicada.
+\end{materialapoio}
+
+
+
+
+\newpage
+\section{O jogo}
+
+Nesta ficha vamos construir o jogo do Mastermind. Este jogo, na sua versão mais moderna, foi inventado em 1970, tendo tido bastante sucesso mundialmente. Criado para ser jogado por dois jogadores, o jogo consiste em adivinhar um código de cores - posição e cor - que um dos jogadores cria. Para isso, o jogador que está a tentar decifrar o código de cores escondido, tem várias tentativas. A cada tentativa é-lhe dito o número de cores que estão na posição certa e o número de cores que acertou mas que não estão na posição correcta.
+
+A implementação do Mastermind a realizar nesta ficha irá ter algumas adaptações que se descrevem de seguida.
+\newline
+O jogo irá ser jogado apenas por um jogador. O código a decifrar será gerado aleatoriamente pelo computador e o jogador terá 10 tentativas para o adivinhar. Em vez de cores serão utilizados números (de 1 a 9) que não poderão ser repetidos.
+O programa começa por pedir ao jogador que defina um número máximo de posições e uma quantidade máxima de números em cada posição. Por exemplo, poderá definir um código constituído por uma sequência de 4 números escolhidos de um conjunto de 6 - XXXX onde cada X pode variar entre 1 e 6, sem repetições. Como não há repetições de números, a quantidade de números possíveis em cada posição tem sempre de ser igual ou maior que o número de posições.
+
+O histórico de jogadas será guardado numa lista de jogadas. Cada jogada é também guardada como uma lista em que as primeiras posições são ocupadas por cada um dos números que fazem parte da jogada introduzida pelo utilizador, e as últimas duas respectivamente pela quantidade de números que estão na posição certa e pela quantidade de números existentes no código a descobrir mas que não estão na posição certa. Por exemplo, caso o código a descobrir fosse '1234', a jogada '2354' seria guardada na lista como [2,3,5,4,1,2] .
+
+Vamos agora começar a construir o jogo.
+
+\bigskip
+
+\begin{Exercicio}\facil
+
+O tabuleiro do jogo será construído por uma função que recebe como parâmetro a lista de jogadas e a quantidade de números a descobrir.
+Para a lista de jogadas [[1,2,3,4,0,0],[5,6,7,8,0,4],[5,6,8,7,2,2]], cada jogada tendo 4 posições, o aspecto do tabuleiro será o seguinte:
+\newpage
+\begin{lstlisting}
+>>> mastermind_apresenta_tabuleiro([[1,2,3,4,0,0],[5,6,7,8,0,4],[5,6,8,7,2,2]],4)
+********************
+Tabuleiro
+********************
+? ? ? ?
+--------
+1 2 3 4  posições certas: 0 n.os certos: 0
+5 6 7 8  posições certas: 0 n.os certos: 4
+5 6 8 7  posições certas: 2 n.os certos: 2
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Para poder iniciar o jogo temos de gerar uma chave aleatória. Faça uma função que receba por parâmetro o tamanho do código a decifrar e a quantidade de números possíveis em cada posição. Deverá ser devolvida uma lista contendo a chave gerada.
+
+Exemplo:
+\begin{lstlisting}
+>>> mastermind_gera_chave(5,6)
+[2,5,3,1,6]
+>>>
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Crie uma função que peça ao utilizador uma nova jogada, recebendo por parâmetro a quantidade de números a decifrar (i.e, o tamanho da chave). O utilizador deverá introduzir os números correspondentes a cada uma das posições na chave separados por vírgula. Verifique que a introdução de dados é feita correctamente, i.e, que são usados apenas números (entre 1 e 9, mesmo que a chave não use tantos) na quantidade correcta e separados por vírgula. Se existir algum erro na introdução de dados a inserção de dados deverá ser repetida. a função deve devolver uma lista contendo os números introduzidos.
+
+Exemplo:
+\begin{lstlisting}
+>>> mastermind_pede_jogada(3)
+Jogada (separe os n.os por vírgulas): a,b
+Erro! Deve introduzir 3 n.os separados por vírgulas
+Jogada (separe os n.os por vírgulas): 1,2,3
+[1,2,3]
+>>>
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Crie uma função que avalie a jogada efectuada pelo utilizador. Esta função deve receber por parâmetro a chave e a jogada do utilizador. Deve devolver a quantidade de números na posição certa e os números certos que estão na posição errada.
+
+Exemplo:
+\begin{lstlisting}
+>>> mastermind_avalia_jogada([1,2,3,4],[3,2,1,5])
+(1,2)
+>>>
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Vamos finalmente juntar todas as funções criadas e criar o jogo do Mastermind!
+\bigskip
+
+Deverá contemplar as seguintes fases:
+\bigskip
+
+\begin{enumerate}
+\item Pedido ao utilizador da quantidade de números a decifrar e da quantidade de números possíveis para cada posição. Deve verificar se os números estão entre 1 e 9 (os únicos permitidos), e se a quantidade de números possíveis em cada posição é igual ou maior que o número de posições. Proteja a função para o caso de o utilizador usar letras. Se existir algum erro na introdução de dados a inserção de dados deverá ser repetida.
+\item Geração da chave a descobrir.
+\item Dar 10 hipóteses ao utilizador para decifrar a chave. Em cada uma das tentativas deve mostrar o tabuleiro de jogo, pedir uma nova jogada, e verificar se o jogador acertou.
+\item No fim de 10 tentativas sem acertar ou caso o utilizador acerte, deve ser perguntado ao utilizador se quer jogar outra vez.
+\item Não se esqueça que deve reutilizar todas as funções criadas anteriormente!
+\end{enumerate}
+\bigskip
+Bom jogo :)
+
+\end{Exercicio}
+
+%\begin{Exercicio}\facil
+%\end{Exercicio}
+
+%\begin{Exercicio}\medio
+%\end{Exercicio}
+
+
+%\begin{Exercicio}\dificil
+%\end{Exercicio}
+
+
+%\section{Durante}
+
+
+%\section{Depois}
+
+\end{document} 

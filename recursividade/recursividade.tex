@@ -1,0 +1,1278 @@
+%%% cap 06
+
+\chapter{Recursividade}\label{cap:recursividade}
+
+\epigraph{\textbf{recursividade}: ver \textit{recursividade}}{\textit{in} Dicionário}
+
+\begin{objectivos}
+
+\item Introduzir o conceito de recursividade
+\item Explorar a recursividade por recurso a exemplos simples
+\item Perceber as virtudes (e os problemas) da recursividade
+
+\end{objectivos}
+
+\section{Conceitos}
+
+Já todos tivemos a experiência de nos colocarmos entre dois espelhos paralelos. E o que vemos sempre nos fascinou: a nossa imagem que se repete infinitas vezes. Também seguramente já olhámos para manifesta\c cões artísticas ou científicas em que a parte e o todo se não distinguem. À semelhan\c ca com o que se passa com a imagem no espelho temos a sensa\c cão que há um motivo que se repete \textit{de fora para dentro}.   Por exemplo na imagem \ref{fig:spier} observamos o denominado \textit{Sierpinski Gasket}. No triângulo mais externo marcámos os pontos médios dos lados. Esse pontos foram aproveitados para construir três novos triângulos. A cada um deles agora aplicamos o mesmo mecanismo e o resultado é aquilo que os nossos olhos vêm. A figura \ref{fig:spier3} mostra o processo usado nas três primeiras etapas\footnote{As escalas das duas figuras são diferentes.}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{recursividade/imagens/sierpinski.jpg}
+\caption{\textit{Sierpinski Gasket}}
+\label{fig:spier}
+\end{center}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/sierpinski3.jpg}
+\caption{Sierpinski: constru\c cão}
+\label{fig:spier3}
+\end{center}
+\end{figure}
+
+\marginlabel{Recursividade}Estamos perante  exemplos do conceito de recursividade: quando um objecto se define em fun\c cão dele próprio. Na literatura  aparecem acrónimos recursivos. Por exemplo, \textbf{GNU}, que significa \textit{GNU's Not Unix} ou ainda \textit{GOD} que, no famoso livro de Douglas Hofstadter, significa \textit{GOD Over Djinn}\footnote{Como discutiremos mais adiante estas últimas manifesta\c cões de recursividade têm um problema importante: nunca nos permitem parar.}.
+
+E o que é que isso tem que ver com a programa\c cão? Bom, já referimos que para resolver um dado problema uma abordagem metodológica interessante é dividi-lo em sub-problemas mais simples cuja solu\c cão encontramos. Juntando as solu\c cões parciais chegamos à solu\c cão global. E o que acontece quando um (ou mais) desses problemas é \textbf{semelhante} ao problema original? Para tornar a discussão mais concreta vamos introduzir um problema muito famoso denominado \textit{Torres de Hanói}. Na  figura \ref{fig:han1} vemos três varas colocadas num suporte. Numa das varas estão três discos (embora possa ser qualquer número) ordenados pelo  seu diâmetro. O problema é determinar a sequência de movimentos que me permite deslocar os discos da vara da esquerda para a vara da direita usando a do meio como auxiliar. As restri\c cões são: (1) só podemos deslocar um disco de cada vez e  (2) nunca podemos ter uma situa\c cão em que um disco está por cima de outro de diâmetro inferior. Convidamos o leitor a resolver o problema. Conseguiu? Tente agora aumentar o número de discos e verá como a tarefa se torna muito, mas mesmo muito, difícil.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/hanoi1.eps}
+\caption{Torres de Hanói}
+\label{fig:han1}
+\end{center}
+\end{figure}
+
+Está na hora em pedir ajuda ao computador. Que programa nos pode imprimir a sequência de movimentos? Tente, com os conhecimentos que tem pensar numa solu\c cão. Uma vez mais verá que a sua vontade vai ser a de \dots  desistir. É então que uma nova forma de pensar vem em seu auxílio. Consiste no seguinte. Vamos dividir o problema original em \textbf{três} sub problemas. Dois deles são semelhantes ao original: deslocar discos entre as varas de acordo com as regras. Por \textbf{semelhante}\marginlabel{Semelhan\c ca} queremos dizer neste caso que o sub problema consiste em deslocar um número \textbf{menor} de discos e as varas cumprem papeis diferentes.
+A figura \ref{fig:han11} mostra a situa\c cão em que conseguimos deslocar dois discos da vara da esquerda para a do meio respeitando as regras do jogo.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/hanoi11.eps}
+\caption{Resolu\c cão de um sub problema semelhante}
+\label{fig:han11}
+\end{center}
+\end{figure}
+
+Se tivermos conseguido resolver o sub problema do modo indicado,\footnote{Por agora vamos admitir que sim, embora ainda não saibamos bem como foi isso possível!} é fácil ver que temos o disco maior liberto para ser deslocado directamente para a sua posi\c cão final.  Para concluir basta agora resolver o terceiro sub problema: deslocar os dois discos da vara do meio para a vara da direita usando a esquerda como auxiliar. Fazendo isso obtemos a solu\c cão que apresentamos na figura \ref{fig:han12}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/hanoi2.eps}
+\caption{Torres de Hanói: solu\c cão final}
+\label{fig:han12}
+\end{center}
+\end{figure}
+
+Admitimos que o leitor pode achar a abordagem interessante mas que, naturalmente, coloca a si próprio a questão de saber como é que se resolvem os sub problemas semelhantes. Afinal a nossa solu\c cão come\c ca por afirmar a possibilidade de o fazer e é gra\c cas a isso que resolvemos o problema. O \textbf{passe de mágica} consiste em aplicar a mesma metodologia aos dois sub problemas. Como no \textit{Sierpinski Gasket}. Ou seja, pegamos em cada sub problema que dividimos em três novos sub problemas, dois dos quais serão de novo semelhantes ao inicial. Claro que não podemos fazer isto infinitamente, pelo que terá que haver uma situa\c cão em que não necessitamos de decompor o problema em sub problemas pois conseguimos resolvê-lo directamente. Chamamos a essa situa\c cão o \textbf{caso de base}\marginlabel{Caso de Base}. Para este exemplo, o caso mais simples, caso de base, acontece quando apenas temos um disco para movimentar. Em resumo: dado um problema ou o conseguimos resolver directamente (caso de base) ou o dividimos em sub problemas, alguns deles semelhantes, a quem aplicamos a mesma metodologia. Esta segunda situa\c cão é conhecida por \textbf{caso recursivo}\marginlabel{Caso Recursivo}. Juntando todas estas pe\c cas dispersas chegamos à versão que a listagem \ref{lst:han1} ilustra.
+
+\begin{lstlisting}[caption='Torres de Hanói', label=lst:han1]
+def torres_hanoi(n,a,b,c):
+	"Implementação das torres de Hanói"
+	if n == 1: #Caso de Base
+		print ("Move disco %d de %s para %s" % (n,a,c))
+	else: # Caso recursivo
+		torres_hanoi(n-1,a,c,b)
+		print( "Move disco %d de %s para %s" % (n,a,c))
+		torres_hanoi(n-1,b,a,c)
+
+\end{lstlisting}
+
+Notar a ordem das varas nas três situações. A vara na posição inicial é a de partida, a segunda é a auxiliar e a terceira a de chegada. Executando o programa para o caso de três discos obtemos a solu\c cão dada na listagem \ref{lst:han2}. Os três primeiros movimentos correspondem ao primeiro sub problema com dois discos, é seguido pela passagem directa do disco maior, o terceiro, da vara esquerda para a vara direita, e conclui-se com os três movimentos gerados pelo último sub problema semelhante.
+
+\begin{lstlisting}[caption='Exemplo de sessão, label=lst:han2]
+Move disco 1 de Esquerda para Direita
+Move disco 2 de Esquerda para Meio
+Move disco 1 de Direita para Meio
+Move disco 3 de Esquerda para Direita
+Move disco 1 de Meio para Esquerda
+Move disco 2 de Meio para Direita
+Move disco 1 de Esquerda para Direita
+\end{lstlisting}
+
+De notar que a decomposi\c cão sucessiva do problema em sub problemas até chegar ao caso de base é tarefa que deixamos ao programa. Igualmente vai ser ele, o programa, responsável por juntar a cada passo as solu\c cões parciais obtidas até podermos construir a solu\c cão final.\\
+
+Pensamos ser agora claro para o leitor o que queremos dizer por recursividade\marginlabel{Recursividade}. Na realidade existem pelo menos dois modos de nos referirmos ao conceito: um que privilegia a \textbf{estrutura dos objectos} e outra que se refere ao \textbf{processo} de resolu\c cão de um problema\footnote{Estas duas visões estão inter-relacionados como adiante se verá.}. 
+
+
+\begin{itemize}
+\item Quando um objecto de define em fun\c cão dele próprio\footnote{Estamos no domínio das chamadas defini\c cões indutivas.}
+\item Quando um processo se decompõe em sub processos semelhantes
+\end{itemize}
+
+Vamos agora mostrar vários exemplos de programas recursivos. Não escondemos que muitos deles são triviais, sendo fácil encontrar versões não recursivas, i.e., iterativas, para eles. A sua apresenta\c cão segue apenas princípios pedagógicos, ou seja, pretendemos através da apresenta\c cão dos exemplos deixar o leitor mais à vontade com o conceito. Com os exemplos também apresentaremos vários \textbf{tipos} de recursividade.
+
+\section{Exemplos}
+
+\subsection{Números}
+
+Um exemplo clássico de recursividade é a fun\c cão \textbf{factorial}. Por defini\c cão temos:
+
+\begin{equation} n! =
+	\begin{cases}
+		1 & n = 0\\
+		n \times (n-1)! & n> 0
+	\end{cases}
+\end{equation}
+
+A partir dela construímos o  programa \ref{prog:fact}.
+
+\begin{codigo}{caption={Factorial}, label={prog:fact}}
+# factorial
+def fact(n):
+	if n == 0:
+		return 1
+	else:
+		return n * fact(n -1)
+\end{codigo}
+
+Não pensamos haver muito mais a dizer sobre esta tradu\c cão da defini\c cão no programa que calcula o factorial de qualquer número natural. Também aqui admitimos que somos capazes de resolver o sub problema semelhante mais simples para o argumento $(n-1)$.\\
+
+No entanto, importa clarificar como e porque funciona. Os programas recursivos desdobram-se em \textbf{duas fases}. Vejamos com um exemplo concreto. Admitamos que queríamos saber a que era igual o factorial de 4. Chamada a fun\c cão \textbf{fact}, com $n=4$, e porque 4 é diferente de 0, o resultado vai ser o que for devolvido pela chamada recursiva de $fact(n-1)= fact(3)$ \textbf{depois} de multiplicado por 4. Este processo repete-se até que se chega ao caso de base, quando pretendemos saber o valor do factorial de 0 e este é dado directamente. Assim termina a primeira fase, denominada \textbf{desenrolar}\footnote{Do inglês \textit{unfold}.}\marginlabel{Desenrolar, Enrolar}. A figura \ref{fig:fact1} pretende dar uma ideia do processo.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{recursividade/imagens/fact1.eps}
+\caption{Factorial: fase de desenrolar}
+\label{fig:fact1}
+\end{center}
+\end{figure}
+
+Como já foi referido, e a figura \ref{fig:fact1} ilustra, há um conjunto de cálculos que ficaram em suspenso e agora precisam ser concluídos. Entramos na segunda fase do processo, denominada \textbf{enrolar}\footnote{Do inglês \textit{fold}.}. Nesta fase vão sendo passados para \textit{cima}, i.e., a quem pediu o resultado, e os valores calculados. Assim o valor do factorial de 0, calculado directamente, é transmitido à chamada  $fact(1)$ que efectua o produto desse valor por 1, que estava em suspenso. Esse resultado é por sua vez transmitido para $fact(2)$ que estava à sua espera para multiplicar por 2, e assim sucessivamente. No final, obtemos o valor pretendido, ou seja 24. A figura \ref{fig:fact2}, tenta ilustrar o processo.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{recursividade/imagens/fact2.eps}
+\caption{Factorial: fase de enrolar}
+\label{fig:fact2}
+\end{center}
+\end{figure}
+
+
+Antes de prosseguir podemos já fazer uma pequena síntese. A \textbf{recursividade}\marginlabel{Síntese} caracteriza-se por:
+
+\begin{itemize}
+\item decompor o problema em sub problemas
+\item um (ou mais) dos sub problemas podem ser resolvidos directamente (caso(s) de base)
+\item um (ou mais) dos subproblemas são semelhantes ao problema inicial (caso(s) recursivo(s))
+\item os problemas semelhantes devem ser tais que nos fa\c cam aproximar do(s) caso(s) de base
+\item um processo de desenrolar, seguido por um de enrolar
+\end{itemize}
+
+
+
+Analisemos agora outros problemas com o mesmo grau de dificuldade e que podem ter uma solu\c cão recursiva simples. Os \textbf{números naturais} são definidos axiomaticamente, de modo indutivo, do seguinte modo:
+
+\begin{description}
+\item[(1)]  0 é um número natural
+\item[(2)] se $n$ é um número natural então o seu sucessor, $suc(n)$, também é um número natural
+ \end{description}
+
+
+A partir desta defini\c cão podemos construir a sequência de números naturais: $0, suc(0), suc(suc(0)), \ldots$. Por conveniência designamos $suc(0)$ por 1, $suc(suc(0))$ por 2 e assim sucessivamente. Vejamos como podemos construir uma hierarquia de fun\c cões sobre os números naturais.\\
+
+\marginlabel{Soma}
+
+\begin{lstlisting}[caption='Soma', label=lst:soma]
+def soma(m,n):
+	if n == 0:
+		return m
+	else:
+		return 1 + soma(m,n-1)
+\end{lstlisting}
+
+
+\marginlabel{Produto}
+\begin{lstlisting}[caption='Produto', label=lst:prod]
+def prod(m,n):
+	if n == 0:
+		return 0
+	else:
+		return soma(m, prod(m,n-1))
+\end{lstlisting}
+
+\marginlabel{Exponencial}
+\begin{lstlisting}[caption='Exponencial', label=lst:exp]
+def exp(m,n):
+	if n == 0:
+		return 1
+	else:
+		return prod(m, exp(m,n-1))
+\end{lstlisting}
+
+Todos estes casos, incluindo o de factorial, são exemplo de recursividade dita \textbf{linear}\marginlabel{Recursividade Linear}: por cada ramo da condicional só existe uma chamada recursiva. Mas há outro aspecto interessante nestes exemplos. Todos satisfazem o mesmo modelo abstracto que apresentamos na listagem \ref{lst:rec1}\footnote{O caso da soma também pode ser apresentado na mesma forma alterando o modo como a chamada recursiva é feita, recorrendo à função sucessor Igualmente, o facto de o modelo apenas ter um argumento, contra dois das funções apresentadas é irrelvante.}.
+
+\begin{lstlisting}[caption='Modelo de recursividade linear', label=lst:rec1]
+def f(n):
+	if n == 0:
+		return <constante>
+	else:
+		return h(g(n),f(n-1))
+\end{lstlisting}
+
+Sem grandes surpresas o caso de base corresponde ao valor de $0$. No caso recursivo aparece uma chamada para um sub problema mais simples (aqui $n$ dá lugar a ($n-1$)).  Um outro exemplo desta \textit{família} pode ser posto em evidência quando consideramos somatórios como, por exemplo:
+
+\[ \sum_{i=0}^n i \]
+
+Este somatório pode ser definido do seguinte modo:
+
+\begin{equation} \sum_{i=0}^n i =
+	\begin{cases}
+		0 & n=0\\
+		n + \sum_{i=0}^{n-1}  i & n >0
+	\end{cases}
+\end{equation}
+
+Daqui retiramos imediatamente o programa ilustrado na listagem \ref{lst:somat}.
+
+\begin{lstlisting}[caption='Somatório', label=lst:somat]
+def somat(n):
+	if n == 0:
+		return 0
+	else:
+		return n + somat(n-1)
+\end{lstlisting}
+
+Existem muitos mais exemplos envolvendo números. Por exemplo, o Algoritmo de Euclides permite-nos calcular o \textbf{máximo divisor comum} de dois números naturais. O máximo divisor comum de dois números é o maior inteiro que os divide a ambos. Numa abordagem clássica uma solução simples seria:\\
+
+\noindent1. Calcular os divisores dos dois números\\
+2. Determinar os que são comuns.\\
+3. Escolher o maior dos cumuns.\\
+
+Um programa trivial seria o indicado na listagem \ref{lst:mdcit}.
+
+\begin{lstlisting}[caption='MDC: iterativo', label=lst:mdcit]
+def mdc(n,m):
+	div_n= divisores(n)
+	div_m= divisores(m)
+	inter=intersect(div_n,div_m)
+	return max(inter)
+	
+def divisores(num):
+	return [i for i in range(1,num+1) if (num % i) == 0]
+	
+def intersect(l1,l2):
+	return [i for i in l1 if i in l2]
+\end{lstlisting}
+
+
+O que Euclides fez foi propor uma solução que consiste em ir subtraindo ao maior o menor até que um deles se reduza a 0. O algoritmo pode ser optimizado conforme se apresenta na listagem \ref{lst:mdc}.
+
+\begin{lstlisting}[caption='Algoritmo de Euclides', label=lst:mdc]
+def mdc(m,n):
+	"Máximo Divisor Comum: algoritmo de Euclides"
+	if n == 0:
+		return m
+	else:
+		return mdc(n, m % n)
+\end{lstlisting}
+
+Por palavras dizemos que o máximo divisor comum de dois números é o primeiro se o segundo for zero ou então é igual  ao máximo divisor comum entre o segundo e o resto da divisão inteira do primeiro pelo segundo. Como se pode ver a estrutura é a mesma: um caso de base ($n$ igual a $0$), e um caso recursivo. Neste último temos uma vez uma vez mais um sub problema semelhante mas de \textit{menor} dimensão. Esta ideia de \textbf{redu\c cão} da dimensão do problema em cada etapa recursiva é fundamental. Mais, essa redu\c cão deve ser tal que nos conduza \textbf{sempre} ao caso de base. A não ser assim o programa nunca termina \footnote{Na realidade termina por exausta\c cão dos recursos da máquina!}. Este exemplo do \textbf{mdc} tem outra singularidade: o caso recursivo só contém a chamada da fun\c cão não havendo mais nada para fazer além disso. Estes casos são apelidados de recursividade \textbf{terminal}\marginlabel{Recursividade Terminal}\footnote{Saliente-se que o importante é que a última ac\c cão a executar seja a chamada recursiva. Existem casos de recursividade terminal em que há ac\c cões não recursivas antes da chamada terminal.}. Actualmente os compiladores modernos são capazes de detectar uma defini\c cão recursiva terminal e gerar automaticamente o código iterativo correspondente.\\
+
+Até agora todos os exemplos numéricos envolveram apenas uma chamada recursiva. À semelhan\c ca das Torres de Hanói podemos ter problemas com mais de uma chamada recursiva num mesmo ramo da condicional. Comecemos com o célebre exemplo da sequência de Fibonnaci\marginlabel{Fibonacci}\footnote{O nome da sequência  deve-se ao matemático italiano Leonardo de Pisa, também conhecido por filho de Bonacci, que viveu na Idade Média}. Na sua origem está um problema que pode ser enunciado do seguinte modo. Admitamos que um casal de coelhos demora dois meses após o nascimento para estar em condi\c cões de se reproduzir. Consideremos ainda que quando atinge a idade de reprodu\c cão dá origem a um novo casal (macho e fêmea) de coelhos que obedece ao mesmo princípio. A questão é saber quantos casais de coelhos existem no início de cada mês. A figura \ref{fig:fibo} mostra a evolu\c cão da popula\c cão de casais ao longo dos meses. A amarelo a indica\c c\c cão dos coelhos em condi\c cão de se reproduzirem.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/fibo.eps}
+\caption{Fibonacci: coelhos e reprodu\c cão}
+\label{fig:fibo}
+\end{center}
+\end{figure}
+
+O número de casais é dado pela sequência $1,1,2,3,5,\ldots$, e uma observa\c cão atenta mostra que num dado mês o número de casais é igual à soma no número de casais existente nos dois meses anteriores.  Daí a defini\c cão:
+
+\begin{equation} Fib(n)=
+\begin{cases}
+	1 & n = 1 \text{\,ou \,} n=2\\
+	Fib(n-1) + Fib(n-2) & n >2
+\end{cases}
+\end{equation}
+
+Esta defini\c cão tem uma tradu\c cão directa no programa da listagem \ref{lst:fib}.
+
+\begin{lstlisting}[caption='Sequência de Fibonacci', label=lst:fib]
+def fib(n):
+	" Números de fibonacci recursivo"
+	if n == 1 or n == 2:
+		return 1
+	else:
+		return fib(n-1) + fib(n-2)
+\end{lstlisting}
+
+On números de Fibonacci estão presentes em diversas áreas da matemática (e.g.,teoria de números) e na natureza ( espirais de ananases, pinhas, girassóis, \dots). Existe mesmo uma revista matemática, chamada \textit{Fibonacci Quarterly}, que lhe é dedicada. Também na Internet existem vários sítios sobre os números de Fibonacci. É só googlar! Esta defini\c cão recursiva tem alguns aspectos interessantes. Desde logo existem dois valores possíveis para o caso de base. Em rela\c cão com esse facto as duas chamadas recursivas envolvem dois sub problemas de dimensão $(n-1)$ e $(n-2)$.\\
+
+ 
+Um tipo de recursividade semelhante à dos números de Fibonacci pode ser obtida a partir da defini\c cão dos coeficientes do \textbf{Binómio de Newton}\marginlabel{Binómio de Newton}:
+
+\begin{equation} 
+	\binom{n}{k}=
+	\begin{cases}
+	1 & k=0, k=n \\
+	\binom{n-1}{k} + \binom{n-1}{k-1} & \text{caso contrário}
+	\end{cases}
+\end{equation}
+
+Daqui decorre trivialmente o programa da listagem \ref{lst:bin}.
+
+\begin{lstlisting}[caption='Binómio de Newton', label=lst:bin]
+def binomio(n,k):
+	"Coeficentes do binómio"
+	if k ==0 or k == n:
+		return 1
+	else:
+		return binomio(n-1,k) + binomio(n-1,k-1)
+
+\end{lstlisting}
+
+Curiosamente existe uma rela\c cão entre os números de Fibonacci e os coeficientes de binómio. A figura \ref{fig:fibbin} ilustra como se podem obter os primeiros à custa dos segundos, por soma dos valores nas diagonais da representa\c cão do Binómio de Newton como um triângulo (dito de Pascal).
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.6]{recursividade/imagens/fibo2.eps}
+\caption{Números de Fibonacci e Binómio de Newton}
+\label{fig:fibbin}
+\end{center}
+\end{figure}
+
+
+Estamos perante dois exemplos de recursividade \textbf{não linear}\marginlabel{Recursividade Não Linear}: existe mais de que uma chamada recursiva num dos ramos da condicional.\\
+
+\marginlabel{Par e Ímpar}Vamos agora ver como podemos conjugar defini\c cões de tal modo que a recursividade aparece indirectamente. Admitamos que queremos uma defini\c cão que nos permita determinar se um dado \textbf{número é ou não par}. Uma defini\c cão possível é a que nos diz que um número é par se o seu antecessor for \ldots ímpar. Isto significa que necessitamos de usar a defini\c cão de ímpar. Esta, por sua vez pode usar o facto de um número ser ímpar se o seu antecessor for \ldots par! E parece que estamos num círculo vicioso. Mas não como já mostraremos. Para isso precisamos de introduzir o caso de base para as duas defini\c cões por forma a que o processo de chamada cruzada\marginlabel{Recursividade Cruzada} entre as duas defini\c cões termine. Se pensarmos um pouco chegaremos à seguinte solu\c cão:
+
+\begin{lstlisting}[caption='Par - Ímpar', label=lst:parimp]
+# Par
+def par(n):
+	if n < 0:
+		return False
+	elif n == 0:
+		return True
+	elif impar(n-1):
+		return True
+	else:
+		return False2
+		
+# Ímpar
+def impar(n):
+	if n < 1:
+		return False
+	elif n == 1:
+		return True
+	elif par(n-1):
+		return True
+	else:
+		return False
+\end{lstlisting}
+
+Chamamos a aten\c cão para as condi\c cões de paragem    nos dois casos. Podem ser simplificadas? Deixamos ao leitor a reflexão sobre esta questão.\\
+
+\marginlabel{Sequência Alternada}Vejamos um outro exemplo de recursividade cruzada. O problema é o seguinte: dada uma sequência de números queremos determinar se todos os números ou são maiores que os seus vizinhos esquerdo e direito ou (exclusivo) são menores. Exemplo de sequência que satisfaz esta condi\c cão: \textbf{[0,9,3,7]}. Os elementos nas extremidades só testam uma das condi\c cões. Na prática é como se tivéssemos uma sequência de números em que cada um deles, alternadamente, sobe e desce em valor relativamente ao seu antecessor. A ideia para chegar à solu\c cão baseia-se na compara\c cão dois a dois dos elementos da sequência. Uma sequência alterna se os seus primeiros dois números estiverem em ordem crescente (decrescente) e o resto da sequência sem o primeiro elemento alternar com início decrescente (crescente). O caso de base é trivial e resume-se à situa\c cão de existir apenas um elemento na sequência que manifestamente alterna. Depois destas considera\c cões chegamos à solu\c cão apresentada na listagem \ref{lst:alt}.
+
+\begin{lstlisting}[caption='Sequência Alternada', label=lst:alt]
+def alterna_plus(lst):
+	if len(lst) == 1:
+		return True
+	elif lst[0] > lst[1]:
+		return alterna_minus(lst[1:])
+	else:
+		return False
+		
+def alterna_minus(lst):
+	if len(lst) == 1:
+		return True
+	elif lst[0] < lst[1]:
+		return alterna_plus(lst[1:])
+	else:
+		return False		
+
+def alterna(lst):
+	# a lista não pode ser vazia
+	if len(lst)==1:
+		return True
+	elif lst[0] > lst[1]:
+		return alterna_minus(lst[1:])
+	else:
+		return alterna_plus(lst[1:])	
+\end{lstlisting}
+
+Chamamos a aten\c cão para a necessidade de definir se no início a sequência cresce ou decresce. Note-se ainda os dois casos de base.
+
+\subsection{Sequências}
+
+\marginlabel{Procura Simples}Sequências são colec\c cões ordenadas de objectos. Por defini\c cão uma sequência pode não ter elementos, dizendo-se \textbf{vazia}. A sequência vazia é o equivalente ao $0$ dos números naturais. Comecemos com um exemplo simples: saber se um elemento faz parte de uma sequência. A resposta que pretendemos é de tipo booleano: \textit{True} ou \textit{False}. Vamos usar o que sabemos sobre a estrutura das sequências para resolver o problema.  Claro que vamos esquecer que o problema em Python se podia resolver facilmente com o teste \lstinline!elem in seq!. Este exemplo tem apenas finalidade pedagógica. Aqui o caso de base é um pouco mais complexo. Se a sequência estiver vazia é óbvio que o elemento não está na sequência (\textit{False}). Se tiver elementos e o primeiro for igual ao que procuramos então a resposta é afirmativa (\textit{True}). Se nada disto for verdadeiro temos que continuar a procurar na sequência, mas agora sem o primeiro elemento, pois este já foi testado! Daí o programa da listagem \ref{lst:proc}
+
+\begin{lstlisting}[caption='Procura Simples', label=lst:proc]
+def procura_s(elem, seq):
+	if len(seq) == 0:
+		return False
+	elif seq[0] ==	elem:
+		return True
+	else:
+		return procura_s(elem, seq[1:])	
+\end{lstlisting}
+
+\marginlabel{Capicua}Uma \textbf{capicua} (também chamada de palíndrome) é uma sequência que é igual lida da esquerda para a direita ou da direita para a esquerda. Há muitas formas de determinar se uma dada sequência é ou não capicua. Vamos pensar numa solu\c cão recursiva. A chave para encontrar rapidamente a solu\c cão está no modo como decompomos o problema em sub problemas. Essa decomposi\c cão depende da estrutura do objecto e nas propriedades que decorrem da defini\c cão. Assim sabemos que uma sequência vazia é claramente uma capicua. O mesmo sucede se a sequência tiver apenas um elemento. Daqui retiramos o caso de base pois temos resposta directa para a questão. Mas, e se tiver mais do que um elemento? Bom neste caso será capicua se os elementos nos extremos da sequência forem iguais e se o resto da capicua sem estes elementos for uma \ldots capicua!. A listagem \ref{lst:cap} mostra o respectivo programa.
+
+\begin{lstlisting}[caption='Capicua', label=lst:cap]
+def capicua(seq):
+	if (len(seq)== 0) or  (len(seq)== 1):
+		return True
+	elif seq[0] == seq [-1]:
+		return capicua(seq[1:-1])
+	else:
+		return False
+\end{lstlisting}
+
+\marginlabel{Inversão}Todos sabemos que é fácil inverter uma sequência em Python. Basta fazer \textbf{seq[::-1]}. Mas nem todas as linguagens são como Python! Então vamos ver como poderíamos resolver a questão de um modo geral. Vamos \textbf{pensar recursivo}: decompor o problema em sub problemas alguns semelhantes ao problema inicial mas de menor dimensão.  Admitamos que \textit{alguém} consegue resolver o problema de inverter a sequência \textbf{sem} o primeiro elemento. Então basta pegar nesta solu\c cão parcial e acrescentar no \textbf{final} o primeiro elemento. A figura \ref{fig:inv} mostra a ideia.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/inverte.eps}
+\caption{Inverter uma sequência}
+\label{fig:inv}
+\end{center}
+\end{figure}
+
+O programa correspondente é dado na listagem \ref{lst:inv}.
+
+\begin{lstlisting}[caption='Inverte', label=lst:inv]
+def inverte(seq):
+	if len(seq) == 0:
+		return seq
+	else:
+		return inverte(seq[1:]) + seq[0]
+
+\end{lstlisting}
+
+Tal como está definido o programa apenas pode ser usado para cadeia de caracteres. Porquê? Que modifica\c cões são necessárias para que funcione para, por exemplo, listas?\\
+
+\marginlabel{Decomposi\c cão}Já por várias vezes pusemos em relevo a necessidade de decompor um problema em sub problemas semelhantes. Mas haverá apenas uma maneira de o fazer? Consideremos o exemplo anterior da inversão de uma sequência. Posso considerar uma decomposi\c cão em que admito ser capaz de inverter a sequência do primeiro ao penúltimo elemento ficando depois apenas por colocar na posi\c cão apropriada o último elemento que, neste exemplo, passará a ser o primeiro. A figura \ref{fig:inv2} ilustra o processo e a listagem \ref{lst:inv2} apresenta o programa.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/inverte2.eps}
+\caption{Inversão: alternativa}
+\label{fig:inv2}
+\end{center}
+\end{figure}
+
+
+\begin{lstlisting}[caption='Inverte: alternativa', label=lst:inv2]
+def inverte2(seq):
+	if len(seq) == 0:
+		return seq
+	else:
+		return seq[-1] + inverte2(seq[:-1]) 	
+\end{lstlisting}
+
+Mas podemos pensar noutras decomposi\c cões. Por exemplo dividir a sequência ao meio, recursivamente inverter cada metade e depois juntar pela ordem correcta. O respectivo programa é apresentado na listagem \ref{lst:inv3}. Notar a mudan\c ca na condi\c cão de paragem (caso de base). Consegue perceber o porquê da mudan\c ca?
+
+
+\begin{lstlisting}[caption='Inverte:  mais uma alternativa', label=lst:inv3]
+def inverte3(seq):
+	if len(seq) == 1:
+		return seq
+	else:
+		meio= len(seq)//2
+		return inverte3(seq[meio:]) + inverte3(seq[:meio])
+\end{lstlisting}
+
+Havendo então várias possibilidades de decomposi\c cão por qual optar? Não há uma resposta simples para esta questão. Do ponto de vista da \textbf{correc\c cão} do programa o que precisamos garantir é que:
+
+\begin{itemize}
+\item todos os casos de base são cobertos
+\item os sub problemas semelhantes aproximam-nos e convergem para o caso de base
+\item da articula\c cão dos sub problemas semelhantes com os outros sub problemas obtém-se a solu\c cão final
+\end{itemize}
+
+No entanto, também devemos ter em aten\c cão questões como a eficiência e a elegância. \\
+
+\marginlabel{Sobe e Desce} Suponhamos que pretendemos um programa que dado um número $n$ imprime a sequência descendente de $n$ até 1 seguida da mesma sequência em modo ascendente. Por exemplo, se $n=7$ o resultado deverá ser $[7, 6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6, 7]$. Vamos então \textbf{pensar recursivamente}. Vamos admitir que, para um dado $n$, conseguimos mostrar a sequência ascendente e descendente para  valores entre $(n-1)$ e 1. Então para completar o processo basta agora juntar no início e no fim o valor $n$. Qual o caso de base? Fácil, quando $n=1$. Como vemos efectuamos uma decomposi\c cão com um sub problema semelhante e que se aproxima a cada chamada do caso de base. A figura \ref{fig:sd} ilustra a ideia e o programa \ref{lst:sobdesc} mostra a solu\c cão.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/sobedesce.eps}
+\caption{Sobe e Desce}
+\label{fig:sd}
+\end{center}
+\end{figure}
+
+
+\begin{lstlisting}[caption='Sobe e Desce', label=lst:sobdesc]
+def sobe_e_desce(n):
+	if n == 1:
+		return [1,1]
+	else:
+		return [n] + sobe_e_desce(n-1) + [n]
+\end{lstlisting}
+
+\marginlabel{Intercalar} Suponhamos que temos duas sequências de comprimento eventualmente distinto. Admitamos que queremos criar uma nova sequência em que os seus elementos são obtidos intercalando os elementos das duas sequências primitivas. Se uma for maior do que a outra acrescentando no final os elementos em excesso. Suponhamos (pensamento recursivo!) que conseguimos intercalar as duas sequências sem os respectivos primeiros elementos. Trata-se de um problema semelhante e de menor dimensão. Sabemos resolver directamente algum caso? Sim! Quando uma das sequências não tiver elementos o resultado é simplesmente a outra sequência. Daí o programa que a listagem \ref{lst:inter1} apresenta.
+
+\begin{lstlisting}[caption=Alternar, label=lst:inter1]
+def inter(l1,l2):
+	if l1 == []:
+		return l2
+	elif l2 == []:
+		return l1
+	else:
+		return [l1[0],l2[0]] + inter(l1[1:],l2[1:])
+\end{lstlisting}
+
+Acreditamos, com o leitor, que este não é um problema muito difícil. Afinal só nos era pedido para alternar os elementos come\c cando sempre com um elemento de uma delas. Tentemos então complicar a situa\c cão. Queremos agora intercalar os elementos das duas sequências de todos os modos possíveis. A única restri\c cão é que a ordem que eles têm nas sequências primitivas seja respeitada. Por exemplo:
+
+\begin{lstlisting}
+>>> inter_all([1,2],[3,4])
+[[1, 2, 3, 4], [1, 3, 2, 4], [1, 3, 4, 2], [3, 1, 2, 4], [3, 1, 4, 2], [3, 4, 1, 2]]
+\end{lstlisting}
+
+Antes de olhar para a solu\c cão que apresentamos na listagem \ref{lst:inter21} pense no problema e tente encontrar a \textbf{sua} solu\c cão. Como nos pode ajudar aqui o pensamento recursivo? Comecemos por separar nas duas situa\c cões que resultam de come\c car pelo primeiro elemento de cada uma delas. Admitamos agora que conseguimos juntar todas as solu\c cões para cada um dos dois casos enunciados, mas sem os respectivos primeiros elementos. Problema semelhante e menor!  Como chegar à solu\c cão final? Bem, basta colocar o elemento em falta no seu sítio, isto é, no início, de \textbf{todas} as  solu\c cões parciais. Caso de base: quando uma das sequências estiver vazia.
+
+\begin{lstlisting}[caption=Intercalar, label=lst:inter21]
+def inter_all(l1,l2):
+	if l1 == []:
+		return [l2]
+	elif l2 == []:
+		return [l1]
+	else:
+		aux1= [[l1[0]] + temp for temp in inter_all(l1[1:], l2)]
+		aux2= [[l2[0]] + temp for temp in inter_all(l1, l2[1:])]
+		return  aux1 + aux2 
+\end{lstlisting}
+
+Se não \textit{gosta} de listas por compreensão\footnote{Se não gosta faz mal \ldots}, a listagem \ref{lst:inter22} apresenta uma variante. Aqui usamos um terceiro argumento como auxiliar para guardar os resultados parciais.
+
+\begin{lstlisting}[caption=Intercalar: variante, label=lst:inter22]
+def inter_all(l1,l2,aux=[]):
+	if l1 == []:
+		return [aux + l2]
+	if l2 == []:
+		return [aux + l1]
+	return inter_all(l1[1:], l2, aux+[l1[0]]) + inter_all(l1, l2[1:], aux + [l2[0]])
+\end{lstlisting}	
+	
+\marginlabel{Procura Binária}Quando uma sequência está ordenada (por exemplo de modo ascendente) existe um modo bastante eficiente de determinar se um elemento pertence ou não à sequência. A ideia é testar o elemento do \textit{meio}. Se for idêntico ao que procuramos então o programa deve terminar. Caso seja diferente só existem duas hipóteses: ou o elemento que procuramos é maior, e nesse caso procuramos recursivamente na parte dos elementos maiores, ou o elemento é menor e então procuramos recursivamente na parte dos elementos menores. E qual é o caso de base? Quando, por exemplo a sequência se reduz a um elemento. Admitamos que o resultado do programa é o índice do elemento na sequência, caso exista, ou -1 caso contrário. A partir daqui obtemos o programa da listagem \ref{lst:pbin}. 
+
+\begin{comment}
+Qual o custo deste programa, medido em número máximo de chamadas recursivas? Sem perda de generalidade consideremos que o número de elementos na sequência é uma potência de dois, ou seja, $n=2^k$. Como por cada chamada a sequência é dividida ao meio o número \textbf{máximo} de chamadas será $k=log_{2}n$.
+\end{comment}
+
+\begin{lstlisting}[caption='Procura Binária', label=lst:pbin]
+def procura_bin_rec(x,seq, inicio,fim):
+	""" Procura com base no facto dos elementos estarem ordenados
+	"""
+	if inicio == fim:
+		if seq[inicio] == x:
+			return inicio
+		else:
+			return -1
+	else:
+		meio =(inicio + fim)/2
+		if x == seq[meio]:
+			return meio
+		elif x < seq[meio]:
+			return procura_bin_rec(x,seq,inicio,meio-1)
+		else:
+			return procura_bin_rec(x,seq,meio+1,fim)
+\end{lstlisting}
+
+\marginlabel{Árvores Binárias de Procura}As \textbf{árvores binárias de procura} são uma estrutura de dados importante em computa\c cão. São um caso especial de árvore binária (AB). Estas são estruturas que podemos definir indutivamente do seguinte modo\footnote{Esta defini\c cão está feita de modo concreto e por referência a um conjunto de elementos genérico}:\\
+
+\noindent(1)  [] é uma árvore binária\\
+(2) \textbf{se} $AB_{1}$ e $AB_{2}$ são árvores binárias e \textit{elem} é um elemento, apelidado de raíz, \textbf{então} [$AB_{1}$, \textit{elem}, $AB_{2}$ ] é uma árvore binária.
+
+Uma AB= [$AB_{1}$, \textit{elem}, $AB_{2}$ ] diz-se de \textbf{procura} se e só se:
+
+\begin{description}
+\item[ 1)] os elementos de $AB_{1}$ forem todos inferiores a \textit{elem} e $AB_{1}$  for, ela também, uma AB de procura
+\item[ 2)] os elementos de $AB_{2}$ forem todos superiores a \textit{elem} e $AB_{2}$  for, ela também, uma AB de procura
+\end{description}
+ 
+ O problema que nos propomos resolver recursivamente é o de dada uma lista de elementos construir a correspondente AB de procura. O pensamento recursivo torna esta questão muito simples. Se a lista estiver vazia o resultado será uma AB de procura vazia. Se não estiver vazia basta construir uma AB de procura tendo como raíz o primeiro elemento da lista e como AB de procura esquerda aquela que construirmos, recursivametne, com todos os elementos da lista menores do que a raíz, e como AB de procura direita aquela que construirmos, recursivamente, com os elementos da lista que são maiores do que a raíz. É fácil ver que introduzimos problemas semelhantes e menores. A listagem \ref{lst:abp} mostra a solu\c cão.
+ 
+\begin{lstlisting}[caption=Árvore Binária de Procura, label=lst:abp]
+def arv_bin_proc(lista):
+	if lista == []:
+		return lista
+	else:
+		pivot=lista[0]
+		esq= [elem for elem in lista if elem < pivot]
+		dir= [elem for elem in lista if elem > pivot]
+		return [arv_bin_proc(esq)] + [pivot] + [arv_bin_proc(dir)]
+\end{lstlisting}
+
+
+\subsection{Gráficos}
+
+\marginlabel{Figuras Recursivas}Ao longo deste texto já recorremos várias vezes ao modulo \textbf{turtle}. Vejamos como a recursividade nos pode ajudar a fazer algumas figuras interessantes. Comecemos por uma ideia simples: desenhar um segmento e rodar a tartaruga de um dado  ângulo. Repetir a opera\c cão para valores diferentes do segmento.  A listagem \ref{lst:fig1} mostra o código e a figura \ref{fig:fig1} mostra o desenho que se obtém com a chamada \textbf{figura(30,45)}.
+
+
+\begin{lstlisting}[caption='Uma figura simples', label=lst:fig1]
+def figura(lado,angulo):
+	"""Desenha figuras recursivamente a partir de um padrão de base simples.
+	Admite que a tartaruga tem a caneta levantada.
+	"""
+	pd()
+	if lado:
+		forward(lado)
+		right(angulo)
+		figura(lado-1,angulo)
+	ht()
+	return 0
+\end{lstlisting}	
+	
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/fig1.jpg}
+\caption{Uma figura simples}
+\label{fig:fig1}
+\end{center}
+\end{figure}
+
+Qual é o caso de base? Quando o lado fica igual a zero, pois o \textbf{if} não é executado! Como é que sei que essa situa\c cão acontece? Porque a partir de um dado valor inicial do lado cada chamada recursiva retira uma unidade ao comprimento do lado! E se mudarmos o valor do ângulo? Obtemos logicamente uma figura diferente. Na figura \ref{fig:fig2} mostramos o resultado da chamada \textbf{figura(30,75)}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=1]{recursividade/imagens/fig2.jpg}
+\caption{Mudando o ângulo}
+\label{fig:fig2}
+\end{center}
+\end{figure}
+
+Vamos alterar o programa por forma a controlar o valor do decremento do lado. O resultado pode ser observado na listagem \ref{lst:fig3}. Notar como a condi\c cão de paragem foi alterada. Porquê?
+
+\begin{lstlisting}[caption='Mais uma figura', label=lst:fig3]
+def figura_inc_lado(lado,angulo,inc):
+	"Desenha recursivamente com o incremento como parâmetro"
+	pd()
+	if lado > 0:
+		forward(lado)
+		right(angulo)
+		figura_inc_lado(lado-inc,angulo,inc)
+	ht()
+	return 0
+\end{lstlisting}
+
+Podemos ainda controlar a varia\c cão do lado e do ângulo.
+
+
+\begin{lstlisting}[caption='Ainda outra figura', label=lst:fig4]
+def figura_inc_lado_ang(lado,angulo,incl,inca):
+	"Desenha recursivamente com o incremento como parâmetro"
+	pd()
+	if lado > 0:
+		forward(lado)
+		right(angulo)
+		figura_inc_lado_ang(lado-incl,angulo-inca,incl,inca)
+	ht()
+	return 0
+\end{lstlisting}
+
+
+Deixamos para o leitor a tarefa de simular o programa com diferentes valores e observar os resultados obtidos. A figura \ref{fig:fig4} ilustra o caso da chamada do programa com \textbf{figura\_inc\_lado\_ang(100,120,5,3)}.\\
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=1]{recursividade/imagens/fig4.jpg}
+\caption{Variando o lado e o ângulo}
+\label{fig:fig4}
+\end{center}
+\end{figure}
+
+\marginlabel{Pirâmide}Suponhamos que alguém nos diz que pretende um programa para desenhar o objecto que vemos na figura \ref{fig:pira1}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/piramide.jpg}
+\caption{Que linda pirâmide}
+\label{fig:pira1}
+\end{center}
+\end{figure}
+
+A primeira questão que seguramente nos colocamos é a de saber se é \textbf{exactamente esta} pirâmide cujo desenho se pretende. Dir-nos-ão que não. A altura da pirâmide pode ser qualquer. Feita esta clarifica\c cão o nosso segundo pensamento deverá ser algo como: quais sãos os \textbf{dados} do problema? Qual o \textbf{resultado} pretendido? O que sei sobre o \textbf{domínio} que me possa ajudar a transformar os dados no resultado? É aqui que temos que come\c car a alinhar umas ideias. Fazer um desenho pode ajudar. Assim a figura \ref{fig:des1} tenta clarificar a questão.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/piramide1.eps}
+\caption{Um desenho diz mais do que mil palavras?}
+\label{fig:des1}
+\end{center}
+\end{figure}
+
+Vamos recorrer ao módulo \textbf{turtle} para efectuar o desenho. Antes disso há um aspecto importante a sublinhar desde já. O pai da linguística moderna Ferdinand de Saussure dizia que \textit{é o ponto de vista que cria o objecto}. Neste caso podemos olhar para a nossa pirâmide como uma sucessão de linhas. É uma primeira abstra\c cão. Por seu turno, cada linha é uma sequência de quadrados. É uma boa prática de desenho separar estes aspectos. Finalmente, vamos \textbf{pensar recursivo} (ver figura \ref{fig:pirrec1})! Saberemos desenhar uma pirâmide com $n$ níveis se nos facultarem o desenho da pirâmide com $(n-1)$ níveis? E se sim, qual o caso de base para a recursividade?
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/pirrec1.jpg}
+\caption{Pirâmide: pensar recursivo}
+\label{fig:pirrec1}
+\end{center}
+\end{figure}
+
+Desta discussão decorre uma solu\c cão simples que o programa \ref{lst:pirrec1} propõe.
+
+\begin{lstlisting}[caption='As pirâmides', label=lst:pirrec1]
+def pir_rec(niveis):
+	if niveis == 1:
+		# desenha
+		linha_rec(1)
+	else:
+		pir_rec(niveis-1)
+		# nova posição
+		pu()
+		setx(xcor() - ((niveis - 2) * lado) - (lado/2)
+		sety(ycor()- lado)
+		pd()
+		linha_rec(niveis)
+\end{lstlisting}
+
+O programa traduz a ideia de que se só temos uma linha para desenhar tratamos disso directamente, caso contrário desenhamos recursivamente uma pirâmide com  $(n-1)$ níveis e depois terminamos acrescentando (desenhando) a última linha.  O código incorpora adicionalmente os comandos necessários ao posicionamento correcto da tartaruga. A etapa seguinte é o da impressão das linhas. Como o nome da fun\c cão indicia tal pode ser feito também recursivamente. Afinal desenhar $n$ quadrados é fácil se tivermos \textit{alguém} que nos ajude desenhando $(n-1)$ quadrados. Do último nós tratamos directamente! Usando então o mesmo princípio de decomposi\c cão obtemos o programa da listagem \ref{lst:pirrec2}.
+
+\begin{lstlisting}[caption='As linhas', label=lst:pirrec2]
+def linha_rec(n):
+	if n == 1:
+		# desenha quadrado
+		quadrado()	
+	else:
+		linha_rec(n-1)
+		# vai para o local certo
+		pu()
+		setx(xcor() + lado)
+		pd()
+		quadrado()
+\end{lstlisting}
+
+Também aqui foi preciso incorporar comandos de controlo de posicionamento da tartaruga. Para concluir basta concretizar como se desenha um quadrado o que mostramos na listagem \ref{lst:pirrec3}.
+
+\begin{lstlisting}[caption='Quadrados', label=lst:pirrec3]
+def quadrado():
+	# desenha
+	r=randint(0,255)
+	g=randint(0,255)
+	b=randint(0,255)
+	fillcolor(r,g,b)
+	fill(True)
+	for i in range(4):
+		fd(20)
+		rt(90)
+	fill(False)
+	return True	
+\end{lstlisting}
+
+O código consiste essencialmente em repetir quatro vezes o desenho de um segmento e uma rota\c cão de noventa graus. Na solu\c cão apresentada não resistimos, no entanto,  a incorporar alguma cor! A figura \ref{fig:pirrec4} mostra um exemplo de resultado quando  o lado vale 20 unidades\footnote{Este valor pode ser tornado variável, levando a uma pequena modifica\c cão no código.}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/pirrec4.jpg}
+\caption{Uma pirâmide colorida}
+\label{fig:pirrec4}
+\end{center}
+\end{figure}
+
+
+
+
+\section{Exemplos Complementares}
+
+\marginlabel{Anagramas e Permuta\c cões}Diz-se que duas palavras são anagramas quando são compostas exactametne pelos mesmos caracteres independentemente da ordem. Por exemplo,  (\textbf{roma},  \textbf{amor}) ou (\textbf{lapa} ,  \textbf{pala}) são anagramas. Pretende-se um programa que dada uma palavra gera todos os anagramas possíveis dessa palavra. Como obter uma solu\c cão recursiva? Vamos decompor o problema nos seguintes sub problemas: gerar os anagramas para a palavra inicial sem o primeiro caracter (sub problema semelhante) para depois inserir o caracter inicial em \textbf{todas} as posi\c cões possíveis de \textbf{todos} os anagramas gerados. É esta solu\c cão que apresentamos na listagem \ref{lst:ana}.
+
+\begin{lstlisting}[caption='Anagrama', label=lst:ana]
+def anagrama(cad):
+	if cad == '':
+		return [cad]
+	else:
+		resp= []
+		for perm in anagrama(cad[1:]):
+			for pos in range(len(perm) + 1):
+				resp.append(perm[:pos] + cad[0] + perm[pos:])
+		return resp
+\end{lstlisting}
+
+Os leitores que gostam de usar listas por compreensão podem chegar a outra solu\c cão com a que apresentamos na listagem \ref{lst:anag}.
+
+\begin{lstlisting}[caption='Anagrama: variante', label=lst:anag]
+def anag(cad):
+	if cad == '':
+		return [cad]
+	else:
+		return [perm[:pos] + cad[0] + perm[pos:] for perm in anag(cad[1:]) for pos in range(len(perm)+1)]
+\end{lstlisting}
+
+Ao olharmos para este problema facilmente concluímos que ele é na prática o mesmo de gerar todas as permuta\c cões para um conjunto de $n$ elementos. Com as adapta\c cões menores para funcionar com listas, apresentamos na listagem \ref{lst:permut} o correspondente programa recursivo.
+
+\begin{lstlisting}[caption='Permuta\c cões', label=lst:permut]
+def permuta(lst):
+	if lst == []:
+		return [[]]
+	else:
+		resp= []
+		for perm in permuta(lst[1:]):
+			for pos in range(len(perm) +1):
+				resp.append(perm[:pos] + [lst[0]] + perm[pos:])
+		return resp
+\end{lstlisting}
+
+\marginlabel{Ordenamento}O problema do ordenamento de uma sequência é um problemas mais correntes em programa\c cão. Existem vários modos de o fazer e a análise das vantagens e inconvenientes das diferentes propostas revelou-se uma tarefa que além de importante foi estimulante do ponto de vista matemático.  Neste momento vamos olhar para duas  solu\c cões recursivas para este problema.\\
+
+\marginlabel{Ordenamento por Fusão}O ordenamento por fusão baseia-se num princípio semelhante ao da procura binária: dividir a sequência ao meio, ordenar cada uma das partes recursivamente e depois fundir as duas sub sequências de modo a obter a sequência original ordenada (ver figura \ref{fig:fusao}). O caso de base ocorre quando as sequências têm tamanho unitário, situa\c cão em que estão for\c cosamente ordenadas. Notar o uso da fun\c cão \textbf{deepcopy}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/fusao.eps}
+\caption{Ordenamento por Fusão}
+\label{fig:fusao}
+\end{center}
+\end{figure}
+
+
+\begin{lstlisting}[caption='Ordenamento por Fusão', label=lst:ordfus]
+def ordena_fusao(seq,esquerda,direita):
+	"""Dividir a sequência ao meio. Ordenar cada uma das partes separadamente.
+	Depois fundir as duas partes"""
+	if esquerda == direita:
+		return [seq[esquerda]]
+	else:
+		seq=deepcopy(seq)		
+		meio = (esquerda + direita)//2
+		seq_esq=ordena_fusao(seq,esquerda,meio)
+		seq_dir=ordena_fusao(seq,meio+1,direita)
+		return fusao(seq_esq,seq_dir)
+
+def fusao(seq1,seq2):
+	seq=[]
+	p_1=0
+	p_2=0
+	while (p_1 < len(seq1)) and (p_2 < len(seq2)):
+		if seq1[p_1] < seq2[p_2]:
+			seq.append(seq1[p_1])
+			p_1 = p_1 + 1
+		else:
+			seq.append(seq2[p_2])
+			p_2 = p_2 + 1
+	if p_1 == len(seq1):
+		seq.extend(seq2[p_2:])
+	else:
+		seq.extend(seq1[p_1:])
+	return seq
+\end{lstlisting}
+
+\marginlabel{Ordenamento Rápido} O ordenamento rápido\footnote{Em inglês \textit{quicksort}.} deve o seu nome a ser, em certas circunstâncias, o método de ordenamento mais rápido. O seu princípio é o seguinte. Escolhe-se um seu elemento para pivot e divide-se a sequência inicial em duas sub sequências ficando numa, à direita,  todos os elementos maiores do que o pivot e na outra, à esquerda todos os elementos menores do que o pivot. Este último vai ficar na sua posi\c cão definitiva. Este processo é repetido recursivamente sobre cada uma das duas subsequências (ver figura \ref{fig:quick}). Ao contrário do ordenamento por fusão aqui o ordenamento é \textbf{feito no lugar}, não sendo por isso necessário proceder a cópias da sequência.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/quick.eps}
+\caption{Ordenamento Rápido}
+\label{fig:quick}
+\end{center}
+\end{figure}
+
+
+\begin{lstlisting}[caption='Ordenamento Rápido', label=lst:ordrap]
+def quicksort(seq,inicio,fim):
+	"""Quick Sort"""
+	if inicio < fim:
+		divisor= particao(seq, inicio, fim)
+		quicksort(seq, inicio, divisor)
+		quicksort(seq, divisor+1, fim)
+	return seq
+
+
+def particao(lista, esquerda, direita):
+	"""Divide a lista em duas metades em torno de um elemento (pivot).
+	no final todos os elementos menores (maiores) ou iguais ao pivot estão à
+	esquerda (direita) da lista. Devolve o índice que separa a parte esquerda da direita"""
+	pivot=lista[esquerda]
+	p_esq=esquerda
+	p_dir=direita
+	while True:
+		while lista[p_dir] > pivot:
+			p_dir = p_dir - 1
+		while lista[p_esq] < pivot:
+			p_esq = p_esq + 1
+		if p_esq < p_dir:
+			lista[p_esq],lista[p_dir] = lista[p_dir],lista[p_esq]
+			p_esq=p_esq + 1
+			p_dir=p_dir - 1
+		else:
+			return p_dir			
+\end{lstlisting}
+
+
+\marginlabel{Fractais}Fractais, teoria do caos, sistemas complexos são assuntos científicos de interesse crescente. No início deste texto referimos o \textit{Sierpinski Gasket} e mostrámos a respectiva imagem(ver figura \ref{fig:spier}). Vamos mostrar como podemos construir um simulador recursivo usando o módulo \textbf{turtle}. Da imagem retiramos que a figura pode ser decomposta em três sub problemas semelhantes. O mais difícil parece ser gerir a \textbf{localiza\c cão} de cada um dos três triângulos que resultam da decomposi\c cão. A recursividade trata disso para nós! O caso de base é por nós controlado através do parâmetro nível: quando for zero, termina. O caso recursivo é tratado dentro de um ciclo que é repetido três vezes. Se nos abstrairmos da chamada recursiva esse ciclo desenha um \ldots triângulo!
+
+\begin{lstlisting}[caption='Sierpinski Gasket', label=lst:sier]
+def sierpinski(tamanho,nivel):
+	if nivel == 0:
+		return True
+	else:
+		for i in range(3):
+			sierpinski(tamanho/2,nivel -1)
+			fd(tamanho)
+			rt(120)
+\end{lstlisting}
+
+Na figura \ref{fig:sier3} pode ver-se o resultado de executar o programa com lado 200 e nível 4.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=1.0]{recursividade/imagens/sier3.jpg}
+\caption{Sierpinski: 200,4}
+\label{fig:sier3}
+\end{center}
+\end{figure}
+
+
+\section{Quando usar?}
+
+A recursividade conduz a solu\c cões simples, legíveis e elegantes. O seu uso depende fundamentalmente da estrutura dos objectos e da natureza do problema. Mas também temos que nos preocupar com os seus custos em espa\c co e em tempo. Com efeito cada vez que há uma chamada recursiva é necessário guardar o contexto do programa para mais tarde ser possível  refazer os cálculos. Com objectos de grande dimensão isto pode tornar-se bastante pesado.  Como critério de escolha diríamos, em primeiro lugar, a dificuldade em encontrar  uma solu\c cão iterativa simples  (veja-se por exemplo o caso das Torres de Hanói). Depois de encontrar uma solu\c cão recursiva a decisão seguinte passa por saber se se justifica a sua transforma\c cão ou não numa versão iterativa. Como já referimos certas versões recursivas (as terminais) são já transformadas automaticamente nas correspondentes versões iterativas. 
+
+\marginlabel{Memorização} Existem também comandos adicionais com que se podem anotar as solu\c cões recursivas de modo a torná-las mais eficientes evitando o refazer de muitos cálculos. Por exemplo, quando calculamos o número de fibonacci de ordem 4, os cálculos recursivos obrigam a computar fib(4) = fib(3) + fib(2). Por seu turno fib(3) determina o cálculo de fib(2) cujo terá que ser recalculado na segunda chamada recursiva de fib(4). A figura \ref{fig:fib} ilustra o problema.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/fib.eps}
+\caption{Fibonacci: cálculos duplicados}
+\label{fig:fib}
+\end{center}
+\end{figure}
+
+Para nos ajudar a resolver esta questão vamos usar uma técnica conhecida por memorização\footnote{Esta ideia é usada de modo geral em programação dinâmica}.  A ideia consiste em guardar os cálculos já efectuados e cada vez que precisamos de calcular um valor consultamos primeiro a nossa memória antes de efectuar explicitamente os cálculos. O acesso à memória deve ser eficiente sob pena de, a não ser assim, se perder no acesso o que se ganha por não ter que (re)fazer os cálculos. Para tal vamos recorrer a um dicionário: a chave será  $n$ e o valor $fib(n)$.  Vejamos como fica a nossa nova versão de Fibonacci.
+
+\begin{lstlisting}
+def fibonacci(n, res={}):
+    if n == 1 or n == 2:
+        return 1
+    else:
+        if n in res:
+            return res[n]
+        else:
+            fib_n = fibonacci(n-1, res) + fibonacci(n-2, res)
+            res[n] = fib_n
+            return fib_n
+\end{lstlisting}
+
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,,logo=\bcdz]{módulo functools}O mecanismo de memorização pode ser implementado recorrendo ao módulo \texttt{functools}. Vejamos como:\begin{lstlisting}from functools import lru_cache@lru_cache(maxsize=None)def fib(n):    if n < 2:        return n    return fib(n-1) + fib(n-2)if __name__ == '__main__':    for i in range(1,11):        print(fib(i))\end{lstlisting}Criamos uma cache, neste caso com tamanho ilimitado, onde são guardados os resultados que vão sendo calculados. Esta facilidade, é mais geral do que o mecanismo acima apresentado,  sendo usado em vários tipos de aplicações, como por exemplo na busca de documentos na web evitando duplicações de acesso. O leitor interessado deve consultar o manual da linguagem.\end{bclogo}
+
+\marginlabel{Tranforma\c cão Recursivo Iterativo}Finalmente, podemos tentar fazer a transforma\c cão de modo \textbf{manual}. Está fora do alcance deste texto introdutório apresentar a teoria que valida estas transforma\c cões. Assim iremos apresentar um exemplo simples que mostra como nos podemos substituir ao compilador. A ideia central passa pela introdu\c cão de um mecanismo de \textbf{pilha}\footnote{No capítulo \ldots falaremos com mais rigor sobre pilhas e outros tipos de dado.  Por agora basta que o leitor perceba que uma pilha é um mecanismo que pode ser implementado através de uma lista na qual os elementos são introduzidos e retirados da mesma \textit{extremidade}.}. A pilha será usada para guardar os diferentes contextos das chamadas recursivas (fase de enrolar), para mais tarde os podermos ir aí buscar e efectuar os cálculos pendentes (fase de desenrolar). \\
+Retomemos então o exemplo do cálculo do factorial (ver listagem \ref{lst:factbis}).
+
+\begin{lstlisting}[caption= De novo o factorial, label=lst:factbis]
+def fact_rec(n):
+        if n == 0:
+            return 1
+        else:
+            return x * fact_rec(n - 1)
+\end{lstlisting}
+
+Como referimos, para remover a recursividade precisamos implementar um mecanismo de pilha. Antecipando o que trataremos mais à frente, vamos definir uma \textbf{classe} pilha, conforme ilustra a listagem \ref{lst:stack}.
+
+\begin{lstlisting}[caption= Tipo de Dados Pilha, label=lst:stack]
+class Stack:
+	
+	# Construtor
+	def __init__(self):
+		self.stack = []
+		
+	def push(self,object):
+		self.stack.append(object)
+		
+	def pop(self):
+		if len(self.stack) == 0:
+			raise 'Error', 'stack is empty'
+		obj = self.stack[-1]
+		del self.stack[-1]
+		return obj
+		
+	def isempty(self):
+		if len(self.stack) == 0:
+			return True
+		else:
+			return False
+			
+	def top(self):
+		return self.stack[-1]
+	
+	def show(self):
+		print self.stack
+\end{lstlisting}
+
+A fazermos o comando \lstinline!pilha=Stack()! associamos ao nome \textit{pilha} um objecto do tipo \textit{Stack}\footnote{Em termos concretos criamos um objecto de valor  lista vazia.}. A constru\c cão da solu\c cão passa por substituir cada chamada recursiva pela salvaguarda na pilha do contexto (variáveis locais, parâmetros,\ldots) e pela actualiza\c cões das variáveis. Numa segunda fase os cálculos em suspenso são realizados por consulta do contexto guardado na pilha. A listagem \ref{lst:factit} mostra o resultado do processo.
+
+\begin{lstlisting}[caption=  Factorial Iterativo, label=lst:factit]
+def fact_it(n):
+	stack=Stack()
+	factorial = 1;
+	# desenrolar
+	while n > 0:
+		stack.push(n)
+		n = n -1
+	# enrolar
+	while not stack.isempty():
+		factorial = factorial * stack.pop()
+	return factorial
+\end{lstlisting}
+
+Para concluir podemos ainda dizer que há também uma questão de estilo pessoal na op\c cão pelo uso da recursividade. Ao leitor a decisão final, que se espera seja fundamentada!
+
+\section*{Sumário}
+
+Neste capítulo introduzimos através de vários exemplos o conceito de defini\c cões recursivas. Um programa diz-se rec ursivo se, directa ou indirectamente, se chama a si próprio. As situa\c cões recursivas aparecem quando estamos a decompor um problema em sub problemas e damos origem a alguns sub problemas semelhantes ao original.  Para poder funcionar as solu\c cões recursivas recorrem a casos de base que são resolvidos directamente, e a casos recursivos. Estes últimos devem ser tais que fa\c cam convergir as sucessivas chamadas recursivas para os casos de base. Existem vários tipos de recursividade designadas por terminal, linear ou cruzada. Existe um custo computacional inerente às defini\c cões recursivas sendo no entanto nalguns casos a melhor solu\c cao possível para um problema. Existem situa\c cões recursivas que podem ser optimizadas seja pelo compilador seja por anota\c cões no próprio codigo.
+\addcontentsline{toc}{section}{Sumário}
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Procure determinar o seu de conhecimento dos seguintes conceitos.
+
+\begin{itemize}
+\item O que é uma definição recursiva. 
+\item Que tipos de recursividade conhece.
+\item Quando se deve recorrer à recursividade.
+\item Como se pode transformar um programa recursivo.
+\item Em que consiste a técnica da memorização.
+\end{itemize}
+
+
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\facil
+Todos sabemos que as linguagens de programa\c cão têm um operador que  permite calcular o resto da divisão inteira de dois números. Admitindo que os números são positivos ou nulos implemente um versão recursiva para o problema.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+Existe um modo alternativo de calcular uma exponencial que se baseia na identidade:
+
+\begin{equation*} x^{n}=
+	\begin{cases}
+		x^{n/2} \times x^{n/2} & \text{se $x$ for par}\\
+		x^{n/2} \times x^{n/2} \times x & \text{se $x$ for ímpar}
+	\end{cases}
+\end{equation*}
+
+Com base nesta identidade defina uma solu\c cão recursiva para o cálculo da exponencial. Tenha em aten\c cão problemas de eficiência computacional evitando a duplica\c cão de cálculos.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que permite eliminar de uma cadeia de caracteres os casos de caracteres repetidos em posi\c cões consecutivas. Por exemplo:
+
+\begin{lstlisting}
+>>> print removedup('aabccda')
+abcda
+\end{lstlisting}
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que dados dois conjuntos determina se um está incluído no outro.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que dados dois conjuntos determina a sua intersecção.
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+O conjunto potência de um dado conjunto é o conjunto de todos os seus subconjuntos. Implemente o programa que calcula o conjunto potência para um dado conjunto.
+\end{Exercicio}
+
+% --- árvores binárias de procura
+
+\begin{Exercicio}\medio
+Escreva um programa recursivo que dado um elemento e uma árvore binária de procura indique se o elemento pertence ou não à árvore. Altere a sua solu\c cão por forma a também devolver a sub-árvore que tem esse elemento por raíz.
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+Escreva um programa recursivo que permita inserir um elemento numa árvore binária de procura. No final a árvore deve continuar a ser uma AB de procura. Caso o elemento já exista nada deve feito.
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\medio
+Os elementos de uma  AB de procura podem ser listados de três modos distintos:
+
+\begin{itemize}
+\item em ordem: quando se listam primeiro  os elementos da sub-árvore esquerda, seguido da raíz e terminando com os elementos da sub-árvore direita;
+\item pré-ordem: primeiro a raíz, depois a sub-árvore esquerda e finalmente a sub-árvore direita
+\item pós-ordem: primeiro a sub-árvore esquerda, seguida da sub-árvore direita e terminando com a raíz.
+\end{itemize}
+
+
+Desenvolva os respectivos programas de travessia na versão recursiva.
+
+\end{Exercicio}
+
+% --- Fim das AB de procura
+
+\begin{Exercicio}\modulo{turtle}\facil
+Retome o exemplo da listagem \ref{lst:fig4} e fa\c ca variar os próprios incrementos. Simule para alguns valores.
+\end{Exercicio}
+
+\begin{Exercicio} \label{exe:arv}\modulo{turtle}\facil
+Queremos usar o módulo \textbf{turtle} para desenhar uma árvore simples como a indicada na figura \ref{fig:arv1}.
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/arvore1.jpg}
+\caption{Uma árvore recursiva}
+\label{fig:arv1}
+\end{center}
+\end{figure}
+
+Desenvolva o respectivo programa recursivo. A figura \ref{fig:arv2} dá uma ideia do processo generativo.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/arvore2.jpg}
+\caption{O processo}
+\label{fig:arv2}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{turtle}\medio
+
+A árvore do exercício \ref{exe:arv} não é muito \textit{natural}. Uma maneira de desenhar árvores mais interesantes consiste em desequilibrar a sub árvore direita e a esquerda fazendo, por exemplo os ramos de uma maiores do que a outra. A figura \ref{fig:arv3} ilustra um resultado quando o lado esquerdo é duplo do lado direito. Tente criar o programa recursivo que permite obter estes desenhos.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/arvore3.jpg}
+\caption{Uma árvore mais realista}
+\label{fig:arv3}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Como sabemos uma lista pode ter como elementos listas. Um problema interessante é o de transformar uma lista genérica numa lista plana, isto é, uma lista formada apenas pela sequência dos seus elementos. Exemplo:
+
+\begin{lstlisting}
+>>> print aplana([[1,2],[[3]],4, [5,[6],7]])
+[1, 2, 3, 4, 5, 6, 7]
+\end{lstlisting}
+
+Desenvolva o respectivo programa recursivo.
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+Escreva um programa recursivo que permita determinar se um dado padrão ocorre ou não num dado texto. O que se lhe oferece dizer sobre os custos computacionais da sua solu\c cão?
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Suponhamos que temos uma sequência de $n$ vectores $(V_{1},V_{2}, \ldots, V_{n})$, todos do mesmo cumprimento. Pretende-se um programa que forne\c ca todos os vectores possíveis de comprimento $n$ formados combinando ordenadamente os elementos dos vectores $V_{i}$. Exemplo:
+
+\begin{lstlisting}
+>>> print prod_vectores([[1,2,3],['a','b','c']])
+[[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c'], [3, 'a'], [3, 'b'], [3, 'c']]
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\dificil
+A multiplica\c cão de matrizes é um processo fundamental em muitas áreas da computa\c cão. O seu custo computacional, medido em termos do número de multiplica\c cões e adi\c cões dos seus elementos, é bastante elevado. Existe um método recursivo de multiplica\c cão de matrizes, conhecido por método de \textbf{Strassen}, bastante eficiente. Se tivermos duas matrizes $n \times n$, $X$ e $Y$, e quisermos calcular $Z=X \times Y$ sabemos que o número de multiplica\c cões necessárias é da ordem de $\mathcal{O}(n^3)$. O método de Strassen consiste em dividir \textbf{recursivamente} cada uma das duas matrizes em quatro matrizes de dimensão $n/2 \times n/2$. Quando temos matrizes $2 \times 2$ Strassen encontrou um conjunto de formulas que apenas necessitam de 7 multiplica\c cões e 18 somas e/ou adi\c cões. Com este algoritmo a complexidade baiuxa para $\mathcal{O}(n^{2.81})$. Vejamos como. Consideremos as matrizes $X$ e $Y$ e o seu produto $Z$.
+
+\begin{equation*}
+	\begin{pmatrix}
+ 		z_{11} & z_{12}\\
+		 z_{21} & z_{22}
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		 x_{11} & x_{12}\\
+		 x_{21} & x_{22}
+	\end{pmatrix}
+	\times
+	\begin{pmatrix}
+		 y_{11} & y_{12}\\
+		 y_{21} & y_{22}
+		\end{pmatrix}
+\end{equation*}
+
+As fórmulas de Strassen são as seguintes:
+
+\begin{align*}
+p_{1} &= (x_{11} + x_{22}) \times (y_{11} + y_{22})\\
+p_{2} &= (x_{21} + x_{22}) \times y_{11} \\
+p_{3} &= x_{11} \times (y_{12} - y_{22})\\
+p_{4} &=  x_{22} \times (y_{21} + y_{11})\\
+p_{5} &= (x_{11} + x_{12}) \times y_{22}\\
+p_{6} &= (x_{21} - x_{11}) \times (y_{11} + y_{12})\\
+p_{7} &= (x_{12} - x_{22}) \times (y_{21} + y_{22})
+\end{align*}
+
+
+A partir delas podemos computar os elementos da matriz $Z$:
+
+\begin{align*}
+z_{11}&= p_{1} + p_{4} - p_{5} + p_{7}\\
+z_{12}&= p_{3} + p_{5}\\
+z_{21}&= p_{2} + p_{4}\\
+z_{22}&=  p_{1} + p_{3} - p_{2} + p_{6}
+ \end{align*}
+ 
+ 
+Para simplificar admita que $n$ é uma potência de 2, isto é $n=2^k$ e implemente o algoritmo.
+
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+Um autómato finito é uma máquina de estados usada em várias aplica\c cões informáticas, como por exemplo para implementar um analisador \c cexical de um compilador. Um \textbf{Autómato finito} pode ser definido matematicamente pelo tuplo:
+
+\[\mathcal{M}=(Q,\Sigma,\delta,q_{0},F)\]
+
+no qual, $Q$ é o conjunto de estados do autómato, $\Sigma$ é o alfabeto de entrada, $\delta$ é a fun\c cão de transi\c cão entre estados determinada pela leitura de um símbolo do alfabeto de entrada, $q_{0}$ é o estado inicial do autómato e $F$ é o conjunto de estados finais de $\mathcal(M)$. Notar que $F \subseteq Q$. Quando usado como reconhecedor de sequências de caracteres do alfabeto de entrada a máquina é colocada no seu estado inicial e vai transitando entre estados à medida que consome os símbolos da sequência. Se quando consumir todos os símbolos de entrada a máquina se encontrar num dos seus estados finais diz-se que reconheceu a sequência. O que se pretende é uma implementa\c cão de um simulador \textbf{recursivo} de um autómato finito. O simulador deve ser genérico e não depender de um autómato em particular. A figura \ref{fig:auto} mostra graficamente um autómato finito que reconhece cadeias de 1 e 0 em que o número de uns é par.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{recursividade/imagens/automato.eps}
+\caption{Detector de Paridade Par}
+\label{fig:auto}
+\end{center}
+\end{figure}
+
+Para lhe simplificar a vida na listagem \ref{lst:auto} mostramos como se pode \textbf{representar} o autómato indicando explicitamente $\delta$ (por recurso a um dicionário), o estado inicial $q_{0}$ e o conjunto dos estados finais $F$.
+
+\begin{lstlisting}[caption='Detector de Paridade Par', label=lst:auto]
+transit={'P':{'0':'P','1':'I'}, 'I':{'0':'I','1':'P'}}
+inicial= 'P'
+final= ['P']
+\end{lstlisting}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{turtle}\dificil
+A curva conhecida por Floco de Neve\footnote{Do inglês \textit{Snowflake}.} forma-se de acordo com uma regra simples. Num dado nível, cada lado é dividido em três partes iguais sendo retirada a parte do meio. De seguida, a partir das extremidades interiores formam-se dois novos segmentos, de tamanho igual a um terço do original, com uma inclinação de 60º  em relação aos segmentos que se mantém e  que se unem numa das extremidades. A figura \ref{fig:snow} mostra o processo de construção desta curva para os níveis 1, 2 e 3. Usando o módulo \texttt{turtle} desenvolva um programa que permita desenhar a curvas. O valor do lado e o número de níveis a considerar são  parâmetros do programa.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.7]{recursividade/imagens/snowflake.eps}
+\caption{Floco de Neve}
+\label{fig:snow}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{turtle}\muitodificil
+A curva de Hilbert é um exemplo de curva de preenchimento de espaço. A sua ideia baseia-se em decompor a curva do nível $n$ em quatro curvas de nível $n - 1$ ligadas entre si. A figura \ref{fig:hilb} mostra a curva desenhada caso só tenha um nível, dois níveis ou três níveis. Usando o módulo \texttt{turtle} desenvolva um programa que permita desenhar a curvas. O valor do lado e o número de níveis a considerar são  parâmetros do programa.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.7]{recursividade/imagens/hilbert.eps}
+\caption{Curvas de Hilbert}
+\label{fig:hilb}
+\end{center}
+\end{figure}
+
+\end{Exercicio}

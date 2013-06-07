@@ -1,0 +1,1366 @@
+%%% introd
+%%% Introdução
+%%% Julho 2006
+%%% Correcções : Agosto 2007
+%%% Nova versão Julho 2011
+%%% Alterações Setembro 2012
+%%% Completar Junho 2013
+
+\chapter{Introdução}\label{cap:intro}
+
+\epigraph{Todo o começo é difícil -- isso vale em qualquer ciência.}{Karl Marx, \textit{in} Prefácio à primeira edição alemã de “O Capital”}
+
+\begin{objectivos}
+\item Identificar as componentes principais de um computador baseado na arquitectura de Von Neumann
+\item Perceber o modo como um computador funciona 
+\item Introduzir ideias básicas sobre linguagens e paradigmas de programação
+\item Introduzir, usando exemplos simples, aspectos básicos da linguagem Python
+\end{objectivos}
+
+\section{Computadores}
+
+Um computador não é mais do que  uma associação de uma máquina com um conjunto de programas que permitem a construção e execução de \textbf{outros} programas escritos numa dada linguagem de programação. O fim último é a resolução de problemas. O computador tanto pode estar instalado comodamente na nossa secretária como estar embebido noutros equipamentos, desde uma máquina de lavar roupa a um controlador de uma central nuclear passando pelo nosso telemóvel. Nas secções seguintes vamos abordar de modo muito sumário estes aspectos.
+
+\subsection{Arquitectura}\label{sec:arquitect}
+
+O ser humano tem uma característica fundamental: construtor de artefactos. Ao longo dos séculos foi inventando objectos que ampliaram as suas capacidades mecânicas (e.g., um martelo) ou os seus sentidos (e.g., um telescópio). Com o aparecimento do computador o desafio passou a ser maior e traduz-se por  criar uma extensão às suas capacidades mentais\footnote{O sociólogo Daniel Bell chama ao computador uma \textit{tecnologia intelectual}. Um relógio ou um mapa são outros exemplos.}. Será esse o papel dos computadores! O debate sobre a possibilidade de identificar o ser humano com as máquinas tem contornos filosóficos e pré-existe mesmo a construção do primeiro computador\footnote{Basta pensar em Leonardo Da Vinci, Charles Babbage, ou Alan Turing.}. Há quem defenda (e.g.,  Herbert Simon) que o ser humano e os computadores são apenas duas instâncias de algo mais abstracto a que chamaram sistema simbólico de símbolos. Outros (e.g.,  Rodney Brooks)  falam de algo mais ousado que designam por \textit{Robot Sapiens}, um novo ser simbiótico que resulta da associação Homem-Máquina. Independentemente deste debate é certo que, a num certo nível de abstracção, podemos associar a arquitectura funcional de um computador dos nosso dias  com algumas das nossas capacidades. Muito superficialmente o ser humano possui órgãos de captura de informação (e.g.,  os olhos), órgãos de actuação (e.g.,  os nossos braços) e órgãos de processamento e armazenamento da informação (e.g.,  o cérebro).
+
+Esta decomposição quando transposta para o computador dá lugar à  arquitectura simplificada (por exemplo, não incluímos as componentes de rede, essenciais nos computadores de hoje) de um computador que podemos observar na figura \ref{fig:comp}. 
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale=0.8]{introd/imagens/computador.eps}
+\caption{Arquitectura de um computador}
+\label{fig:comp}
+\end{figure}
+
+Do ponto de vista da sua dinâmica um computador executa programas que foram previamente armazenados na sua memória externa (e.g.,  um disco duro)\marginlabel{Arquitectura de Von Neumann}. Esses programas são formados por instruções que são transferidas  para a memória interna (e.g., RAM) e executadas pela máquina graças à unidade de processamento central (CPU). Eventualmente pode haver recurso à entrada de dados através de dispositivos apropriados (e.g.,  teclado) e visualização de resultados graças aos dispositivos de saída (e.g.,  o monitor). Esta é a arquitectura dita de Von Neumann que ainda hoje é predominante\footnote{A entrada em cena de vários processadores cada um com vários núcleos veio alterar um pouco a visão simples da arquitectura convencional, embora as diferenças tenham mais que ver com o modo como o programa é executado do que com a filosofia subjacente à arquitectura descrita.}.
+
+\subsection{Funcionamento}\label{subsec:func}
+
+Quando recebemos o nosso novo computador ele vem equipado com um programa fundamental, o sistema operativo\footnote{Se fomos nós que fabricámos o computador vamos ter que resolver a questão de instalar o SO adequado ao hardware escolhido. Pode ser uma tarefa divertida!}. Tanto pode ser Windows, como Linux, Mac OS X, ou outro qualquer. Um sistema operativo é constituído por um núcleo mais um conjunto de programas que permitem entre outras coisas uma interacção amigável com o utilizador (e.g., um sistema de janelas, controlo por meio de um rato, \ldots\footnote{Hoje já estamos também no tempo dos écrans sensíveis ao toque que faz das mãos de novo um instrumento central na interacção do ser humano com o computador.}). Os nossos programas são escritos graças a um editor. Este  pode existir autonomamente ou estar embebido num ambiente integrado de desenvolvimento (designado por IDE na terminologia anglo-saxónica) como o Visual Studio, o Eclipse ou o Xcode. \marginlabel{Compiladores e Interpretadores} Depois de escrito e depurado de eventuais erros o nosso programa pode ser executado por recurso a programas como os compiladores ou os interpretadores. Na figura \ref{fig:compila} podemos ver a filosofia do uso de um compilador.
+
+
+\begin{figura}
+	{0.6}
+	{introd/imagens/compila.eps}
+	{Compilação}
+	{fig:compila}
+\end{figura}
+
+O nosso programa (designado por programa fonte) começa por ser traduzido pelo compilador  num novo programa escrito em linguagem máquina, i.e., numa linguagem que aquela arquitectura particular de computador entende. O programa traduzido é posteriormente executado havendo lugar eventualmente à entrada de dados e saída de resultados\footnote{O processo é um pouco mais complexo, pois pode haver lugar à ligação do nosso programa a outros programas ou bibliotecas.}
+
+Já no caso do recurso a um interpretador (ilustrado na figura \ref{fig:inter1}) o programa não é todo traduzido mas antes cada instrução que o compõe é interpretada e executada de acordo com uma dada ordem especificada pelo programa.
+
+\begin{figura}
+	{0.7}
+	{introd/imagens/inter1.eps}
+	{Interpretação}
+	{fig:inter1}
+\end{figura}
+
+Existem vantagens e inconvenientes em cada uma das abordagens. À velocidade da compilação podemos contrapor a maior facilidade de desenvolvimento ou portabilidade quando optamos por um interpretador\footnote{As linguagens de programação não são forçosamente prisioneiras de um destes modos. Mas é mais normal ver um programa escrito em \texttt{C} optar por um compilador e um programa escrito em \texttt{Lisp} optar por um interpretador.}\\
+
+Existem modelos que podemos considerar híbridos. O programa é compilado para código intermédio sendo de seguida interpretadas as suas instruções graças a uma máquina virtual. É a opção usual em \texttt{Java} ou em \texttt{Python} (ver figura \ref{fig:interpy}.
+
+\begin{figura}
+	{0.8}
+	{introd/imagens/traduz.eps}
+	{Interpretação: Python (Adaptado de \cite{Lutz2009})}
+	{fig:interpy}
+\end{figura}
+
+
+\section{Linguagens}
+
+Em qualquer sociedade a comunicação entre os seus membros é mediatizada por uma linguagem. Este princípio aplica-se às formigas, aos macacos, aos seres humanos, ou seja,  a qualquer conjunto de entidades onde existe  o sentido de colectivo. Desde que os computadores passaram a fazer parte da nossa sociedade tornou-se incontornável a necessidade de dialogarmos com eles por meio de uma linguagem que eles entendam. Porém, ao contrário dos seres humanos, que são \marginlabel{Carbono versus Silício}máquinas baseadas no carbono, os computadores são máquinas baseadas no silício. O seu interior é um conjunto bastante denso de componentes electrónicas ligadas entre si de modo como o descrito na figura \ref{fig:comp}. Esses componentes electrónicos funcionam segundo uma lógica binária levando a que no alfabeto da sua linguagem existam apenas dois símbolos que convencionamos serem o $0$ e o $1$. Entre a linguagem  dos humanos e a linguagem da máquina, formada a partir de $0$s e $1$s, foi preciso estabelecer uma ponte que torne a comunicação simultaneamente natural para o ser humano e entendível para o computador.  Aceite este princípio a consequência natural é de que é preciso ao ser humano descrever os seus problemas num programa escrito numa linguagem de programação que seja próxima da sua linguagem e é forçoso que o computador  traduza (compile/interprete) esses programas na sua própria linguagem (ver figura  \ref{fig:comunica}). A segunda questão já foi aflorada sumariamente (ver  secção \ref{subsec:func}). A primeira questão é um dos objectos principais do presente texto.
+
+% incluir a package graphicx
+\begin{figure}[!]
+\centering
+\includegraphics[scale=0.7]{introd/imagens/comunica.eps} 
+\caption{O processo de comunicação humano - computador}
+\label{fig:comunica}
+\end{figure}
+
+
+
+\subsection{Da máquina ao utilizador}
+
+Como referimos, se é verdade que  a comunicação que as linguagens de programação permitem se dirige em última análise à máquina, não é menos verdade  que  devem sobretudo possibilitar o enunciar de soluções a um nível que facilite também a comunicação entre agentes humanos.Uma linguagem de programação serve por isso fundamentalmente dois objectivos, evidentemente relacionados:
+
+\begin{itemize}
+\item é um veículo para exprimir acções  a serem executadas pelo computador,
+\item é um conjunto de conceitos que permite modelar de forma abstracta os problemas do mundo real.
+\end{itemize}
+
+Acontece que historicamente  a programação teve que percorrer um longo caminho do ponto de vista do utilizador para se "afastar" da máquina e se aproximar do utilizador humano. Para perceber melhor esse caminho temos que detalhar um pouco mais a arquitectura que apresentámos na secção \ref{sec:arquitect}. A figura \ref{fig:cpu} mostra o interior da unidade de processamento central (CPU).
+
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{introd/imagens/cpu.eps} 
+\caption{A unidade de processamento central}
+\label{fig:cpu}
+\end{figure}
+
+
+A sua arquitectura interna corresponde às três funções que a CPU tem que realizar:
+
+\begin{itemize}
+\item realizar operações aritméticas (UAL)
+\item armazenar localmente valores (registos)
+\item controlar os passos a realizar de acordo com as instruções do programa (UC)
+\end{itemize}
+
+
+Podemos ainda concretizar melhor a unidade de controlo (ver figura \ref{fig:uc}).
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{introd/imagens/ucont.eps} 
+\caption{A unidade de controlo}
+\label{fig:uc}
+\end{figure}
+
+O contador de programa (CP) controla a próxima instrução a ser executada. Depois de extraída da respectiva memória a instrução é descodificada dando origem a vários sinais de controlo que envolvem os registos e afectam eventualmente o contador de programa. Se houver lugar a saltos na ordem natural de execução das instruções o seu endereço é carregado no CP. Caso contrário o CP é incrementado de uma unidade.\\
+
+ Conhecida a arquitectura concreta do processador foram desenvolvidas linguagens de programação simples, chamadas linguagens \textit{assembly}, que permitiam que em vez de escrever programas só como sequências de $0$s e de $1$s pudessem ser usadas mnemónicas. No exemplo da figura \ref{fig:assembly} procura ilustrar-se um programa  que permite determinar qual o maior de dois números e escrevê-lo.
+ 
+ \begin{figura}
+	{0.8}
+	{introd/imagens/assembly.eps}
+	{Programa em Assembly}
+	{fig:assembly}
+\end{figura}
+ 
+ 
+
+O programa começa por ler os dados para os registos $1$ e $2$. De seguida (instrução 3) compara-os, deixando no registo $3$ o valor booleano da comparação. Se o conteúdo do registo $3$ for negativo salta para a instrução de endereço $\#07$, alterando o contador de programa, e executa-a. A instrução seguinte (em $\#08$) faz parar a execução. Caso contrário, o contador de programa não é alterado, é escrito o conteúdo do registo $1$ e a execução termina.\\
+
+Para que o utilizador humano pudesse escrever programas em \textit{assembly} foi preciso escrever o respectivo tradutor que muito naturalmente se chamou \textit{assembler}. Este modo de programar é evidentemente um grande avanço relativamente ao processo de programação em linguagem máquina. Permite, porque se conhece bem a arquitectura do processador, escrever programas altamente optimizados. Mas, como o exemplo atrás ilustra, para efectuar uma pequena operação é preciso escrever muito código. Foi pois com naturalidade que apareceram  linguagens que nos permitiram afastarmo-nos da máquina. O preço a pagar foi o desenvolvimento de tradutores complexos e dificuldades em optimizar o código. Na próxima secção falaremos um pouco de alguns tipos de linguagens de programação.
+
+\subsection{Diferentes paradigmas}\label{sec:paradigmas}
+
+Existem largas dezenas de linguagens de programação. Que têm de comum os programas escritos nas diferentes linguagens? De um modo simples os programas de computador podem ser vistos como “frases” de uma linguagem de programação envolvendo fundamentalmente duas componentes:
+
+\begin{itemize}
+\item Dados
+\item Operações
+\end{itemize}
+
+
+\noindent  \marginlabel{Programa = Dados + Operações}facto que se pode traduzir pela equação:
+
+\begin{center}
+\textbf{Programa = Dados + Operações}
+\end{center}
+
+Tradicionalmente a execução de um programa  é vista como a actuação  das operações sobre os dados levando à modificação do   estado do programa. Uma computação é então vista como a sequência de estados por que vai passando o programa.\\
+
+\begin{Exemplo}
+{\noindent \textbf{Contas bancárias}
+
+\begin{itemize}
+\item dados: conta (nome, saldo, taxa de juros,...)
+\item operações: levantamentos, depósitos, cálculo de juros,...
+\end{itemize}
+}
+\end{Exemplo}
+
+	
+Como dissemos, as operações actuam sobre os dados modificando-os. Por exemplo, um levantamento de uma conta vai alterar o saldo (estado) da conta.
+	
+
+
+Se a linguagem de programação  favorecer a proximidade à máquina podemos comparar o programador com um construtor civil. No caso da linguagem se aproximar do problema o programador assemelha-se mais a um arquitecto. \\
+
+
+% problemas com a package picins
+
+
+
+\begin{comment}
+\begin{Caixa}
+ {Convém não confundir proximidade da máquina com linguagem de “baixo nível”, ou proximidade do problema com “alto-nível”.  
+Ser orientada para a máquina significa apenas que dispomos de modos de dialogar directamente com o hardware (registos, memória, dispositivos de entrada/saida) . No entanto uma linguagem próxima da máquina pode possuir outros elementos, como seja estruturas de controlo, estruturas de dados, módulos, etc. A linguagem  $C$ é um exemplo paradigmático.}
+\end{Caixa}
+\end{comment}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=none,logo=\bcinfo]{Nível das linguagens}
+Convém não confundir proximidade da máquina com linguagem de “baixo nível”, ou proximidade do problema com “alto-nível”.  
+Ser orientada para a máquina significa apenas que dispomos de modos de dialogar directamente com o hardware (registos, memória, dispositivos de entrada/saida) . No entanto uma linguagem próxima da máquina pode possuir outros elementos, como seja estruturas de controlo, estruturas de dados, módulos, etc. A linguagem  $C$ é um exemplo paradigmático.
+\end{bclogo}
+
+ 
+ O projecto de uma linguagem de programação é sempre um exercício de compromisso entre várias características desejáveis numa linguagem. Alguns dos objectivos são:
+ 
+\begin{itemize}
+\item \textbf{utilidade}: a característica é usada muitas vezes, não pode ser feito de outro modo? 
+\item \textbf{conveniência}: a característica permite a escrita sucinta de código?
+\item \textbf{eficiência}: computacionalmente é fácil ou difícil traduzir a característica?
+\item \textbf{portabilidade}: pode ser implementada em qualquer máquina?
+\item \textbf{legibilidade}: torna o programa mais legível?
+\item \textbf{capacidade de modelização}: torna o significado do programa mais claro?
+\item \textbf{simplicidade}: A linguagem possui um conjunto simples, unificado e genérico de características ou é um aglomerado de possibilidades dedicadas?
+\item \textbf{clareza semântica}: ausência de ambiguidade semântica?
+\end{itemize}
+
+		
+Parafraseando Orwell podemos afirmar que as  liguagens são todas iguais mas há umas mais iguais do que outras no sentido de responderem melhor às características que disponibilizam tendo em atenção o problema que pretendem resolver\footnote{Com efeito, teoricamente todas as linguagens de programação existentes são formalmente equivalentes à Máquina de Turing Universal, tendo por isso o mesmo poder  computacional.}.  Podemos agrupar as diferentes linguagens em famílias de acordo com determinados princípios. É sempre um exercício subjectivo e nem sempre os subconjuntos resultantes são disjuntos. Vamos apresentar uma classificação em termos do modelo ou \textbf{paradigma} subjacente. Queremos com isto apenas dizer que uma determinada linguagem favorece um dado \textit{estilo de programação}. Por estilo de programação entende-se (\citep{Stefik1986}) \begin{quote} "um modo de organizar programas na base de um dado modelo conceptual de programação e uma linguagem que torna os programas escritos, com base nesse estilo, claros." \end{quote}.
+
+\subsubsection*{Declarativas ou relacionais}
+
+Um programa seguindo o modelo relacional é normalmente expresso por um conjunto de fórmulas lógicas que estabelecem relações entre objectos\footnote{Tecnicamente um programa na linguagem Prolog, que favorece este paradigma, é um conjunto de cláusulas de Horn que podem ser separadas em factos, e.g., ($pai-de(patricia, ernesto).$ ou regras, e.g.,  ($avo(X,Y) :- pai-de(X,Z), pai-de(Z,Y).$). } A execução de um programa não é mais do que uma “query” ao conjunto de relações que definem o programa.  Existe a noção de variável lógica que recebem os seus  valores graças ao mecanismo de unificação. Têm uma natureza declarativa significando isto que programar  não envolve a indicação do modo como a solução se obtém mas apenas a definição do que é a solução: o controlo é implícito. Assim podemos dizer que a nossa equação se transforma em:
+
+\begin{center}
+\textbf{Programa = Lógica + {Controlo}}
+\end{center}
+
+Vejamos um exemplo muito simples na linguagem Prolog.
+
+\begin{lstlisting}[language=Prolog,backgroundcolor=\color{cinza}]
+pai-de(patricia, ernesto).
+pai-de(ernesto, jose).
+avo(X,Y) :- pai-de(X,Z), pai-de(Z,Y).
+
+?- avo(patricia,W).
+W= jose
+\end{lstlisting}
+
+Neste programa tão simples afirmamos uma relação de paternidade entre dois objectos (ditas constantes em Prolog) e definimos o significado de ser avô, através de uma cadeia de duas relações de paternidade. Executar o programa traduz-se em questionar o sistema se existe alguém que seja avô da \texttt{patrícia}, ao que o sistema responde afirmativamente e mostrando o objecto que satisfaz a relação.\\
+
+A linguagem Prolog foi desenvolvida por Alain Colmerauer e a sua equipa da Universidade de Montpellier (França). Inicialmente tratava-se apenas de  um sistema potente para tratamento da linguagem natural. O chamado Projecto Japonês do Computador de 5ª Geração veio dar num entanto forte impulso à linguagem Prolog que passou a ser vista como uma linguagem de uso geral, usada sobretudo pela comunidade de Inteligência Artificial.
+
+
+\subsubsection*{Funcionais}
+
+Neste paradigma, um programa é um conjunto embricado de expressões envolvendo chamadas de funções. Sintacticamente  não existe distinção entre dados e algoritmo. Podemos dizer então que:
+\begin{center}
+\textbf{Programa = Dados + Funções}
+\end{center}
+
+Não existe a noção de atribuição (modificação destrutiva do valor associado a um objecto). A transmissão de valores  é feita pelo mecanismo de ligação de parâmetros no momento da activação das funções.
+
+Analisemos um exemplo simples na linguagem Lisp. 
+\begin{lstlisting}[language=Lisp,backgroundcolor=\color{cinza}]
+(defun ultimo (l)
+   ( cond
+      ((null (rest l)) (first l))
+      (t (ultimo (rest l)))))
+
+?- (último ‘(a b c))
+= c
+\end{lstlisting}
+
+Neste exemplo calculamos o último elemento de uma sequência de elementos. \\
+
+%\begin{comment}
+A função $ultimo$ tem um corpo formado por duas opções o que é indicado por $cond$. A primeira opção, corresponde à situação em que a lista que contém os elementos tem apenas um elemento caso em que o resultado é o primeiro ($first$) e único elemento da lista. A segunda opção, diz-nos simplesmente que caso a lista tenha mais do que um elemento o último obtém-se procurando, \textbf{recursivamente}, no resto da lista ($rest$) \footnote{Mais adiante, no capítulo \ref{cap:recursividade}, trataremos com mais cuidado do problema da recursividade.}.
+
+%\end{comment}
+
+A linguagem  Lisp é das mais antigas sendo contemporânea de linguagens como FORTRAN. Foi desenvolvida por John McCarthy nos anos 50 e é usada ainda hoje activamente pela comunidade de Inteligência Artificial, devido às facilidades que dá ao programador para efectuar cálculo simbólico envolvendo objectos complexos.
+
+\subsubsection*{Imperativas ou procedimentais}
+
+O paradigma mais comum até há alguns anos atrás era o paradigma imperativo ou procedimental. Um programa procedimental é caracterizado por uma sequência de instruções que actuam ou  sobre os dados (variáveis), alterando de forma destrutiva o seu valor, ou sobre  a ordem pela qual as intruções são executadas (instruções de controlo). A equação passa a ser:
+
+\begin{center}
+\textbf{Programa =  Estruturas de Dados + Algoritmo}
+\end{center}
+
+A linguagem $C$ é o exemplo clássico. Vejamos um exemplo simples.
+
+\begin{lstlisting}[language=C,backgroundcolor=\color{cinza}]
+#include <stdio.h>
+
+int power(int base, int exp){
+	// Calcula base ** exp
+	int i, p;
+	p = 1;
+	for (i = 1; i <= exp; ++i)
+		p = p * base;
+	return p;
+}
+
+int main() {
+    // teste de power
+	int i;
+	for (i = 0; i < 10; ++i) 
+		printf("%2d %5d %7d\n", i, power(2,i), power(-3,i));
+	return 0;
+	}
+}
+\end{lstlisting}
+
+Este programa imprime uma tabela com os valores de \textbf{i}, potência de base 2 de \textbf{i} e potência de base -3 de \textbf{i}, para  \textbf{i} a variar entre 1 e 10.
+
+\begin{lstlisting}[language=C,backgroundcolor=\color{cinza}]
+run
+[Switching to process 5247]
+Running…
+ 0     1       1
+ 1     2      -3
+ 2     4       9
+ 3     8     -27
+ 4    16      81
+ 5    32    -243
+ 6    64     729
+ 7   128   -2187
+ 8   256    6561
+ 9   512  -19683
+
+Debugger stopped.
+Program exited with status value:0.
+\end{lstlisting}
+
+O programa principal, \textbf{main}, repete os cálculos para cada valor de  \textbf{i}. Socorre-se da \textbf{função} \texttt{power}. Esta última calcula a base levantada ao expoente multiplicando a base por ela própria o número de vezes dado pelo expoente.
+
+\subsubsection*{Orientadas aos Objectos}
+
+A programação orientada aos objectos (POO) apareceu como um modo de dominar a complexidade do processo de análise, desenvolvimento e implementação de aplicações informáticas. Uma das primeiras tentativas para dominar a complexidade aparece nas linguagens imperativas através do conceito de subrotina. No entanto a dependência de cada subrotina de um estado global (variáveis globais) tem como consequência que cada subrotina não constitua verdadeiramente um módulo separado. A programação funcional tentou responder a este problema fazendo com que  o único modo de comunicação com o exterior das funções seja através dos parâmetros que lhe são passados. A POO aparece como um compromisso ao  partir o estado global por  pequenas estruturas fechadas denominadas objectos.
+
+Retomemos de novo a equação:
+
+\begin{center}
+\textbf{Programa = Objectos  + Operações}
+\end{center}
+
+O que distingue a POO da programação imperativa tradicional é o facto de que um programa agora deve ser visto como um conjunto de objectos que são manipulados pelas operações às quais estão intimamente ligados.
+
+Ao longo do tempo têm aparecido várias tentativas de definir claramente o que se entende por orientação aos objectos. A definição que é maioritáriamente consensual é a de Peter Wegner (\cite{Wegner1987}):\\
+
+\begin{center}
+\textbf{Orientação aos Objectos = Objectos + Classes + Herança}
+\end{center}
+
+
+Um programa  segundo a filosofia orientado a objectos pode ser descrito pela equação:
+
+\begin{center}
+\textbf{POO = Orientação aos Objectos + Mensagens}
+\end{center}
+
+
+Os objectos  devem ser vistos com entidades que encapsulam não apenas dados mas também  operações sobre os dados;
+
+Uma \textbf{classe} é um modelo\footnote{No sentido do inglês \textit{template}.} de um grupo de objectos semelhantes com comportamento idêntico. Um objecto aparece assim como instância de uma classe. É possível definir uma hierarquia de classes. \textbf{Herança} é um modo de definir  como novas classes herdam propriedades das classes que estão acima delas na hierarquia. As \textbf{mensagens} da equação acima são o que permite a comunicação entre objectos. \textbf{Métodos} é o modo como um objecto particular trata uma mensagem.
+
+Vejamos um exemplo simples na linguagem Java.
+
+\begin{lstlisting}[language=Java,backgroundcolor=\color{cinza}]
+class Pessoa{
+	String nome;
+	int idade;
+	void dizOla () {
+		System.out.println ("Olá eu sou o " + nome);
+	}
+}
+
+class Programa {
+	public static void main (String [] args) {
+		Pessoa cliente = new Pessoa();
+		cliente.nome = "Ernesto";
+		cliente.idade = 60;
+		cliente.dizOla();
+	}
+}
+\end{lstlisting}
+
+Este exemplo simples mostra a definição de duas classes e o modo como interagem. A classe pessoa define objectos com dois atributos ($nome$ e $idade$) e tem associado o método \texttt{dizOla} que se limita a imprimir uma frase. A segunda classe, Programa, cria um objecto da classe Pessoa, instanciado com o nome Ernesto e a idade 60 e de seguida executa o método $dizOla$.\\
+
+% por causa de picins
+
+\begin{comment}
+\begin{Caixa}
+ {Convém mais uma vez referir  que, embora existam linguagens “puras” dentro de cada filosofia de funcionamento, as linguagens de programação mais usadas possuem características  híbridas. Assim , por exemplo, a linguagem Common LISP possui mecanismos destrutivos idênticos aos das linguagens procedimentais, a linguagem Pascal possui elementos funcionais, Logtalk é uma extensão à linguagem Prolog que comporta elementos das linguagens orientadas a  objectos, é possível fazer programação procedimental em C++, etc..}
+\end{Caixa}
+\end{comment}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Linguagens e paradigmas}
+Convém mais uma vez referir  que, embora existam linguagens “puras” dentro de cada filosofia de funcionamento, as linguagens de programação mais usadas possuem características  híbridas. Assim , por exemplo, a linguagem Common LISP possui mecanismos destrutivos idênticos aos das linguagens procedimentais, a linguagem Pascal possui elementos funcionais, Logtalk é uma extensão à linguagem Prolog que comporta elementos das linguagens orientadas a  objectos, é possível fazer programação procedimental em C++, etc..
+\end{bclogo}
+
+\subsection{Modelo PCAP}
+
+Construímos programas como construímos qualquer sistema. Precisamos de um conjunto de primitivas que usamos para compor sistemas mais complexos. Podemos abstrair sistemas para posterior reutilização, transformando-nos na realidade em novas primitivas. Essas mesmas abstracções podem, por seu turno, ser elas próprias abstraídas, originando padrões (ver figura \ref{fig:pcap}). 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{introd/imagens/pcap.eps}
+\caption{Modelo PCAP}
+\label{fig:pcap}
+\end{center}
+\end{figure}
+
+Quando pensamos em linguagens de programação esta maneira de ver, baseada nas ideias de \textbf{P}rimitivas, \textbf{C}omposição, \textit{A}bstracção e  \textbf{P}adrões (\textbf{PCAP})\footnote{Esta ideia aparece de modo explícito nas notas do curso 6.01 - \textit{Introduction to EECS I}, do MIT, podendo ser consultada um \url{http://mit.edu/6.01/www/index.html}.}, pode ser instanciada tendo em atenção as duas componentes (dados e processos), como se mostra na tabela \ref{tab:pcap}.
+
+\begin{table}[!htdp]
+\caption{Modelo PCAP}
+	\begin{center}
+	\begin{tabular}{|l|l|l|} \hline
+		\rowcolor[gray]{0.7}& Processos & Dados \\ \hline \hline
+		Primitivas & $+, *, <=$ & Números, cadeias caracteres \\ \hline
+		Composição & \texttt{if}, \texttt{for} & lists, dicionários, conjuntos\\ \hline
+		Abstracção & \texttt{def} &  Tipos de dados abstractos, classes \\ \hline
+		Padrões & Funções de segunda ordem & Funções Genéricas\\ \hline \hline
+	\end{tabular}
+	\end{center}
+\label{tab:pcap}
+\end{table}
+
+A apresentação da linguagem \python e o modo como podemos construir programas será feito de acordo com a identificação destes quatro aspectos, caminhando do mais simples (primitivas) para o mais complexo (padrões).
+
+
+\section{A linguagem Python}
+
+A linguagem \python foi criada por Guido Van Rossum no final dos anos 80, início dos anos 90. Deve o seu nome à série Monthy Python e não a nenhuma cobra, embora o símbolo convencional da linguagem tenha passado a ser o lindo e esguio animal. Trata-se de uma linguagem interpretada, de alto nível e que suporta vários paradigmas de programação (procedimental, funcional e orientada aos objectos \footnote{O paradigma relacional não tem expressão em Python, embora o leitor interessado pode procurar pelo projecto \texttt{pylog}.}), sem forçar nenhum deles. É uma linguagem gratuita, de fonte aberta, existindo versões para as diferentes plataformas em \url{http://www.python.org}. O código é altamente portável, correndo em todas plataformas,  como por exemplo o Microsoft Windows, Linux e Mac Os X\footnote{É também  possível fazer correr \python em plataformas como o  iPad ou o iPhone!}. É uma linguagem simples de aprender e de usar, tornando-se por isso uma escolha crescente de diversas universidades e escolas quando se trata das disciplinas de iniciação à programação. Tem um conjunto de características que a tornam uma linguagem poderosa, como  por exemplo tipagem dinâmica, gestão automática da memória, estruturas de dados dinâmicas como listas e dicionários, excepções, funcionais, iteradores, geradores de decoradores. Pode ser misturada com outras linguagens, como C ou Java. Se a componente de base do interpretador é pequena tem um conjunto de módulos nativos ou de terceiras partes que permitem expandir a linguagem e a tornam uma excelente opção para diferentes aplicações do mundo real, incluindo programação de sistemas,  bases de dados, programação em redes, computação científica, programação para a Web, \textit{scripting}, interfaces gráficas, ou ainda jogos. A sua utilidade pode ser medida pelas companhias que de modo crescente tem vindo a usar \python no desenvolvimento das suas aplicações, como a Google, a Intel, a Cisco, ou a Youtube para nomear apenas algumas.  \\
+
+A filosofia da linguagem pode ser melhor explicitada através de um conjunto de máximas conhecidas como o \textbf{Zen de} \python\footnote{Este texto pode ser obtido lançando o interpretador de \python e efectuando o comando \texttt{import this} ou em \url{http://www.python.org/dev/peps/pep-0020/}.}:\\
+
+\begin{lstlisting}[language=Python,backgroundcolor=\color{cinza}]
+The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!
+\end{lstlisting}
+
+
+\section{Programas}
+
+De um modo simples um programa é a descrição rigorosa numa linguagem de programação de um processo que permite ao computador resolver um problema. É  o nosso veículo de comunicação com o computador.  Já sabemos que diferentes linguagens organizam os seus programas de diferentes modos  ou paradigmas (ver secção \ref{sec:paradigmas}) e recorrem a uma linguagem própria. No caso da linguagem \python  essa decomposição é feita do seguinte modo (adaptado de \citep{Lutz2009}):
+
+\begin{enumerate}
+\item Os programas são compostos por \textbf{módulos};
+\item Os módulos contêm sequências de \textbf{comandos};
+\item Alguns comandos são \textbf{expressões};
+\item As expressões criam e manipulam \textbf{objectos}.
+\end{enumerate}
+
+Iremos explorar cada uma destas construções, da mais elementar para a mais complexa. Saliente-se no entanto, desde já, que o conceito de objecto\marginlabel{Objecto} é central em \python, como aliás noutras linguagens. O grau de \textbf{integração} entre objectos e operações determina em parte o paradigma de programação suportado pela linguagem. Em \python no entanto esta centralidade é total pois em \python \textbf{tudo são objectos}, como ficará claro ao longo do texto. Os objectos de um programa têm associado operações que permitem efectuar  sobre eles diferentes coisas, tais como construir, consultar, modificar ou testar. 
+
+
+\subsubsection*{Exemplo muito  simples}
+
+Chegou o momento de sabermos o que podemos usar  \python.  A forma mais simples consiste em trabalhar no \textbf{modo interactivo}: activa-se o interpretador e escrevem-se instruções  para serem executadas uma a uma de modo ordenado. Quando chamamos o interpretador de Python aparece algo o que se ilustra na listagem \ref{lst:interp}.\footnote{O que efectivamente aparece varia de máquina para máquina e de versão do interpretador.}
+
+
+\begin{lstlisting}[label=lst:interp, caption=Arranque do interpretador]
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)]
+Type "help", "copyright", "credits" or "license" for more information
+>>>
+\end{lstlisting}
+
+
+ O símbolo $>>>$ é o \textbf{caractér de pronto} \footnote{Do inglês \textit{prompt character}.} e indica que o interpretador está pronto para receber uma instrução e executá-la. Uma primeira experiência que podemos fazer é usar Python como se de uma vulgar calculadora se tratasse.
+ 
+ 
+ \begin{lstlisting}[language=Python, mathescape]
+>>> 6 + 7 $\hookleftarrow$
+13
+>>> 8 * 24 $\hookleftarrow$
+192
+>>> 16 // 2 $\hookleftarrow$
+8
+>>> 7 - 3 $\hookleftarrow$
+4
+>>> 
+ \end{lstlisting}
+ 
+ 
+Neste exemplo simples mostramos que podemos fazer somas (\texttt{+}), produtos (\texttt{*}), divisões inteiras (\texttt{//}) e subtracções (\texttt{-}), envolvendo números inteiros.  Por exemplo, na primeira linha o utilizador escreve \texttt{6 + 7} e depois de carregar na tecla de \textit{return}, indicado na listagem por $\hookleftarrow$, o interpretador ecoa na linha seguinte o valor (objecto) que resulta de efectuar a operação indicada. Também podemos efectuar as mesmas operações com números reais ou números complexos. Como é lógico, em \python podemos efectuar todas as operações convencionais com números. A partir de agora não incluiremos nas listagens de código a indicação da tecla de \textit{return}. No modo interactivo, o interpretador funciona num ciclo conhecido por \textbf{lê - avalia - escreve}\footnote{Do inglês \textit{Read - Eval - Print}.} (ver figura \ref{fig:rep}): é lida uma expressão (\texttt{lê}), é determinado o valor associado à expressão (\texttt{avalia}), e é visualizado o resultado (\texttt{escreve}). Quando compomos objectos e operações formamos \marginlabel{Expressões}\textbf{expressões}.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{introd/imagens/rep.eps}
+\caption{O ciclo \textbf{lê - avalia - escreve}.}
+\label{fig:rep}
+\end{center}
+\end{figure}
+
+
+
+\section{O meu primeiro programa} \label{sec:exsimp}
+
+Os computadores são um pouco mais do que simples calculadoras. Vejamos com um exemplo simples o que é possível ser feito. Admitamos que conhecemos a fórmula que nos dá o peso ideal de uma pessoa em função da sua altura e género. Para alguém com $1.81m$ de altura é fácil efectuar os cálculos  (o primeiro valor é para os homens, o segundo para as mulheres).
+
+\begin{lstlisting}
+>>> (72.7 * 1.81) - 58
+73.587000000000018
+>>> (62.1 * 1.81) - 44.7
+67.701000000000008
+>>> 
+ \end{lstlisting}
+
+Notar que se trata de números reais indicado pela presença de uma parte decimal\footnote{O leitor não se assuste com o resultado com tantos zeros e uns dígitos lá no final. Com o tempo perceberá que as máquinas não são perfeitas e, por isso, não são capazes de precisão infinita.}. Podemos tornar a expressão mais legível  associando nomes aos valores manipulados. Para tal introduzimos o conceito de \marginlabel{Variável}variável.  Em termos simples, uma variável é um nome pelo qual um objecto passa a poder ser designado, isto é, o nome é um \textbf{atributo} do objecto. Em \python para estabelecermos a associação de um nome a um objecto usamos a \textbf{instrução de atribuição}, através do uso do sinal de igual ($=$)\footnote{Para quem está habituado ao significado usual de igualdade,  o recurso ao sinal de igual para estabelecer esta associação nome-objecto é motivo de equívocos e de muitos erros de programação. Por exemplo, qual o significado de $x = x + 5$?}.Vejamos para o homem como pode ser feita a associação.
+
+\begin{lstlisting}
+>>> altura = 1.81
+>>> 
+ \end{lstlisting}
+ 
+ Ao contrário do que aconteceu no caso das operações, agora nada é ecoado. No entanto, internamente a associação foi feita, como se pode verificar na listagem seguinte.
+ 
+ \begin{lstlisting}
+>>> altura = 1.81
+>>> altura
+>>> 1.81
+ \end{lstlisting}
+ 
+Quando, na segunda linha acima, digitamos \texttt{altura} seguido da tecla de \textit{return}, o interpretador lê a expressão, vai procurar o objecto cujo nome é \texttt{altura} e devolve o \textbf{valor} do objecto. Simples! Para além do atributo \textbf{nome}, os objectos têm outros três atributos muito importantes: \textbf{identidade}, \textbf{valor}, e \textbf{tipo}. De um modo simples a identidade indica o local da memória onde está armazenado o objecto, o valor é o valor do objecto,  e o tipo diz-nos qual a natureza do objecto (inteiro, real, complexo, no caso dos números). Na figura \ref{fig:ivt} mostramos graficamente a situação que é criada após ser executada a instrução de atribuição acima indicada.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{introd/imagens/ivt.eps}
+\caption{Objectos e seus atributos}
+\label{fig:ivt}
+\end{center}
+\end{figure}
+
+
+Regressemos à questão inicial e exemplifiquemos como se podem efectuar o cálculo do peso ideal usando agora o nome no lugar do valor do objecto. 
+
+\begin{lstlisting}
+>>> altura = 1.81
+>>> (72.7 * altura) - 58
+73.587000000000018
+>>> 
+ \end{lstlisting}
+
+Claro que podíamos ter usado outro nome para a altura, por exemplo \texttt{xpto}. Veremos  mais à frente que existem algumas limitações e regras para o uso dos nomes. Na realidade não avançámos muito. Será que também podemos  podemos associar um nome a uma expressão mais complexa e não apenas a um objecto simples? Vejamos.
+
+\begin{lstlisting}
+>>> peso = (72.7 * altura) - 58
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+NameError: name 'altura' is not defined
+>>> 
+\end{lstlisting}
+
+Parece que não funciona pois o interpretador dá-nos uma mensagem de erro. A mensagem é clara: estamos a referir um nome que não é conhecido do sistema, i.e., \textbf{altura}, porque não está definido. Como podemos remediar esta situação? Parece óbvio que necessitamos de tornar o nome conhecido. Mas, como o fazer se os nomes apenas existem associados a objectos? Bom, já sabíamos que para a expressão poder ter um valor era preciso conhecer o valor da altura de uma pessoa. Logo,
+
+\begin{lstlisting}
+>>> altura = 1.81
+>>> peso = (72.7 * altura) - 58
+>>> peso
+73.587000000000018
+>>> 
+\end{lstlisting}
+
+Agora \textbf{peso} é um nome associado a um objecto que resultou de termos efectuado os cálculos da expressão depois de substituir o nome \textbf{altura} pelo objecto que nomeia. \\
+
+Os dados de que necessitamos e as associações a efectuar entre nomes e expressões podem obtidos de modo diferente. Vejamos como.
+
+\begin{lstlisting}
+>>> altura = eval(input("Altura sff: ")
+Altura sff: 1.81
+>>> peso = (72.7 * altura) - 58
+>>> print("Peso ideal para a altura ", altura, '" é '" peso)
+Peso ideal para a altura  1.81  é  73.58700000000002
+>>> 
+\end{lstlisting}
+
+O que aconteceu? Bem usámos duas novas instruções, uma para entrada de dados (\texttt{input}) e, outra, para a saída do resultado (\texttt{print}). A instrução \texttt{input} permite solicitar ao utilizador a introdução dos dados. Para já, refira-se apenas que o uso da função \texttt{eval} permite interpretar o dado introduzido por nós, neste caso como um número real. A instrução \texttt{print} permite imprimir o que lhe é dado como argumento, directamente se for um objecto, indirectamente se for um nome ou uma expressão\footnote{Na realidade, um nome não é mais do que um caso simples de expressão.}.Os três tipos de instruções referidos, atribuição, entrada e saída, formam um grupo importante de instruções do paradigma procedimental, pois de alguma forma alteram o estado de alguns objectos. O leitor atento terá notado que alguns dos argumentos das funções \texttt{input} e \texttt{print} são ou nomes (de objectos), ou frases enquadradas por plicas  ("Altura sff: ", "Peso ideal para a altura "). Na realidade estes últimos casos não são mais do que outro tipo de objecto, as \textbf{cadeias de caracteres}\marginlabel{Cadeias de Caracteres}. Mais à frente discutiremos de forma aprofundada estes objectos e as operações que com eles podemos efectuar.\\
+
+\subsubsection*{Funções}
+Aprofundemos a questão relacionada com associar toda uma expressão a um nome.  Para quem está habituado a funções matemáticas,  ter uma expressão que depende de variáveis, não é uma ideia nova (ver a figura \ref{fig:peso}). 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.7]{introd/imagens/peso.eps}
+\caption{A função peso: conhecido o valor de \textbf{altura} podemos calcular o peso.}
+\label{fig:peso}
+\end{center}
+\end{figure}
+
+
+Em  \python existe também a mesma noção de função. Precisamos de uma nova notação  para associar à expressão um nome que depende da variável $altura$, sem que $altura$ esteja definida e tal motive um erro, como no caso de uma função matemática.  Isso leva-nos à introdução de \marginlabel{Definições}definições. Uma definição é uma \textbf{abstracção} para uma operação mais ao menos complexa.
+
+\begin{lstlisting}
+>>> def peso(altura):
+... 	return (72.7 * altura) - 58
+... 
+>>> peso(1.81)
+73.587000000000018
+>>> peso(1.61)
+59.047000000000011
+>>> 
+ \end{lstlisting}
+
+\marginlabel{Definição, chamada e argumento}Com o comando \texttt{def} definimos a função \texttt{peso}. Na realidade, para sermos mais precisos, associamos o nome \textbf{def} à definição. A figura \ref{fig:def} retrata a situação.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{introd/imagens/def.eps}
+\caption{Associação entre um nome e uma definição}
+\label{fig:def}
+\end{center}
+\end{figure}
+
+
+
+
+
+Mas definir uma função não provoca o aparecimento de nenhum valor. Afinal, para que valor de $altura$ devia ser feito o cálculo? Por isso, precisamos \textbf{chamar},  ou \textbf{usar}, a função, explicitando qual o valor \textbf{concreto} de $altura$. Já agora: o nome  $altura$ que aparece na definição,  é tecnicamente designado como sendo um \textbf{parâmetro formal}. No exemplo acima  chamamos duas vezes a função usando os \textbf{parâmetros reais}, 1.81 e 1.61. Fica claro que podemos usar a definição tantas vezes quantas as que quisermos. Se olharmos para o código verificamos o uso de uma instrução chamada \texttt{return} responsável por devolver o resultado da execução da definição a quem lhe solicitar.  Neste caso, foi o interpretador que pediu esse valor, e é ele que se responsabiliza por mostrar o resultado, imprimindo-o. Recorde-se: para o interpretador \texttt{peso(1.81)} é uma expressão que é lida, o valor associado é calculado, e o resultado visualizado.\\
+
+Nada obriga a que as nossas definições obtenham os dados através dos parâmetros formais, e devolvam o resultado  através da instrução de \texttt{return}. Podemos usar dentro das definições as instruções de \texttt{input} e de \texttt{print}, como já vimos anteriormente:
+
+
+\begin{lstlisting}
+>>> def peso():
+...     altura = eval(input("A sua altura sff: "))
+...     print("Peso ideal: ", (72.7 * altura) - 58)
+... 
+>>> peso()
+A sua altura sff: 1.81
+Peso ideal:  73.58700000000002
+>>> 
+\end{lstlisting}
+
+
+ 
+ \section{Fazer escolhas}
+ 
+ Até aqui os exemplos que vimos o que fazem é um cálculo sequencial seguido da devolução do resultado. Mas a maior parte dos problemas envolve tomada de decisões. Estas por sua vez implicam a execução de testes, que, por seu turno, pressupõem a existência de operações de comparação. É isso que o exemplo muito simples seguinte mostra ser possível de fazer\footnote{Trata-se apenas de ilustrar o conceito, existindo muitos mais operadores de comparação.}.
+ 
+ \begin{lstlisting}
+ >>> 43 > 27
+True
+>>> 4 == 5
+False
+>>> 
+ \end{lstlisting}
+ 
+ Duas coisas devem ser ditas. Primeiro, o resultado das comparações é um objecto de um novo tipo chamado \marginlabel{Booleano}booleano: \texttt{True} ou \texttt{False}; em segundo lugar, notar que para comparar a identidade do valor de dois objectos se usam dois sinais de igual\footnote{Mais uma vez este facto dá origem a muitos dos erros de programação cometidos por novatos.}. Estamos agora preparados para revisitar o nosso exemplo do peso de uma pessoa conhecida a sua altura. Admitamos que queremos   calcular o peso ideal, mas agora para as mulheres. Sabendo que a fórmula não é a mesma, podemos escrever outra função semelhante ao que fizemos para os homens, usando  a fórmula adequada a cada caso, homem ou mulher. Mas também podemos juntar tudo, desde que haja uma forma para distinguir os dois casos. Para tal vamos precisar de fazer comparações e usar\marginlabel{Instruções de Controlo} \textbf{instruções de controlo} , que são instruções que não alteram o estado dos objectos e se limitam a indicar qual a parte da nossa definição que deve ser executada.
+ 
+\begin{lstlisting} 
+ >>> def pesohm(altura,genero):
+... 	if genero == 1:
+... 		return (72.7 * altura) - 58
+... 	else:
+... 		return (62.1 * altura) - 44.7
+... 
+>>> pesohm(1.81,1)
+73.587000000000018
+>>> pesohm(1.61, 0)
+55.281000000000006
+>>> 
+ \end{lstlisting}
+ 
+ Veja-se como usámos números para codificar o género\footnote{Quando falarmos de outros tipos de objectos veremos que podemos usar, com mais a propósito, cadeias de caracteres.}. A instrução de controlo \texttt{if-then-else} faz aquilo que o seu nome indica: se(\texttt{if}) o género for masculino então (\texttt{then}) usa uma fórmula, senão (\texttt{else}), se for feminino usa a outra.\\
+ 
+ Como anteriormente, os dados necessários podem ser introduzidos pelo utilizador, originando um código ligeiramente diferente.
+ 
+ \begin{lstlisting}
+>>> def pesohm():
+... 		altura = eval( input("a sua altura por favor: "))
+... 		genero = eval(input("o seu genero por favor: "))
+... 		if genero == 1:
+... 			return (72.7 * altura) - 58
+... 		else:
+... 			return (62.1 * altura) - 44.7
+... 
+>>> pesohm()
+a sua altura por favor: 1.81
+o seu genero por favor: 0
+67.701
+>>> pesohm()
+a sua altura por favor: 1.61
+o seu genero por favor:1
+59.047
+>>> 
+ \end{lstlisting}
+ 
+ \section{Repetir}
+ 
+Admitamos agora que queremos repetir estes cálculos para um conjunto de cinco pessoas. Podíamos fazê-lo  invocando cinco vezes em sequência o programa \texttt{pesohm()}. Mas seria no mínimo um pouco fastidioso. Por isso as linguagens de programa\c cão oferecem intru\c cões de controlo de repeti\c cão\marginlabel{Ciclos}. Neste caso, que sabemos quantas vezes queremos repetir a opera\c cão, o nosso programa seria simplesmente o seguinte.
+
+\begin{lstlisting}
+>>> def pesohm():
+... 	altura = eval(input("a sua altura por favor: "))
+... 	genero = eval(input("o seu genero por favor: "))
+... 	if sexo == 1:
+... 		print(72.7 * altura) - 58
+... 	else:
+... 		print (62.1 * altura) - 44.7
+... 
+>>> for i in range(5):
+... 	pesohm()
+... 
+a sua altura por favor: 1.81
+o seu genero  por favor: 0
+67.701
+a sua altura por favor: 1.90
+o seu genero por favor: 1
+80.13
+a sua altura por favor: 1.45
+o seu genero por favor: 1
+47.415
+a sua altura por favor: 1.60
+o seu genero por favor: 0
+54.66
+a sua altura por favor: 1.75
+o seu genero por favor: 0
+63.975
+>>> 
+\end{lstlisting}
+
+O peda\c co de código
+
+\begin{lstlisting}
+>>> for i in range(5):
+... 	pesohm()
+\end{lstlisting}
+
+indica ao interpretador que deve repetir cinco  vezes a invoca\c cão da fun\c cão \texttt{pesohm()}. É claro que a solução apresentada não é única, nem necessariamente a melhor. Uma alternativa óbvia é colocar a instrução de ciclo no interior da definição \texttt{pesohm}.
+
+\begin{lstlisting}
+>>> def pesohm(n):
+...		for i in range(n):
+... 			altura = eval(input("a sua altura por favor: "))
+... 			genero = eval(input("o seu genero por favor: "))
+... 			if sexo == 1:
+... 				print(72.7 * altura) - 58
+... 			else:
+... 				print (62.1 * altura) - 44.7
+... 
+>>>
+\end{lstlisting}
+
+Notar a introdução de um parâmetro formal (\texttt{n}) que nos permite variar o número de vezes que queremos repetir a operação, tornando assim o nosso programa mais geral.\\
+
+\begin{comment}
+ \begin{Caixa}
+ {O código \python segue regras muito estritas em relação à sua escrita. Em particular, obriga a \textbf{alinhar} ou \textbf{indentar} cada bloco de código de modo rígido. Esse facto, que no início os programadores não gostam, torna-se um auxiliar precioso na escrita de programas de fácil leitura e depuração. De um modo simples, diremos que precisamos indentar o código cada vez que encontramos \textbf{dois pontos}. }
+  \end{Caixa}
+ \end{comment}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcattention]{Indentação}
+O código \python segue regras muito estritas em relação à sua escrita. Em particular, obriga a \textbf{alinhar} ou \textbf{indentar} cada bloco de código de modo rígido. Esse facto, que no início os programadores não gostam, torna-se um auxiliar precioso na escrita de programas de fácil leitura e depuração. De um modo simples, diremos que precisamos indentar o código cada vez que encontramos \textbf{dois pontos}.
+\end{bclogo}
+
+
+\section{Intermezzo}
+
+Está na altura de parar um pouco e sistematizar o que estivemos a fazer, quais os conceitos que aprendemos. Em primeiro lugar, falámos de objectos. No caso números de tipos diferentes (inteiros,  reais ou em vírgula flutuante)\footnote{Existem mais tipos de números como mais tarde se verá.},  cadeias de caracteres e booleanos. Em segundo lugar, vimos como podemos associar nomes aos objectos ou, de um modo mais geral, a expressões. Em terceiro lugar, existe um mecanismo de abstracção fundamental que se traduz pela possibilidade de definir funções. Em quarto lugar, as definições são sequências de instruções. Estas podem ter um  carácter de manipulação de objectos (atribuição, entrada e saída) ou de controlo (sequência, condicionais ou ciclos) (ver figura \ref{fig:inst}.).
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.4]{introd/imagens/programa1.eps}
+\caption{Instruções}
+\label{fig:inst}
+\end{center}
+\end{figure}
+
+Em quinto lugar, os programas podem envolver mais ou menos interacção com o utilizador, e isso tem implicações quanto ao modo como os objectos são inseridos e/ou extraídos do programa (ver imagem \ref{fig:io}.).
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{introd/imagens/input_output.eps}
+\caption{ Entrada e saída de objectos}
+\label{fig:io}
+\end{center}
+\end{figure}
+
+
+
+\section{Módulos}
+
+As linguagens de programação devem ser simples e poderosas. Esta dupla característica parece ser contraditória. Em \python a questão é resolvida com elegância ao dispormos inicialmente de uma linguagem mínima, mas a que se podem adicionar novas construções e operações que a tornam tão poderosa quanto necessitemos. O conceito que está por detrás desta característica é o conceito de \textbf{módulo}\marginlabel{Módulos}.\\
+
+
+Admitamos que queremos calcular o  volume de uma esfera, de acordo com a fórmula:
+
+\[\frac{4}{3} \times \pi \times r^3\]
+Admitindo que a esfera tem raio 2, qual é o seu volume? Em fun\c cão do que já sabemos este problema não aparenta ter nenhuma dificuldade. Envolve, no entanto,  cálculos com a constante  $\pi$. Que valor vamos assumir para esta constante? Um valor comum é $3.14$. Claro que, usando este valor, o erro no resultado pode ser considerável. 
+
+\begin{lstlisting}
+>>> def volume_esfera(raio):
+... 	return (4/3) * 3.14 * raio ** 3
+... 
+>>> volume_esfera(2)
+33.4933333333
+>>> 
+\end{lstlisting}
+
+
+Uma maneira de ultrapassar esta questão é recorrer ao valor de $\pi$ que está definido num \textbf{módulo} do sistema. Os módulos são \textbf{ficheiros} com código que permite aumentar as capacidades da linguagem de base. Este mecanismo permite que a linguagem base carregada no início da sessão seja simples,  necessitando de menos recursos do computador. Caso necessitemos usamos módulos adicionais, que já vem com o sistema ou que são definidos por nós. Um módulo para ser usado tem que ser previamente \textbf{importado}. No nosso caso precisamos do módulo \texttt{math}, pois é lá que a constante se encontra definida.
+
+\begin{lstlisting}
+>>> import math
+>>> math.pi
+3.1415926535897931
+>>> 
+\end{lstlisting}
+
+Depois de importar o módulo (linha 1 da listagem) temos que usar uma nota\c cão especial para \textbf{aceder} à constante: come\c camos com o nome do módulo, seguido de um \textbf{ponto}, seguido do nome do objecto (linha 2). Ao inspeccionar o objecto $\pi$ ficamos a saber qual o valor que vai ser usado. Agora só falta a solu\c cão para o nosso problema inicial.
+
+\begin{lstlisting}[caption=Volume de uma esfera,label=lst:vol,numbers=left, numberstyle=\footnotesize]
+import math
+
+def volume_esfera(raio):
+    return (4/3) * math.pi * raio ** 3
+\end{lstlisting}
+
+
+Os módulos são também  objectos. Um modo simples de saber o que nos permitem fazer é inspeccionar o objecto recorrendo ao comando \texttt{dir}:
+
+\begin{lstlisting}
+>>> import math
+>>> dir(math)
+['__doc__', '__file__', '__name__', '__package__', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'ceil', 'copysign', 'cos', 'cosh', 'degrees', 'e', 'erf', 'erfc', 'exp', 'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum', 'gamma', 'hypot', 'isfinite', 'isinf', 'isnan', 'ldexp', 'lgamma', 'log', 'log10', 'log1p', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc']
+>>> 
+\end{lstlisting}
+
+Da listagem parece aparente que existe  a função \textbf{seno}.  Verifiquemos isso, por recurso ao comando \texttt{help}:
+
+\begin{lstlisting}
+>>> help(math.sin)
+
+Help on built-in function sin in module math:
+
+sin(...)
+    sin(x)
+    
+    Return the sine of x (measured in radians).
+\end{lstlisting}
+
+Com este conhecimento podemos efectuar um cálculo específico:
+
+\begin{lstlisting}
+import math
+>>> math.sin(45)
+0.85090352453411844
+>>> 
+\end{lstlisting}
+
+Como veremos mais adiante existem vários modos de importar módulos.
+
+ \begin{comment}
+Tudo o que fizemos até aqui foi feito interactivamente no interpretador. Acontece que quando saímos do interpretador essa informação perde-se. Para que não tenhamos que refazer tudo, a solu\c cão consiste em guardar num \marginlabel{Ficheiros}ficheiro de texto o código que queremos reutilizar. Mais tarde podemos invocá-lo por um processo semelhante ao da importa\c cão de módulos. Passamos deste modo a poder utilizar tudo o que definimos no nosso ficheiro. Existe um pequeno cuidado a ter. Os módulos do sistema encontram-se num local que este conhece pelo que a sua importa\c cão se faz simplesmente chamando-o pelo seu nome. No caso dos programas feitos pelo utilizador temos que indicar explicitamente o local onde este se encontra ou então usar um ambiente integrado de desenvolvimento para encontrar e executar o nosso programa. Claro que também podemos dizer ao sistema que há um local onde se encontram todos os nossos programas e que os importe por um processo semelhante ao já indicado. Basta neste caso colocar o nosso programa na directoria correspondente. Podemos ainda dar essa indica\c cão dinamicamente. Tudo isso são aspectos que clarificaremos posteriormente. Admitamos que escrevemos o seguinte ficheiro, e qwue este foi salvo sob o nome \textbf{volume\_solidos.py}. O uso da extensão \textbf{.py} é fundamental para que o processo de importação funcione.
+
+\begin{lstlisting}
+"""
+Exemplo de programa simples.
+"""
+__author__ = 'Ernesto Costa'
+__date__ = 'Setembro 2012'
+
+
+import math
+
+def volume_esfera(raio):
+    """Calcula o volume de uma esfera conhecido o raio."""
+    volume = (4/3) * math.pi * raio ** 3
+    return volume
+\end{lstlisting}
+
+Esqueçamos para já  alguns detalhes cujo significado ainda não foi explicitado (linhas 1 a 5, linha 11) . Podemos agora importar e usar as definições contidas neste ficheiro.
+
+\begin{lstlisting}
+>>> import volume_solidos
+>>> volume_solidos.volume_esfera(2)
+33.510321638291124
+>>>
+\end{lstlisting}
+\end{comment}
+
+ \section{Adivinhar}
+ 
+
+Suponhamos que queremos um programa para um jogo em que o utilizador procura descobrir um número inteiro, por exemplo entre $0$ e $100$ que o computador definiu. Com base no que já sabemos uma solução trivial será a seguinte.
+
+\begin{lstlisting}
+>>> def adivinha(numero):
+... 	if numero == 25:
+... 		return True
+... 	else:
+... 		return False
+... 
+>>> adivinha(33)
+False
+>>> adivinha(25)
+True
+>>> 
+\end{lstlisting}
+ 
+ Como solução temos que admitir que não é muito famosa. Vamos procurar melhorar. Em primeiro lugar, vamos mudar o número cada vez que jogamos, efectuando uma escolha aleatória.
+ 
+ 
+ \begin{lstlisting}
+>>> import random
+>>> def adivinha(numero):
+... 	secreto = random.randint(0,100)
+... 	if numero == secreto:
+... 		return True
+... 	else:
+... 		return False
+... 
+>>> adivinha(33)
+False
+>>> adivinha(25)
+False
+>>> 
+ \end{lstlisting}
+ 
+ Para resolver a questão tivemos que importar o módulo \texttt{random} e usar o \marginlabel{Métodos} método \texttt{randint}. De um modo informal, um método é equivalente a uma definição, mas que apenas pode ser aplicado a um certo tipo de objectos. Uma outra melhoria natural será permitir que o utilizador tenha mais do que uma tentativa. Mas isso coloca a questão de como introduzir os diferentes valores. Esta é uma situação típica de problemas em que existe interacção com o utilizador, por isso \python, com naturalidade, fornece como já sabemos uma instrução para isso mesmo: \texttt{input}. 
+ 
+ \begin{lstlisting}
+ >>> def adivinha():
+... 	secreto = random.randint(0,100)
+... 	numero = eval(input("O seu palpite: "))
+... 	if numero == secreto:
+... 		return True
+... 	else:
+... 		return False
+... 
+>>> adivinha()
+O seu palpite: 33
+False
+>>> adivinha()
+O seu palpite: 25
+False
+>>> 
+ \end{lstlisting}
+ 
+ Mais uma vez, atente-se no facto de ser possível uma definição não ter parâmetros formais. Mas regressemos à questão da repetição. Como fazer? Suponhamos que apenas damos duas tentativas. Podemos usar a nossa solução com pequenos ajustes.
+  
+ \begin{lstlisting}
+ >>> def adivinha():
+... 	secreto = random.randint(0,100)
+... 	numero = eval(input("O seu palpite: "))
+... 	if numero == secreto:
+... 		return True
+... 	numero = eval(input("O seu palpite: "))
+... 	if numero == secreto:
+... 		return True
+... 	else:
+... 		return False
+... 
+>>> adivinha()
+O seu palpite: 33
+O seu palpite: 44
+False
+>>> 
+ \end{lstlisting}
+ 
+ Mas isto não é prático. E se em vez de duas tentativas tivermos dez,  ou mesmo cem? \python vai ajudar-nos com recurso à instrução de controlo conhecida por repetição ou \marginlabel{Ciclos}\textbf{ciclo}, já anteriormente referida.
+ 
+ 
+ \begin{lstlisting}
+ >>> def adivinha(tentativas):
+... 	secreto = random.randint(0,100)
+... 	for i in range(tentativas):
+... 		numero = eval(input('O seu palpite: '))
+... 		if numero == secreto:
+... 			return True
+... 	return False
+...
+>>> adivinha(3)
+O seu palpite: 33
+O seu palpite: 25
+O seu palpite: 44
+False
+ \end{lstlisting}
+ 
+ Não pretendemos que o leitor apreenda já toda a complexidade da instrução  \texttt{for}. Os ciclos serão talvez o conceito mais anti-natural para quem chega pela primeira vez à programação. Serão por isso objecto de exploração detalhada ao longo do texto. Fazemos apenas notar que a primeira vez que uma instrução de \texttt{return} for encontrada e executada o programa termina e devolve o valor que lhe está associado. Deste modo, terminado o ciclo após ser executado o número de vezes por nós definido no parâmetro \textbf{tentativas}  sem encontrar a solução, podemos devolver \texttt{False}.  Para concluir, vamos tornar o programa um pouco mais justo para o utilizador, recorrendo agora à instrução \texttt{print} e exemplos de objectos do tipo \textbf{cadeias de caracteres}. 
+ 
+ \begin{lstlisting}
+>>> import random
+>>> def adivinha(tentativas):
+... 	secreto = random.randint(0,100)
+... 	for i in range(tentativas):
+... 		numero = eval(input("O seu palpite sff: "))
+... 		if numero == secreto:
+... 			print("Uau, acertou!")
+... 			return True
+... 		else:
+... 			if numero > secreto:
+... 				print( "Muito grande...")
+... 			else:
+... 				print("Muito pequeno...")
+... 	print( "Lamento, mas esgotou as suas tentativas.")
+... 	return False
+... 
+>>> adivinha(3)
+O seu palpite sff: 33
+Muito pequeno...
+O seu palpite sff: 55
+Muito pequeno...
+O seu palpite sff: 80
+Muito grande...
+Lamento, mas esgotou as suas tentativas.
+False
+>>> 
+ \end{lstlisting}
+ 
+
+ \section{Modo não interactivo}
+
+ Os pequenos exemplos de código que vimos até aqui foram todos criados directamente no interpretador. Chamamos a esta forma de usar o sistema, trabalhar em \textbf{modo interactivo}. É útil para fazer pequenas coisas. Mas tem os seus inconvenientes. Por exemplo, sempre que nos enganamos temos que recomeçar tudo de novo. Outro aspecto prende-se com o facto de em geral o que escrevemos no interpretador perde-se quando saímos do interpretador, sendo necessário escrever de novo todos os comandos quando iniciamos nova sessão se pretendemos repetir as coisas. O que normalmente se faz é escrever o código do programa por recurso a um editor de texto, guardar tudo num ficheiro e depois, quando queremos usar o código importar o ficheiro como fizemos com os módulos pré-definidos do sistema. Vejamos um exemplo.\\
+
+
+Suponhamos que queremos calcular a raiz quadrada de um número positivo. Um modo simples de o fazer é através do método de Newton. Por defini\c cão temos:
+
+\[\begin{cases}
+x_0 & \approx \sqrt{a} \\
+x_{n+1} &= \frac{1}{2} \times (x_n + \frac{a}{x_n}) 
+\end{cases}\]
+
+Com esta definição indutiva o que temos que fazer é definir iterativamente uma sequência de valores para a raíz quadrada, sendo que sucessivos valores aproximam melhor o valor real. Como  o processo tem que parar, temos que definir o tamanho da sequência. Suponhamos que abrimos um editor de texto e escrevemos o código como o indicado en \ref{prog:raizquad}. 
+
+\lstinputlisting[caption={Raiz quadrada}, label=prog:raizquad]{introd/programas/newton.py}
+
+O código tem duas partes: a primeira (linhas 3 a 9), consiste na definição da função que permite o cálculo da raiz quadrada; a segunda (linhas 11 e 12), permite o uso da definição\footnote{O ficheiro incluí também (linha 1) uma directiva ao sistema sobre a codificação usada.}.   A listagem abaixo ilustra uma forma de executar o programa, baseada na chamada explícita do interpretador seguido do nome do ficheiro.
+
+\begin{lstlisting}
+ernestojfcosta@Ernesto-Costas-Mac-Pro-8  $ python newton.py
+Raiz quadrada de:  2
+Valor inicial sff: 1
+1.414213562373095
+\end{lstlisting}
+
+
+O ficheiro por nós criado chama-se \textbf{newton.py}. Terminar com a extensão \textbf{py} é importante. Neste exemplo aparece também uma cadeia de caracteres especial, logo a seguir ao \textbf{cabeçalho} da definição. Trata-se de um \marginlabel{Comentários}comentário sobre o que faz o programa e a sua colocação naquela zona é importante para efeitos de documentação do programa\footnote{Incluindo a documentação automática.}.\\
+
+O modo como está escrito o ficheiro permite que este seja também usado em modo interactivo.
+
+
+\begin{lstlisting}
+>>> import newton
+>>> newton.raizquad(4)
+Valor inicial sff: 5
+2.0
+>>> newton.raizquad(2)
+Valor inicial sff: 3
+1.41421356237
+>>> 
+\end{lstlisting}
+
+É o código das linhas 11 e 12 da listagem \ref{prog:raizquad}
+
+\begin{lstlisting}[numbers=none]
+if __name__ == '__main__':
+	print raizquad(2)
+\end{lstlisting}
+
+que permite esta dupla utilização.
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo vimos como um computador é um misto de \textit{hardware} e de programas. Descrevemos de forma básica a arquitectura de um computador. Concentrámo-nos nos programas (compiladores e interpretadores) que permitem a execu\c cão de outros programas escritos numa linguagem de alto nível. Demos exemplos dos quatro paradigmas de programa\c cão principais. Terminámos com alguns exemplos de uso da linguagem Python. No caso de \python demos os primeiros passos que nos levarão à construção de programas de complexidade elevada. Em particular, 
+
+\begin{itemize}
+\item aprendemos os conceitos de objecto, expressões, instruções e módulos,
+\item os objectos têm atributos: identidade, valor, tipo,
+\item identificámos alguns tipos de objectos, como inteiros, reais, cadeias de caracteres e booleanos,
+\item aprendemos a associar nomes a objectos com o operador de atribuição $=$,
+\item aprendemos a ler e a imprimir valores,
+\item aprendemos a associar um conjunto de comandos ou instruções a um nome com \texttt{def},
+\item vimos que as nossas definições podem ter parâmetros,
+\item aprendemos a controlar escolhas,
+\item vimos como repetir conjuntos de comandos,
+\item ficámos a saber importar módulos para expandir a linguagem.
+\end{itemize}
+
+\begin{comment}
+\section*{Leituras Adicionais}
+\addcontentsline{toc}{section}{Leituras Adicionais}
+
+\begin{itemize}
+\item Capítulo 1 de: \textit{John Zelle, Python Programming: an introduction to computer science}
+\end{itemize}
+\end{comment}
+
+\section*{Testes os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+Tente responder às seguintes questões que foram tratadas neste capítulo.
+
+\begin{enumerate}
+\item Quais as componentes de base da arquitectura de um computador.
+\item Compiladores e interpretadores: o que são e quais as diferenças.
+\item Que tipo de paradigmas de programação conhece. O que os distingue.
+\item O que são módulos, expressões, instruções, e  objectos.
+\item O que entende por parâmetros formais.
+\item O que faz a instrução de atribuição (\textbf{=}).
+\item Que instruções de controlo conhece e para que servem.
+\item Diga o que entende pelo modelo PCAP.
+\item  Diga o que entende por ciclo Lê - Avalia - Escreve.
+\end{enumerate}
+
+\begin{comment}
+\subsection{Módulos}\label{sec:modulos}
+
+Nos exemplos anteriores estivemos a trabalhar  no interpretador usando objectos por nós criados para construir  expressões mais complexas, que por sua vez se associam a instru\c cões a que podemos dar um nome. Mas será que temos que fazer sempre assim? Nem sempre. Vejamos um exemplo.
+
+
+
+\begin{lstlisting}
+>>> sin(45)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'sin' is not defined
+>>> 
+\end{lstlisting}
+
+
+Como se pode ver o cálculo não pode ser feito directamente e obtemos uma mensagem de erro. A função \texttt{seno}seno não está definida. Parece que afinal \python não nos permite mais do que ter uma calculadora muito primitiva. Acontece que, por uma decisão do criador da linguagem, foi tomada a decisão de manter um núcleo de operações em memória muito pequeno,  por forma a não tornar a linguagem muito pesada para o sistema computacional.  Felizmente \python oferece um conjunto de comandos ou defini\c cões predefinidas adicionais. Estão guardadas em \marginlabel{Módulos}módulos, que devem ser \marginlabel{Importa\c cão}importados. Suponhamos de novo o caso de querermos calcular o seno de um dado ângulo. 
+
+\begin{lstlisting}
+import math
+>>> math.sin(45)
+0.85090352453411844
+>>> 
+\end{lstlisting}
+
+Notar que para usar a operação \texttt{seno} do módulo \textbf{math} temos que usar explicitamente o nome do módulo, seguido de um ponto, seguido da operação\footnote{As coisas podem ser um pouco mais complexas como veremos mais à frente no texto.}. 
+%%% -----------
+
+
+Mais adiante veremos com detalhe os aspectos ligados a módulos. Mas desde já convém referir que os módulos podem ser activados de duas maneiras distintas:
+
+\begin{itemize}
+\item por importa\c cão como já foi referido
+\item por execu\c cão directa
+\end{itemize}
+
+
+Para percebermos melhor a diferen\c ca vejamos um exemplo concreto.
+
+\lstinputlisting[caption={Teste de Módulos}, label=prog:teste]{introd/programas/teste.py}
+
+Neste caso temos uma pequena defini\c cão chamada \texttt{main} e um comando \texttt{if} que será executado caso o nome da variável \texttt{\_\_name\_\_} do módulo seja igual à string \texttt{'\_\_main\_\_'}. Acontece que quando o módulo é importado a variável tem como nome o nome do módulo. Se mandarmos executar directamente terá por valor \texttt{'\_\_main\_\_'}.
+
+Primeira situa\c cão:
+
+\begin{lstlisting}
+>>> import teste
+>>> teste.main(5)
+5
+>>> teste.__name__
+'teste'
+>>>
+\end{lstlisting}
+
+Segunda situa\c cão ( código dentro do \texttt{if} é executado):
+
+\begin{lstlisting}
+/Library/Frameworks/Python.framework/Versions/2.5/Resources/Python.app/Contents/MacOS/Python -u  "/Volumes/LeonardoDaVinci/Users/ernestojfcosta/python/teste.py"
+Numero sff: 2
+2
+\end{lstlisting}
+
+Mas olhemos para este caso em que mudámos ligeiramente o conteúdo do módulo:
+
+\lstinputlisting[caption={Teste de Módulos}, label=prog:teste]{introd/programas/teste2.py}
+
+Agora ao importar o módulo o que acontece é o vemos na listagem.
+
+\begin{lstlisting}
+>>> import teste2
+Numero sff: 6
+6
+>>> 
+\end{lstlisting}
+
+Consegue o leitor perceber porquê?\\
+
+
+
+Depois de importar um módulo como obtemos informa\c cão sobre os comandos e objectos que disponibiliza? É fácil! 
+
+\begin{lstlisting}
+>>> import math
+>>> dir(math)
+['__doc__', '__file__', '__name__', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees', 'e', 'exp', 'fabs', 'floor', 'fmod', 'frexp', 'hypot', 'ldexp', 'log', 'log10', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+>>> math.__doc__
+'This module is always available.  It provides access to the 
+mathematical functions defined by the C standard.'
+>>> dir(math.sin)
+['__call__', '__class__', '__cmp__', '__delattr__', '__doc__', '__getattribute__', '__hash__', '__init__', '__module__', '__name__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__self__', '__setattr__', '__str__']
+>>> math.sin.__doc__
+'sin(x)
+Return the sine of x (measured in radians).'
+>>> 
+\end{lstlisting}
+
+O comando \texttt{dir} permite obter informa\c cão sobre os nomes das novas funcionalidades. Os nomes do tipo \texttt{$\_\_nome_\_$} referem-se a objectos que têm associado um objecto descritivo. Veja-se o caso apresentado. Podemos descer e obter informa\c cão adicional sobre cada uma das novas funcionalidades. No exemplo o \texttt{sin}.\\
+
+ Um outro aspecto a considerar tem que ver com o facto de que tudo o que fizemos interactivamente no interpretador se perde quando dele saímos. Para que não tenhamos que refazer tudo, a solu\c cão consiste em guardar num \marginlabel{Ficheiros}ficheiro de texto o código que queremos reutilizar. Mais tarde podemos invocá-lo por um processo semelhante ao da importa\c cão de módulos. Existe um pequeno cuidado a ter. Os módulos do sistema encontram-se num local que este conhece pelo que a sua importa\c cão se faz simplesmente chamando-o pelo seu nome. No caso dos programas feitos pelo utilizador temos que indicar explicitamente o local onde este se encontra ou então usar um ambiente integrado de desenvolvimento para encontrar e executar o nosso programa. Claro que também podemos dizer ao sistema que há um local onde se encontram todos os nossos programas e que os importe por um processo semelhante ao já indicado. Basta neste caso colocar o nosso programa na directoria correspondente. Podemos ainda dar essa indica\c cão dinamicamente.
+
+
+\end{comment}
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\muitofacil
+Determine como é que na sua plataforma se pode por o interpretador \texttt{Python} a correr.
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+\texttt{Python} pode ser usado como uma simples calculadora. Verifique o resultado das seguintes computa\c cões.
+
+\begin{enumerate}
+\item 2 + 4
+\item 40 * 300
+\item 1/2
+\item 1.0/2
+\item 1.0 // 2
+\item 20e30 * 4
+\item 20e50 * 20e50
+\item 7 \% 5
+\item (5 + 2j) + (3 + 4j)
+\item (5 + 2j) * (3 + 4j)
+\item (5 + 2j) / (3 + 4j)
+\end{enumerate}
+
+\end{Exercicio}
+
+ \begin{Exercicio}\muitofacil
+A galáxia Andrómena está a 2,9 milhões de anos-luz da Terra. Um ano luz equivale  $9.459 \times 10^{12}$ quilómetros.   A quantos quilómetros se encontra a galáxia da Terra?
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+
+Calcule o número de segundos que existe num ano \textit{normal}.
+\end{Exercicio}
+
+
+\begin{Exercicio}\muitofacil
+
+Suponha que tem uma sala rectangular de dimensão $ 8 \times 6$ Admitindo que quer cobrir o chão com tijoleira de $2 \times 2$, calcule o número de unidades de que vai precisar.
+\end{Exercicio}
+ 
+\begin{Exercicio}\muitofacil
+Escolha objectos numéricos de tipos diferentes e inspeccione os seus três atributos.
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+A área de um triângulo é igual a metade do produto do comprimento de um dos lados pela distância ao vértice oposto medida perpendicularmente. Diga como podia usar \python para calcular o valor concreto da área de um triângulo conhecidos aqueles valores.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+ Você não gosta de ser enganado e é muito meticuloso. Quando foi comer à sua hamburgeria preferida foi confrontado com uma nova forma: agora o hamburger é um quadrado de lado $7.62\,cm$ (eu avisei que você era meticuloso!). Para saber se devia protestar (sim porque você adora uma boa luta \ldots), procurou comparar com o formato antigo, bem redondo como uma circunferência de diâmetro $8.89\,cm$ (precisa que eu insista em como é meticuloso?). Eu que eu quero saber é se você, consumidor compulsivo de carne picada, tem ou não razões para protestar devido ao  design do novo hamburger.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+O \textbf{Índice de Massa Corporal} é dado pela fórmula:
+
+\[IMC=\frac{peso(kg)}{altura^2 (m^2)}\]
+
+Refa\c ca os cálculos da sec\c cão \ref{sec:exsimp} adaptando o exemplo do peso para o caso do IMC.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que lhe permita converter uma temperatura na
+escala Celsius $(T_{c})$ na escala Fahrenheit $(T_{f})$, baseando-se na fórmula:
+
+\[T_{f}=\frac{9}{5} \cdot T_{c} + 32 \]
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que lhe permita calcular o volume de um cone, conhecidos o raio da base $r$ e a altura $h$. O volume pode ser calculado pela fórmula:
+
+\[ V = \frac{\pi . r^2 . h}{3} \]
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Suponha que tem o seguinte polinómio: $x^4 + x^3 + 2x^2 - x$. Socorrendo-se da linguagem \python calcule o valor do polinómio nos seguintes pontos:
+
+\begin{enumerate}
+\item $x = 1.1$
+\item $x = 5$
+\item $x = \frac{2}{3}$
+\end{enumerate}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Importe o módulo \texttt{math} e experimente as várias fun\c cões fornecidas. O que acontece se tentar calcular a raiz quadrada de um inteiro negativo.
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+Suponha que quer trocar uma certa quantidade de euros por dólares americanos, conhecida a taxa de câmbio. Diga como pode resolver o problema socorrendo-se de \python para um caso concreto. Se por acaso quer uma solução genérica, em que medida a sua solução anterior lhe resolve a questão?
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Suponha que tem uma certa quantidade de garrafas vazias de capacidade 5, 1.5, 0.5 e 0.25 litros. Admita que tem um número ilimitado de garrafas de cada tipo. Dado um certa quantidade de água que pretende guardar em garrafas, como resolveria o problema minimizando o \textbf{número} de garrafas a usar. Como poderia usar o computador para lhe calcular o número de garrafas de cada tipo necessárias?
+
+\end{Exercicio}
+
+
+\begin{comment}}
+\begin{Exercicio}
+Importe agora o módulo \texttt{cmath} e use o comando \texttt{dir} para saber o que tem ao seu dispor. Efectue diferentes cálculos. Tente de novo determinar a raiz quadrada de um número negativo.
+\end{Exercicio}
+\end{comment}
+
+
+\begin{Exercicio}\medio
+Volte ao exemplo do jogo da adivinha do número e procure definir novas variantes para o jogo, de modo a torná-lo mais interessante e realista.
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{math}\medio  \label{exo:coord}
+
+Um ponto no plano pode ser identificado pelas suas coordenadas cartesianas (par (x,y)) ou pelas coordenadas polares (par ($(r, \theta)$). Escreva um programa que converte das coordenadas cartesianas para as polares. A rela\c cão entre os dois tipos de representa\c cão é dada pelas fórmulas que se apresentam na figura \ref{fig:coord}.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{introd/imagens/coordenadas.eps}
+\caption{{\bf De  cartesianas a polares}}
+\label{fig:coord}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\modulo{math}\medio
+Johannes Kepler\footnote{\url{http://en.wikipedia.org/wiki/Johannes_Kepler}} foi um cientista que no início do século XVII formulou três leis relativas ao movimento dos planetas em torno do Sol, com base nas observa\c cões do astrónomo Tycho Brahe. A primeira lei, estipula que as órbitas são elipsoidais, com o Sol num dos focos; a segunda lei, estabelece que a linha que une o planeta ao Sol varre áreas iguais durante intervalos de tempo iguais; a terceira lei, diz que o quadrado do período orbital de um planeta é directamente proporcional ao cubo do semi-eixo maior da sua órbita, ou seja que $ p^2 = a^3$.  A distância de um planeta ao Sol é dada em \textbf{Unidades Astronómicas}, AU. 1 AU é igual ao valor do semi-eixo maior da órbita da Terra em volta do sol e vale $149.597890 \times 10^6 km$.\\
+
+No seguimento de Johannes Kepler, Isaac Newton, publicou em 1687 o seu livro \textit{Principia Mathematica}, onde formulou a sua teoria sobre a gravidade. No contexto da teoria, Newton generaliza a terceira lei de Kepler, que deixa de estar limitada ao sistema solar:
+
+\[p^2 = \frac{4 \pi^2}{G (M_{1} + M_{2})} a^3\]
+
+sendo que $G= 6.67 \times 10^{-11} Newton\, m^2 / Kg^2$ é a constante gravitacional, e $M_{1}$ e $M_{2}$ a massa de dois objectos no espa\c co.
+
+Escreva um programa que permita calcular o período, em anos, da órbita de um planeta, conhecida a sua distância ao Sol em AUs. Para o auxiliar a verificar a correc\c cão do seu programa deve consultar \url{http://en.wikipedia.org/wiki/Attributes_of_the_largest_solar_system_bodies}, onde encontrará os valores  de teste de que necessita.
+\end{Exercicio}
+ 
+\begin{Exercicio}\medio
+Sabemos hoje que a formula\c cão de Newton  é mais geral que a de Kepler. Vamos tentar resolver o problema de determinar o período orbital de qualquer corpo que orbita em volta de qualquer estrela. Para facilitar a nossa vida vamos escolher uma estrela concreta: \textbf{Gliese 581} (ver dados em \url{http://pt.wikipedia.org/wiki/Gliese_581}).\\
+\end{Exercicio}
+
+
+

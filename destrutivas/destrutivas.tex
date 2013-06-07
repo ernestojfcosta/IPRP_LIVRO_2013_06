@@ -1,0 +1,1289 @@
+%%% destrutivas
+%%% Ernesto Costa
+%%% Versão 1: Agosto 2007
+
+
+
+\chapter{Instruções Destrutivas }\label{cap:destrut}
+
+
+\begin{objectivos}
+
+\item Compreender o conceito de instrução destrutiva
+\item Aprofundar os conceitos de entrada e saída
+
+\end{objectivos}
+
+Um programa encontra-se normalmente organizado em vários módulos sendo que cada um deles é formado por uma sequência de \textbf{comandos}. Esses comandos dividem-se em \textbf{expressões}, \textbf{instruções} ou ainda \textbf{definições}. Já vimos exemplos de cada um destes três tipos de comandos. Vamos agora concentrarmo-nos nas instruções.  De um modo simples podemos dizer que  as instruções \textbf{fazem} coisas. Quando executamos um programa  algumas  instruções alteram ou criam objectos  e associam esses objectos a nomes, enquanto que outras apenas servem para definir a próxima instrução a ser executada. Às primeiras chamamos \textbf{instruções destrutivas} e às segundas \textbf{instruções de controlo}.   No modelo que temos vindo a explorar num dado instante os objectos têm um determinado conjunto de características (em particular têm um dado valor) e o programa encontra-se  e executar uma dada instrução\marginlabel{Estado}. Dizemos que o programa se encontra num dado \textbf{estado}. A sequência de estados por que vai passando o programa ao longo do tempo constitui uma \textbf{computação}\marginlabel{Computação}. Neste capítulo iremos trabalhar o conceito de instruções destrutivas que, como veremos, se subdividem em três categorias: 
+
+\begin{itemize}
+\item atribuição
+\item leitura
+\item escrita
+\end{itemize}
+
+Alguns dos conceitos apresentados serão apenas aprofundamentos do que já foi dito nos capítulos anteriores.
+
+\section{Generalidades}
+
+Os objectos manipulados pelas instruções destrutivas podem ter um atributo que designámos por \textbf{nome}. Informaticamente o nome costuma ser apelidado \textbf{variável}.  Usaremos ambos de modo indistinto. Através da variável acedemos ao objecto.
+
+\begin{lstlisting}
+>>> a = 5
+>>> a
+5
+>>> import math
+>>> math.pi
+3.141592653589793
+>>> 
+\end{lstlisting}
+
+A construção dos nomes em \python obedece a regras: um nome válido tem que começar ou por uma letra ou pelo caracter \texttt{\_}, podendo seguir-se depois letras, dígitos e o caracter \texttt{\_}, pela ordem e em qualquer número. \python é sensível ao caso: Alma e alma são nomes diferentes e, por isso, e, geral remetem para objectos também eles distintos.
+
+\begin{lstlisting}
+>>> Alma = 4
+>>> alma = 3
+>>> id(Alma)
+4367850912
+>>> id(alma)
+4367850880
+>>> a = 5
+>>> _a = 3
+>>> a
+5
+>>> _a
+3
+>>> carro_amarelo = 1953
+>>> carro_amarelo
+1953
+>>> idade?
+  File "<stdin>", line 1
+    idade?
+         ^
+SyntaxError: invalid syntax
+>>> ida de
+  File "<stdin>", line 1
+    ida de
+         ^
+SyntaxError: invalid syntax
+>>> 53idade
+  File "<stdin>", line 1
+    53idade
+          ^
+SyntaxError: invalid syntax
+>>> 
+
+\end{lstlisting}
+
+Mesmo respeitando as regras de sintaxe para os nomes, nem todos os nomes sintaticamente válidos podem ser usados.
+
+\begin{lstlisting}
+>>> def = 23
+  File "<stdin>", line 1
+    def = 23
+        ^
+SyntaxError: invalid syntax
+>>>
+\end{lstlisting}
+
+A razão para o erro assinalado resulta do facto de \texttt{def} ser uma \textbf{palavra reservada}\marginlabel{Palavras Reservadas} da linguagem. A listagem completa das plavras reservadas é feita na tabela \ref{tab:palreserv}.
+
+\begin{table}[!htdp]
+\caption{Palavras Reservadas}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|} \hline
+and & continue & except & global & lambda & pass  &  while \\ 
+as & def & False &  if &  None & raise &  width\\
+assert & del  &  finally & import & nonlocal &  return &  yield \\
+break & elif & for & in & not & True & \\
+class & else & from & is & or & & \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:palreserv}
+\end{table}%
+
+A escolha dos nomes é, em teoria livre. Mas não nos podemos esquecer que se é verdade que os programas são escritos  para serem executados e resolver problemas, não é menos verdade que eles são objecto de correcções, de alterações e de reutilizações. Por isso, é fundamental que o que fazem seja claro. A escolha de nomes apropriados pode (e deve) facilitar essa tarefa. Vejamos um exemplo simples.
+
+\begin{lstlisting}
+>>> x = 4 
+>>> y = 3.14
+>>> z = 2 * y * x
+>>> z
+25.12
+>>> raio = 4
+>>> pi = 3.14
+>>> perimetro = 2 * pi * raio
+>>> perimetro
+25.12
+>>> 
+\end{lstlisting}
+
+O leitor concordará connosco, sobre qual é o modo de designar os objectos que torna o programa mais facilmente compreensível.  Quando os nomes são muito extensos é normal tornar a sua leitura mais simples. Por exemplo, usar \texttt{peso\_total} em vez de \texttt{pesototal}\footnote{Existem outras maneiras de fazer. Para o caso acima há quem prefira a chamada notação camelo: \texttt{pesoTotal}. embora sej uma questão de estilo pessoal o que convém é manter a coerência na notação. Para uma discussão sobre as alternativas ver ....}
+
+
+\section{Atribuição}
+
+Já sabemos que uma atribuição não é mais do que a \textbf{associação} de um nome a um objecto. Os nomes são criados no momento da primeira atribuição (do nome) passando a fazer parte do espaço de nomes \footnote{O Espaço de Nomes tecnicamente não é mais do que um dicionário, forma de objectos de que nos ocuparemos mais adiante.}. Assim depois da sessão
+
+\begin{lstlisting}
+>>> dna='GAATCC'
+>>> x=5.4
+>>> 
+\end{lstlisting}
+
+\noindent teremos a situação retratada na figura \ref{fig:atrib1}.
+
+
+\begin{figura}
+	{0.8}
+	{destrutivas/imagens/atrib1.eps}
+	{Ligação Nomes - Objectos}
+	{fig:atrib1}
+\end{figura}
+
+
+
+Como também sabemos a partir do momento em que associamos um nome a um objecto este pode passar a ser referenciado pelo seu nome como ilustramos na seguinte sessão.
+
+\begin{lstlisting}
+>>> x = 5.4
+>>> y = 3
+>>> z = x + y
+>>> z
+8.4
+>>> 
+\end{lstlisting}
+
+A associação de um nome a um objecto pode ser feita de modo \textbf{indirecto}. Na realidade a sintaxe da instrução de atribuição apenas exige que à direita do sinal de igual esteja uma \textbf{expressão}.  Na listagem acima, o objecto a que \texttt{z} fica associado foi encontrado depois da expressão \texttt{x + y} ter sido avaliada.
+
+
+ 
+ É evidente que não podemos referenciar um nome que não pertença ao espaço de nomes, o que só acontece depois da sua associação a um objecto, sob pena de gerarmos um erro.
+ 
+ \begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> a = 5
+>>> a
+5
+>>> b
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'b' is not defined
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__', 'a']
+>>> 
+\end{lstlisting}
+
+Na sessão anterior \texttt{b} não foi associado a nenhum objecto pelo que não faz parte do espaço de nomes activo como se pode ver pelo resultado do comando \texttt{dir()}. Diferentes nomes podem estar associados ao mesmo objecto\footnote{Também pode acontecer que um objecto não tenha nenhum nome associado. Não esquecer que o nome é apenas um atributo do objecto.}.
+
+\begin{lstlisting}
+>>> a = 6
+>>> b = a
+>>> b
+6
+>>> 
+\end{lstlisting}
+
+
+\subsubsection{Atribuição Implícita}
+
+Existem algumas atribuições \textbf{implícitas}. Por exemplo, quando importamos um módulo ou quando definimos uma função. Existem outras situações como as seguintes que a seu tempo se explicará.
+
+\begin{lstlisting}
+Python 3.2.3 (default, Sep  5 2012, 20:52:27) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.1.00)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__']
+>>> import math
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__', 'math']
+>>> math
+<module 'math' from '/usr/local/pythonbrew/pythons/Python-3.2.3/lib/python3.2/lib-dynload/math.so'>
+>>> def duplo(x):
+...     return 2 * x
+... 
+>>> duplo
+<function duplo at 0x10eadda68>
+>>> dir()
+['__builtins__', '__doc__', '__name__', '__package__', 'duplo', 'math']
+>>> 
+\end{lstlisting}
+
+
+Uma pergunta que naturalmente se coloca é sobre o que acontece quando passamos a associar um nome já utilizado anteriormente a um objecto diferente, por exemplo fazendo \texttt{x = 10}. A resposta é simples e pode ser visualizada na figura \ref{fig:atrib2}.
+
+\begin{figura}
+	{0.8}
+	{destrutivas/imagens/atrib2.eps}
+	{Tipagem Dinâmica}
+	{fig:atrib2}
+\end{figura}
+
+Aqui se manifesta o facto de Python ser uma linguagem \textbf{não tipada} e com \textbf{tipagem dinâmica}: o tipo não tem que ser declarado,  sendo uma característica do objecto e não do nome que, num dado instante, lhe está associado: o nome \texttt{x} deixou de estar associado a um objecto do tipo \textbf{float} e ficou associado a um objecto do tipo \textbf{int}. Vejamos uma consequência subtil deste característica \footnote{Em linguagens como \texttt{C/C++} ou \texttt{Java} as coisas passam-se de modo diferente!}.
+
+Seja a sessão.
+
+\begin{lstlisting}
+>>> x = 10
+>>> y = x
+>>> id(x) == id(y)
+True
+>>> y = y + 1
+>>> id(x) == id(y)
+False
+>>> x
+10
+>>> y
+11
+>>> 
+\end{lstlisting}
+
+A figura \ref{fig:atrib3} ilustra o que aconteceu.
+
+% incluir a package graphicx
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.8]{destrutivas/imagens/atrib3.eps} 
+\caption{Mudança de identidade}
+\label{fig:atrib3}
+\end{figure}
+
+\subsubsection{Atribuição Aumentada}
+
+Existem operações de atribuição em que os objectos aparecem à esquerda e à direita do sinal de atribuição, como se ilustra a seguir.
+
+\begin{lstlisting}
+>>> x = 4
+>>> x = x + 1
+>>> y = 10 
+>>> y = y ** 2
+>>> x
+5
+>>> y
+100
+>>>
+\end{lstlisting}
+
+À esquerda do sinal de atribuição o nome remete para o objecto através da sua \textbf{identidade}, enquanto que o seu aparecimento à direita do sinal refere-se ao \textbf{valor} do objecto. Sendo estas situações muito frequentes a linguagem \python tem uma facilidade sintática que se designa por operador de atribuição aumentado. A sessão anterior podia ser replicada como se segue.
+
+\begin{lstlisting}
+>>> x = 4
+>>> x += 1
+>>> y = 10 
+>>> y ** = 2
+>>> x
+5
+>>> y
+100
+>>>
+\end{lstlisting}
+
+No efeito final as duas formas são equivalentes. No entanto, esta segunda forma de proceder é mais económica visto objecto ser apenas avaliado uma vez e porque, sempre que possível, não há lugar à criação de um novo objecto. Existem operações de atribuição aumentada para os operadores aritméticos convencionais e ainda para operadores que actuam ao nível do bit, e.g., deslocamento à esquerda e à direita, \texttt{e},\texttt{ou}, \texttt{xor}. Alguns exemplos.
+
+\begin{lstlisting}
+>>> x = 4
+>>> x >>= 1
+>>> x
+2
+>>> x <<= 2
+>>> x
+8
+>>> x |= 1
+>>> x
+9
+>>> x &= 0
+>>> x
+0
+
+\end{lstlisting}
+
+
+\subsubsection{Outras formas de atribuição}
+
+
+\python permite outros modos de efectuar atribuições:  em cadeia ou múltiplas. Vejamos o que significa. Comecemos pelas atribuições em cadeia.
+
+\begin{lstlisting}
+>>> a = b = 3
+>>> a
+3
+>>> b
+3
+>>> id(a) == id(b)
+True
+>>> 
+\end{lstlisting}
+
+Aqui temos que o objecto 3 tem agora \textbf{dois} nomes associados. Isso é visível no facto de terem a mesma identidade. Passemos às atribuições  múltiplas.
+
+\begin{lstlisting}
+>>> x, y = 5, 7
+>>> x
+5
+>>> y
+7
+>>> id(x)
+4377546176
+>>> id(y)
+4377546240
+>>> 
+\end{lstlisting}
+
+Agora associamos de uma só vez dois objectos (5 e 7) a dois nomes (\texttt{x} e \texttt{y}). Com naturalidade as suas identidades são distintas. Esta característica permite fazer coisas interessantes:
+
+\begin{lstlisting}
+>>> x,y=y,x
+>>> x
+7
+>>> y
+5
+>>> id(x)
+16790848
+>>> id(y)
+16790872
+>>> 
+\end{lstlisting}
+
+Com uma instru\c cão trocamos os nomes associados aos objectos o que arrasta o seu valor, a identidade e, caso fossem de tipos diferentes, o tipo.
+\FloatBarrier
+\begin{bclogo}[couleur=black!20,arrondi=0.2,tailleOndu=1.5,logo=\bcinfo]{Nomes com prefixo *}
+Podemos ligar por atribuição os elementos de uma estrutura mas temos que tomar algumas precauções.
+
+\begin{lstlisting}
+>>> x,y = (5,7)
+>>> x
+5
+>>> y
+7
+>>> x,y = (5,7,9)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: too many values to unpack (expected 2)
+>>> 
+\end{lstlisting}
+
+Esta situação pode ser ultrapassada se o nome estiver prefixado por asterisco.
+
+\begin{lstlisting}
+>>> x,*y = (5,7,9)
+>>> x
+5
+>>> y
+[7, 9]
+>>> *x,y = (5,7,9)
+>>> x
+[5, 7]
+>>> y
+9
+>>> x,*y,z = (3,5,7,9)
+>>> x
+3
+>>> y
+[5, 7]
+>>> z
+9
+>>> x,*y,z = (5,7)
+>>> x
+5
+>>> y
+[]
+>>> z
+7
+>>> 
+\end{lstlisting}
+Os valores prefixados com asterisco ficam associados com um objecto do tipo  \textbf{lista} de que falaremos no capítulo \ref{cap:objectos2}. No último caso \texttt{y} fica associado à lista vazia.
+\end{bclogo}
+
+
+\section{Leitura}
+
+Sabemos desde o capítulo \ref{cap:intro} que existem diferentes maneiras de um programa comunicar com o ambiente com que interage. No caso de uma definição podemos introduzir dados através dos parâmetros formais ou da instrução \texttt{input}, e podemos comunicar resultados recorrendo à instrução \texttt{return} ou à instrução \texttt{print} (ver figura \ref{fig:io}).
+
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{destrutivas/imagens/io1.eps}
+\caption{Entrada e Saída de dados}
+\label{fig:io}
+\end{center}
+\end{figure}
+
+
+No caso da instrução de \texttt{input} existe um argumento opcional  que, quando presente, é uma cadeia de caracteres que funciona como uma mensagem.
+
+\begin{lstlisting}
+>>> idade = input('A sua idade por favor : ')
+A sua idade por favor : 59
+>>> 
+\end{lstlisting}
+
+Precisamos ter cuidado com o uso da instrução de entrada pois o que ela devolve é \textbf{sempre} uma cadeia de caracteres.  Sabendo isto é sem surpresa que observamos o que acontece na listagem seguinte.
+
+\begin{lstlisting}
+>>> idade = input('A sua idade por favor : ')
+A sua idade por favor : 59
+>>> idade
+'59'
+>>> idade + 1
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Can't convert 'int' object to str implicitly
+>>> 
+\end{lstlisting}
+
+Já sabemos que podemos usar o \textbf{construtor} dos diferentes tipos de dados para forçar um objecto a ser convertido, quando tal é possível, para outro tipo de objecto. No caso presente, recorríamos a \texttt{int}.
+
+\begin{lstlisting}
+>>> idade = int(input('A sua idade por favor : '))
+A sua idade por favor : 59
+>>> idade
+59
+>>> idade + 1
+60
+>>> 
+\end{lstlisting}
+
+Podemos generalizar esta abordagem usando não o construtor mas a função \texttt{eval}.
+
+\begin{lstlisting}
+>>> idade = eval(input('A sua idade por favor : '))
+A sua idade por favor : 59
+>>> idade
+59
+>>> idade = eval(input('A sua idade por favor : '))
+A sua idade por favor : 59.5
+>>> idade
+59.5
+>>> idade + 1
+60.5
+>>> 
+\end{lstlisting}
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcinfo]{Chamada de funções}
+A função \texttt{eval} tem como argumento uma cadeia de caracteres que é interpretada como sendo uma \textbf{expressão}. Daí ser possível algo como:
+
+\begin{lstlisting}
+>>> entrada = eval(input('Introduza uma expressão >>>  '))
+Introduza uma expressão >>>  4 + 5
+>>> entrada
+9
+>>> def duplo(x):
+...     return 2 + x
+... 
+>>> def duplo(x):
+...     return 2 * x
+... 
+>>> entrada = eval(input('Introduza uma expressão >>>  '))
+Introduza uma expressão >>>  duplo(4)
+>>> entrada
+8
+\end{lstlisting}
+
+A chamada de uma função é sintacticamente uma expressão, explicando o que acontece  na última situação. 
+\end{bclogo}
+
+
+
+\section{Escrita} 
+
+A forma mais simples de um programa comunicar com o exterior é através da função \texttt{print}. A chamada desta função é feita tendo por argumento zero ou mais expressões\footnote{Poderá parecer estranho usar a função sem qualquer argumento. No entanto, tal pode ser usado para mostrar uma linha em branco.}.
+
+A forma mais simples de expressões são as constantes, de qualquer tipo.
+
+\begin{lstlisting}
+>>> print(True)
+True
+>>> print((1,2,3))
+(1, 2, 3)
+>>> print(1.23)
+1.23
+>>> print('Viva')
+Viva
+>>> 
+\end{lstlisting}
+
+Podemos querer imprimir expressões mais complexas, como no exemplo seguinte.
+
+\begin{lstlisting}
+>>> a = 2
+>>> b = 3
+>>> print(a, ' + ',b, ' = ', a + b)
+2  +  3  =  5
+>>> 
+\end{lstlisting}
+
+Quando temos mais do que uma expressão a função \texttt{print} imprime os valores das expressões separadas por um caracter branco, a não ser que outro separador seja indicado explicitamente.
+
+\begin{lstlisting}
+>>> print(a, '+',b, '=', a + b)
+2 + 3 = 5
+>>> print(a, ' + ',b, ' = ', a + b)
+2  +  3  =  5
+>>> print(a, ' + ',b, ' = ', a + b, sep='--')
+2-- + --3-- = --5
+>>> 
+\end{lstlisting}
+
+O modo como a impressão termina também pode ser controlado:
+
+\begin{lstlisting}
+>>> print(a)
+2
+>>> print(b)
+3
+>>> print(a,end='')
+2>>> print(b)
+3
+>>> print(a,end=' ')
+2 >>> print(a,end='**')
+2**>>> 
+\end{lstlisting}
+
+Por defeito é usado o caracter de mudança de linha \texttt{$\backslash$n}. Temos assim uma sintaxe simples para a função \texttt{print}.
+
+\begin{lstlisting}
+print([expressao,...], sep=' ', end='\n',file=sys.sdout)
+\end{lstlisting}
+
+Como se pode ver também podemos determinar onde vai ser escrito o resultado indicando qual o canal de saída que, por defeito, é o monitor (\texttt{sys.sdout}).
+
+\begin{comment}
+Podemos incorporar caracteres de escape como meio de formatar a saída.
+\begin{lstlisting}
+>>> print('Ernesto Costa')
+Ernesto Costa
+>>> print('Ernesto','\n','Costa')
+Ernesto 
+ Costa
+>>> print('Ernesto\nCosta')
+Ernesto
+Costa
+>>> 
+\end{lstlisting}
+\end{comment}
+
+\subsubsection{Expressões de formatação}
+
+Na secção \ref{sec:cadcar} já ilustrámos como podemos usar o operador sobrecarregado \texttt{\%} para construir mensagens formatadas envolvendo vários objectos sem ter que recorrer à operação de concatenação de cadeias de caracteres. 
+
+\begin{lstlisting}
+>>> print('O primeiro nome é: %s, e o último é: %s' % ('Ernesto', 'Costa'))
+O primeiro nome é: Ernesto, e o último é: Costa
+>>> 
+\end{lstlisting}
+
+A cadeia de caracteres à esquerda do operador \texttt{\%} pode conter várias marcas de conversão que são precedidas de \texttt{\%}\footnote{Admitimos que este uso múltiplo do sinal \texttt{\%} é potencialmente factor de confusão.}. 
+
+Vejamos alguns exemplos simples usados para formatar a saída de números.
+
+\begin{lstlisting}
+>>> print('%d'% 12.34)
+12
+>>> print('%s' % 12.34)
+12.34
+>>> print('%e' % 12.34)
+1.234000e+01
+>>> print('%f' % 12.34)
+12.340000 
+>>> print('%.0f' % 12.34)
+12
+>>> print('%.2f' % 12.34)
+12.34
+>>> print('%.5f' % 12.34)
+12.34000
+>>> print('%10.2f' % 12.34)
+     12.34
+>>> print('%-6.2f -- %-6.2f' % (12.34, 12.34))
+12.34  -- 12.34 
+>>> print('%06.2f -- %06.2f' % (12.34, 12.34))
+012.34 -- 012.34
+>>>
+\end{lstlisting}
+
+A sintaxe é simples: bandeiras\footnote{do inglês \textit{flags}.}, o tamanho, seguido do número de casas decimais, seguido do código de conversão. Por exemplo, no caso de \%-6.2f, indica tratar-se de um número em vírgula flutuante, com duas casas decimais, com tamanho mínimo de 6 posições e alinhado à esquerda. O leitor interessado em saber todas as possibilidades deve consultar o manual da linguagem.
+
+\subsubsection{Método de formatação}
+
+Recentemente, a partir da versão 2.6, foi introduzido em \python um outro modo de formatar cadeias de caracteres que podemos usar com a função de \texttt{print}. Baseia-se no uso do método \texttt{format} que se aplica a um \textbf{modelo} de cadeia de caracteres que é instanciada por recurso a argumentos por \textbf{posição} ou por \textbf{nome}. A listagem seguinte ilustra a ideia.
+
+\begin{lstlisting}
+>>> modelo_1 = '{0}, {1} e {2}'
+>>> texto_1 = modelo_1.format('cama', 'mesa', 'roupa lavada')
+>>> print(texto_1)
+cama, mesa e roupa lavada
+>>> texto_2 = modelo_1.format('roupa lavada', 'mesa', 'cama')
+>>> print(texto_2)
+roupa lavada, mesa e cama
+>>> modelo_2 = '{dorme}, {come} e {veste}'
+>>> texto_21 = modelo_2.format(come='mesa',veste='roupa lavada',dorme='cama')
+>>> print(texto_21)
+cama, mesa e roupa lavada
+>>> 'Eu sou {0}!'.format('toto')
+'Eu sou toto!'
+>>> print('Eu sou {0}!'.format('toto'))
+Eu sou toto!
+>>>  
+\end{lstlisting}
+
+Tratando-se de um método sobre uma cadeia de caracteres usamos a notação por ponto já referida na secção \ref{sec:cadcar}.  Notar o uso de chavetas para referenciar os objectos. O método \texttt{format} devolve uma cadeia de caracteres, que sendo um objecto imutável que ou é enviado para o exterior ou é associado a um nome. Caso contrário perde-se.
+
+Podemos usar marcas mais sofisticadas, como no caso do recurso a expressões de formatação, como se ilustra no exemplo seguinte.
+
+\begin{lstlisting}
+>>> print('{0:6.2f}'.format(12.34))
+ 12.34
+>>> print('{0:<15.2f}{1:<15.2f}'.format(12.34, 12.34))
+12.34          12.34          
+>>> print('{0:<15.2f}{1: >15.2f}'.format(12.34, 12.34))
+12.34                    12.34
+>>>
+\end{lstlisting}
+
+Os dois modos de proceder à formatação das cadeias de caracteres podem actualmente ser usados. Cada um deles tem vantagens e inconvenientes, embora a versão por recurso ao método \texttt{format} seja considerada mais pitónica, havendo por isso a hipótese de, no futuro, a mais antiga ser descontinuada. 
+ 
+ \begin{comment}
+\section{Ficheiros}
+
+\subsection{Generalidades}
+
+Vamos supor que você é  meteorologista e que andou a guardar informação relativa à  temperatura e à pluviosidade em diversos locais, ao longo dos meses. Por exemplo, tem essa informação para várias cidades de Portugal, e agora chegou a altura de fazer um estudo comparativo.  Esta é uma situação em que a informação teve que ser guardada de forma permanente, para mais tarde ser acedida, trabalhada e, eventualmente, os resultados da sua análise serem também eles guardados. É para isso que são usados os ficheiros.  Chamamos \marginlabel{Ficheiros} \textbf{ficheiros} aos locais onde guardamos de forma permanente informação\footnote{Como é evidente os programas que escrevemos são eles próprios armazenados em ficheiros.}. Existem três tipos de ficheiros: de texto, binários e \textit{raw}. Na ausência de informação em contrário o que vamos descrever aplica-se aos ficheiros de texto. Um ficheiro de texto não é mais do que  uma (eventualmente muito longa) cadeia de caracteres.\\
+
+ Posto isto vamos come\c car por ver o que são os ficheiros e como se manipulam. A primeira coisa a referir é a opera\c cão de \marginlabel{Abertura de um ficheiro} abertura do ficheiro  através de uma fun\c cão pré-definida e cuja sintaxe é \texttt{open}(\textit{nome}, \textit{modo}). Essa opera\c cão devolve um objecto de tipo \textit{ficheiro}, instância da classe \texttt{\_io.TextIOWrapper}. Como todos os objectos tem identidade, valor e tipo.  
+ 
+\begin{lstlisting}[caption={Abertura de um ficheiro}, label=lst:fich1,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+>>> meu_ficheiro = open('toto.txt','r')
+>>> meu_ficheiro
+<_io.TextIOWrapper name='toto.txt' mode='r' encoding='UTF-8'>
+>>> id(meu_ficheiro)
+4479733416
+>>> type(meu_ficheiro)
+<class '_io.TextIOWrapper'>
+>>> 
+\end{lstlisting}
+
+Neste exemplo, abrimos um ficheiro de texto de nome \textbf{toto.txt}, no modo de leitura (\textbf{r}). O objecto devolvido por \texttt{open} foi associado ao nome \textbf{meu\_ficheiro} através do qual podemos aceder às várias operações sobre o ficheiro disponibilizadas pela classe (por exemplo, a operação de leitura \texttt{read}), como se mostra na figura \ref{fig:fiche2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{destrutivas/imagens/ficheiro2012.eps}
+\caption{Representação em memória}
+\label{fig:fiche2}
+\end{center}
+\end{figure}
+
+No exemplo acima apenas tivemos que indicar o nome do ficheiro porque este estava na zona de trabalho corrente. Podemos ter que indicar o caminho absoluto para o ficheiro, caso ele esteja noutro local. Nessa situação, o modo de indicar o caminho depende da plataforma que estivermos a usar. Por exemplo, se for em ambiente \textbf{Windows} podemos usar dois modos alternativos:
+
+\begin{lstlisting}
+meu_ficheiro = open(r"c:\caminho\para\ficheiro\toto.txt",'r')
+meu_ficheiro = open("c:\\caminho\\para\\ficheiro\\toto.txt",'r')
+\end{lstlisting}
+
+Notar que se prefixarmos a cadeia de caracteres que indica o caminho com \textbf{r} podemos usar a notação habitual, caso contrário temos que usar duas barras para trás.\\
+
+Em ambiente \textbf{Mac OS X} ou \textbf{Linux} será:
+
+\begin{lstlisting}
+meu_ficheiro = open("/caminho/para/ficheiro/toto.txt",'r')
+\end{lstlisting}
+
+\texttt{open} é o construtor do tipo. Existem vários modos de abrir um ficheiro dependendo da operação pretendida e do modo como deve ser interpretado o conteúdo. Para o caso de ficheiros de texto os vários modos são apresentados na tabela \ref{tab:modos}.
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Modo & Interpretação  \\ [0.5ex]
+		r & Modo de leitura\\
+		w & Modo de escrita\\
+		a & Modo de acrescentar\\
+		r+ & Modo de leitura e escrita \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:modos}
+\caption{Modos de abertura de ficheiros de texto}
+\end{table}
+
+Para o caso de ficheiros binários devemos acrescentar a letra \textbf{b} ao modo. \\
+
+É boa prática de programação fechar todo o ficheiro que já não está a ser usado. Para tal usa-se a operação de \texttt{close} aplicada ao nome associado ao ficheiro:
+
+\begin{lstlisting}
+meu_ficheiro.close()
+\end{lstlisting}
+
+Deste modo, além de libertarmos espaço, evitamos eventuais corrupções da informação guardada no caso de acontecer alguma situação anómala.
+
+\subsection{Leitura}
+
+Passemos agora ao problema da leitura de  dados. Comecemos pelos opera\c cões de entrada possíveis como ilustra a tabela \ref{tab:fichent}.
+
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operador & Interpretação  \\ [0.5ex]
+		read() & lê todo o ficheiro de uma só vez  \\
+		read(N) & lê N bytes\\
+		readline() & lê a próxima linha do ficheiro \\
+		readlines() &  lê e guarda como sequência de linhas \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:fichent}
+\caption{Operações de leitura com ficheiros}
+\end{table}
+
+Como se pode ver na tabela podemos  ler toda a informação de uma só vez, ler um determinado número de caracteres (codificados em bytes), ler por linhas ou ainda ler e guardar como uma sequência de linhas. Tratando-se de métodos, a sintaxe a utilizar deverá ser:\\
+
+ \textit{<nome\_ficheiro>}.\textit{<opera\c cão>}.\\
+
+
+
+Vejamos agora o que passa em concreto. Quando abrimos um ficheiro para ler ou consultar dados a situa\c cão é a apresentada na figura \ref{fig:fichent}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{destrutivas/imagens/ficheiro.eps}
+\caption{Um ficheiro depois de aberto}
+\label{fig:fichent}
+\end{center}
+\end{figure}
+
+É como se existisse uma pequena janela que nos mostra o início do ficheiro. A listagem abaixo mostra o uso das operações de leitura\footnote{Mais à frente explicaremos porque fechamos e abrimos o ficheiro antes de cada operação.}.
+
+\begin{lstlisting}
+>>> meu_ficheiro = open('toto.txt','r')
+>>> todo_ficheiro = meu_ficheiro.read()
+>>> todo_ficheiro
+'Um ficheiro pequeno,\ncom caracteres estranhos.\n\npara testar a leitura \\n de\nficheiros.\ne outras coisas \\t mais!'
+>>> print(todo_ficheiro)
+Um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+e outras coisas \t mais!
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> uma_linha = meu_ficheiro.readline()
+>>> uma_linha
+'Um ficheiro pequeno,\n'
+>>> print(uma_linha)
+Um ficheiro pequeno,
+
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> lista_linhas = meu_ficheiro.readlines()
+>>> lista_linhas
+['Um ficheiro pequeno,\n', 'com caracteres estranhos.\n', '\n', 'para testar a leitura \\n de\n', 'ficheiros.\n', 'e outras coisas \\t mais!']
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> alguns_caracteres = meu_ficheiro.read(10)
+>>> alguns_caracteres
+'Um ficheir'
+>>> alguns_caracteres = meu_ficheiro.read(15)
+>>> alguns_caracteres
+'o pequeno,\ncom '
+>>> 
+\end{lstlisting}
+
+
+Estas operações são frequentes pelo que normalmente se escrevem pequenos programas que podem depois ser reutilizados. Um exemplo simples para a leitura completa dos dados é dado na listagem \ref{lst:fichent1}.
+
+\lstinputlisting[caption={Leitura completa de um ficheiro}, label= lst:fichent1]{destrutivas/programas/ficheiro_entrada.py}
+
+Analisemos com detalhe a defini\c cão \texttt{ler\_tudo}. Come\c camos por pedir ao utilizador o nome do ficheiro.  De seguida abrimos o ficheiro em modo de leitura e associamos o objecto correspondente ao nome \textbf{fich\_ent}. Passamos à leitura completa do ficheiro que se traduz pela cria\c cão de um objecto do tipo cadeia de caracteres associada à variável \textbf{dados}. Porque não queremos fazer mais nada, fechamos o ficheiro e devolvemos o resultado. 
+
+Consideremos a sessão \ref{lst:fichent1}.
+
+\begin{lstlisting}[caption={Leitura de ficheiros},label= lst:fichent1]
+>>> import fichent1
+>>> dir(fichent1)
+['__builtins__', '__doc__', '__file__', '__name__', 'ler_tudo']
+>>> fichent1.ler_tudo()
+
+ Nome absoluto do ficheiro:	/Users/ernestojfcosta/python/fichent.txt
+Um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+
+e outras coisas \t mais!
+>>>
+\end{lstlisting}
+
+
+Que comentários podemos fazer? Em primeiro lugar temos uma linha em branco antes do pedido do nome do ficheiro seguida de alguns espa\c cos em branco. Tal deve-se aos caracteres de controlo no interior da cadeia de caracteres. O nome do ficheiro é absoluto, ou seja, indicamos o caminho para o ficheiro. De seguida o ficheiro é impresso aparecendo exactamente na forma como o escrevemos. As marcas de fim de linha no entanto não aparecem!\\
+
+Vejamos agora o resto das opera\c cões de entrada para o que escrevemos o programa da listagem \ref{lst:leitura}.
+
+\lstinputlisting[caption={Opera\c cões de entrada}, label= lst:leitura]{destrutivas/programas/leitura.py}
+
+A sessão no interpretador foi a seguinte:
+
+\begin{lstlisting}
+>>> import leitura
+>>> dir(leitura)
+['__builtins__', '__doc__', '__file__', '__name__', 'leitura']
+>>> leitura.leitura()
+
+ Nome absoluto do ficheiro:	/Users/ernestojfcosta/python/fichent.txt
+Bytes:  Um fiche
+Linha:  iro pequeno,
+
+Linhas:  ['com caracteres estranhos.\n', '\n', 'para testar a leitura \\n de\n', 'ficheiros.\n', '\n', 'e outras coisas \\t mais!']
+'Fim'
+>>> 
+\end{lstlisting}
+
+Olhando para o resultado notamos a importância do conceito de \textbf{janela} acima referido. Come\c camos por mandar ler 8 bytes \footnote{Cada byte corresponde a um caracter.}. Quando pedimos a leitura de uma linha ela é feita \textbf{a partir} do local onde a janela ficou depois de serem lidos os 8 bytes (ver figura \ref{fig:fich8}. Igualmente quando mandamos ler as linhas do ficheiro são apenas as que restam que s\c são lidas. Mas se quisermos que todas as leituras tenham como referência o início como proceder? Mais à frente trataremos dessa questão.
+
+\begin{figure}[!]
+\begin{center}
+\includegraphics[scale=0.8]{destrutivas/imagens/ficheiro2.eps}
+\caption{Situa\c cão depois de lidos os primeiros 8 bytes}
+\label{fig:fich8}
+\end{center}
+\end{figure}
+
+
+\subsection{Escrita}
+
+A escrita num ficheiro é a opera\c cão inversa da leitura. Pressupõe que um ficheiro foi aberto para escrita gra\c cas ao comando \texttt{open}(\textit{nome}, 'w'). Como se pode ver na tabela \ref{tab:fichsaida} existem duas opera\c cões fundamentais. Podemos escrever algo simples  com \texttt{write()} ou algo mais complicado gra\c cas a \texttt{writelines()}.A sintaxe geral do comando de escrita é:
+
+\begin{alltt}
+<ficheiro>.write(<cadeia_de_caracteres>)
+\end{alltt}
+
+
+Notar que o que se escreve tem que ser um objecto do tipo cadeia de caracteres. Se o não for terá que ser convertido! A listagem \ref{lst:conv} ilustra o processo, com um exemplo simples admitindo que o objecto ficheiro pode ser acedido pelo nome \textbf{fout}.
+
+\begin{lstlisting}
+>>> x = 15
+>>> fout.write(str(x))
+\end{lstlisting}
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operador & Interpretação  \\ [0.5ex]
+		write(\textit{str}) & escreve a cadeira de caracteres num ficheiro\\
+		writelines(\textit{seq}) &  escreve \textit{seq} como sequência de linhas \\
+		close() & opera\c cão de fecho do ficheiro\\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:fichsaida}
+\caption{Opera\c cões de escrita com ficheiros}
+\end{table}
+
+Vejamos um exemplo simples como o indicado na listagem \ref{lst:fichout}.
+
+\begin{lstlisting}[caption={Escrita num ficheiro}, label=lst:fichout]
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','w')
+>>> f.write('Teste de escrita\na\tb\c\nParece o abecedário!\nFim.')
+>>> f.close()
+>>> g=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> print g.read()
+Teste de escrita
+a	b\c
+Parece o abecedário!
+Fim.
+>>> 
+\end{lstlisting}
+
+Como se pode verificar os caracteres de controlo que incluímos na cadeia de caracteres são preservados. Devemos ter em aten\c cão que quando se abre um ficheiro para escrita (modo 'w') caso o ficheiro já exista ele é destruído. Para que tal não acontece temos que abrir o ficheiro em modo de acrescentar (modo 'a'). Um exemplo.
+
+\begin{lstlisting}
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','a')
+>>> f.write('Vamos colocar mais \n qualquer coisa \nno ficheiro')
+>>> f.close()
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> print f.read()
+Teste de escrita
+a	b\c
+Parece o abecedário!
+Fim.Vamos colocar mais 
+ qualquer coisa 
+no ficheiro
+>>> f.close()
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> f.read()
+'Teste de escrita\na\tb\\c\nParece o abeced\xe1rio!\nFim.Vamos colocar mais \n qualquer coisa \nno ficheiro'
+>>> 
+\end{lstlisting}
+
+Este exemplo mostra duas coisas. Por um lado, o que se acrescenta é colocado no final do ficheiro. Em segundo lugar, o que vemos ao ler o ficheiro é diferente caso utilizemos o comando \texttt{print} ou não. Porque será esta diferen\c ca?.
+
+\section{Navegar}
+Tratemos agora do problema de querer ler ou escrever em determinadas partes do ficheiro. Isso obriga a ter comandos que controlem o posicionamento da janela sobre o ficheiro. Para navegar num ficheiro existem dois comandos. O comando \textbf{tell}, que  indica-nos a posi\c cão da janela relativamente ao início do ficheiro. O comando \textbf{seek}, que nos permite reposicionar a janela, relativamente ao início ou ao fim do ficheiro, ou ainda em rela\c cão à posi\c cão corrente.
+
+
+
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{|c|c|l|}
+	       \rowcolor[gray]{0.7}Nome & Operador & Interpretação  \\[0.5ex]
+		seek & fich.seek(pos,como=0) & movimenta para uma nova posi\c cão\\ \hline
+		tell &  fich.tell() & qual a posi\c cão relativamente ao início? \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:navega}
+\caption{Operadores de naveg\c cão}
+\end{table}
+
+Vejamos um exemplo, como ilustra a listagem \ref{lst:st}.
+
+\begin{lstlisting}[caption='Navegar num ficheiro', label=lst:st]
+>>> f_ent = open('/tempo/ficheiro2009.txt','r')
+>>> bytes = f_ent.read(8)
+>>> bytes
+'um fiche'
+>>> f_ent.seek(3,1)
+>>> novos_bytes = f_ent.read(8)
+>>> novos_bytes
+' pequeno'
+>>> f_ent.tell()
+19L
+>>> f_ent.seek(-10,2)
+>>> mais_novos_bytes = f_ent.read(5)
+>>> mais_novos_bytes
+'s \\t '
+>>> ate_ao_fim = f_ent.read()
+>>> ate_ao_fim
+'mais!'
+>>> fim = f_ent.read()
+>>> fim
+''
+>>> 
+\end{lstlisting}
+
+O comando \textbf{tell} indica a posi\c cão em bytes. O segundo argumento de \textbf{seek} pode assumir os valores 0, quando a referência é o início do ficheiro, 1, quando a referência é a posi\c cão corrente da janela, ou ainda 2, quando nos movimentamos relativamente ao fim do ficheiro. O valor do primeiro argumento pode ser um inteiro positivo ou negativo para nos movimentarmos para a direita ou para a esquerda, respectivamente do ponto de referência \footnote{É óbvio que se o ponto de referência for o início do ficheiro não nos podemos movimentar para a esquerda e, de modo semelhante, se a referência for o fim do ficheiro não podemos deslocarmos para a direita.}. Um modo simples de voltar ao início do ficheiro é fazer \texttt{fich.seek(0,0)}. 
+
+\end{comment}
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo retomámos a aprofundámos as noções de atribuição, de entrada e de saída de dados, enquadrando-as no conceito de instruções destrutivas. 
+
+\section*{Testes os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Verifique se domina os conceitos listados e se sabe responder às questões colocadas.
+
+\begin{itemize}
+\item Qual o significado de estado? E de computação?
+\item Que palavras reservadas existem em \python? Qual a sua função e importância?
+\item O que significa dizer que \python é uma linguagem não tipada e que o tipo associado a um objecto é determinado dinamicamente? 
+\item Que consequências práticas existem da tipagem ser dinâmica?
+\item Como define o conceito de atribuição?
+\item Que formas de atribuição conhece?
+\item De que maneiras podem introduzir dados num programa? E de que maneiras pode retirar resultados?
+\item Como funciona a instrução \texttt{input}? Funciona com qualquer tipo de objecto?
+\item Qual a diferença entre formar a saída por recurso a uma expressão ou ao método \texttt{format}?
+
+\end{itemize}
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\facil
+Recorrendo ao interpretador, identifique quais dos seguintes nomes são válidos para nomes de objectos:
+\begin{itemize}
+\item abc
+\item 5peso
+\item \_valor
+\item Ernesto Costa
+\item ABC 
+\item with
+\item peso\$ 
+\item minha\_altura
+\item class
+\item nome\_ALUNO
+\item a(b)
+\item \_\_\_1
+\item \_\_x\_\_
+\item import\_from
+\item area-rect
+\end{itemize}
+
+Justifique os casos em que os nomes não são válidos.
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+
+Escreva um programa que lhe permita imprimir os caracteres gregos $\alpha, \beta, \gamma$. \textbf{Sugestão}: obtenha os códigos \textbf{unicode} de cada caracter.
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+
+Experimente fazer o seguinte:\\
+
+\begin{lstlisting}
+>>> x = 5
+>>> y = 5
+>>> 
+\end{lstlisting}
+
+Inspeccione os objectos de nome $x$ e $y$, isto é, determine a sua identidade, valor e tipo. Que conclusões pode tirar? 
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+Experimente fazer o seguinte:
+
+\begin{lstlisting}
+>>> a = 10
+>>> b = a
+>>> 
+\end{lstlisting}
+
+Inspeccione os objectos  e tire conclusões.
+
+\end{Exercicio}
+
+\begin{Exercicio} \muitofacil
+
+Simule a seguinte sessão no interpretador:
+
+\begin{lstlisting}
+>>> x = 5
+>>> x = x + 1
+>>> 
+\end{lstlisting}
+
+Inspeccione o objecto $x$ após cada passo. Que conclusões pode tirar?
+
+\end{Exercicio}
+
+\begin{Exercicio}\muitofacil
+
+Considere a seguinte sessão no interpretador:
+
+\begin{lstlisting}
+>>> a = 10
+>>> b = a
+>>> a = 11
+\end{lstlisting}
+
+Como explica os resultados da inspec\c cão?
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+desenhar diagramas do ambiente depois de um conjunto de atribuições
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Explique o que acontece de modo claro, sintético e \textbf{rigoroso} quando executa o comando:
+
+\begin{lstlisting}
+>>> cad = 'a' * 3
+\end{lstlisting}
+
+A sua explica\c cão deve incluir a visualiza\c cão do \textbf{espa\c co de nomes} e do\textbf{ espa\c co de objectos} depois de executado o comando indicado.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Usando a instrução \texttt{print} e o método \texttt{format} diga como podia obter o efeito da listagem seguinte:
+
+\begin{lstlisting} 
+Bem vindo a IPRP    
+    Bem vindo a IPRP
+Bem vindo a IPRP e ao DEIUC
+
+\end{lstlisting}
+
+
+
+\end{Exercicio}
+
+
+
+
+\begin{Exercicio}\medio
+Desenvolva um programa que lhe permita imprimir a seguinte tabela.
+\begin{lstlisting}
+Número		Quadrado
+     1		       1
+     2		       4
+     3		       9
+     4		      16
+     5		      25
+\end{lstlisting}
+
+Caso pretenda que a tabela possa ter um número variável de linhas em que medida precisa, ou não, de alterar a sua solução? Se a resposta for afirmativa apresente o respectivo programa.
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+Desenvolva um programa que dado um número inteiro menor ou igual a dez imprime a tabela da respectiva tabuada. A listagem abaixo ilustra para o caso do número 7.
+
+\begin{lstlisting}
+Tabuada do número  7
+--------------------
+7	x	   1	=   7
+7	x	   2	=  14
+7	x	   3	=  21
+7	x	   4	=  28
+7	x	   5	=  35
+7	x	   6	=  42
+7	x	   7	=  49
+7	x	   8	=  56
+7	x	   9	=  63
+7	x	  10	=  70
+
+\end{lstlisting}
+
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+Desenvolva um programa que dado um nome por extenso constrói o respectivo acrónimo. A listagem abaixo ilustra o pretendido.
+
+\begin{lstlisting}
+>>> print(acronimo('Random Access Memory'))
+RAM
+\end{lstlisting}
+
+
+\end{Exercicio}
+
+
+
+
+
+\begin{Exercicio}\facil
+Na descolagem de um avião a relação entre a aceleração, $a$, a velocidade, $v$,  determina o comprimento mínimo da pista, $c$,  para tudo correr bem, de acordo com a fórmula:
+
+\[c = \frac{v^2}{2\times a} \]
+
+Escreva um programa que pede os dados ao utilizador e imprime uma mensagem com o resultado. Uma hipótese de interacção é dada na listagem seguinte:
+
+\begin{lstlisting}
+Velocidade de descolagem (m/s): 50
+Aceleração para descolagem (m/s?): 4.5
+Para a velocidade 50.00 e aceleração 4.50 o comprimento mínimo da pista é: 277.78.
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+A energia necessária para elevar a temperatura de uma dada massa de água de uma temperatura inicial até uma temperatura final é dada pela fórmula:
+
+\[E = m \times  t_i - t_f) \times 4184 \]
+
+$E$ é a energy (em Joules), $t_i$ e $t_f$ as temperaturas inicial e final (em graus Celcius) e $m$ a massa (em quilogramas). 
+Escreva um programa que pede os dados ao utilizador e imprime uma mensagem com o resultado. Uma hipótese de interacção é dada na listagem seguinte:
+
+\begin{lstlisting}
+Temperatura inicial  (Celcius): 10
+Temperatura final (Celcius): 30
+Quantidade de água (Quilogramas): 25
+Para a massa de água 25.00, temperatura inicial 10.00 e temperatura final 30.00 a energia necessária é: 2092000.00 Joules.
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+A temperatura exterior depende de vários factores. Um das fórmulas de cálculo faz intervir a velocidade do vento:
+
+\[t_v = 35.4 + 0.6215 \times  t - 35.75  \times v^0.16 + 0.4275 \times t \times v^0.16 \]
+
+A temperatura é medida em graus Fahrenheit e a velocidade do vento em milhas por hora.
+Escreva um programa que pede os dados ao utilizador e imprime uma mensagem com o resultado. Uma hipótese de interacção é dada na listagem seguinte:
+
+\begin{lstlisting}
+Velocidade do vento (milhas/hora): 5
+Temperatura (Fashrenheit [-58, 41]): 10
+Para a velocidade do vento 5.00 e temperatura exterior 10.00 a temperatura é sentida como:  1.24.
+\end{lstlisting}
+
+\end{Exercicio}
+
+
+\begin{Exercicio}
+Desenvolva um programa que lhe permita imprimir os elementos de uma matriz  antecedidos pela sua posição na matriz. A listagem abaixo exemplifica para a matriz $[[1,2,3],[4,5,6],[7,8,9],[10,11,12]]$.
+
+\begin{lstlisting}
+(0,0): 1	(0,1): 2	(0,2): 3	
+(1,0): 4	(1,1): 5	(1,2): 6	
+(2,0): 7	(2,1): 8	(2,2): 9	
+(3,0): 10	(3,1): 11	(3,2): 12
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Pretende-se desenvolver um programa que pergunte ao utilizador a frequência de nascimentos, de mortes e de emigrantes em minutos. Depois. conhecida a população inicial deve calcular a nova população no final do ano. Assuma que o ano tem 365 dias. A listagem mostra uma interação possível.
+
+\begin{lstlisting}
+Frequência de nascimentos (minutos): 20
+Frequência de falecimentos (minutos): 15
+Frequência de emigração (minutos): 10
+Resumo dos dados:
+-----------------
+Frequência de nascimentos: 20
+Frequência de mortes: 15
+Frequência de emigrantes:10
+População Inicial:10000000
+Estimativa:
+-----------
+A população ao fim de um ano: 9938680
+
+\end{lstlisting}
+
+Se quiser estimar o resultado ao fim de vários anos como modificaria a sua solução?
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Considere a seguinte defini\c cão:
+
+\begin{lstlisting}
+def add2me(x):
+	return x + x
+\end{lstlisting}
+
+Indique, \textbf{justificando},  quais os resultados esperados ao executar os comandos:
+
+\begin{lstlisting}
+>>> add2me(23.4)
+???
+>>>  add2me('toto')
+???
+\end{lstlisting}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Explique de modo claro, sintético e \textbf{rigoroso} o que aconteceu na sessão seguinte:
+
+\begin{lstlisting}
+>>> def prod(x,y):
+... 	return x * y
+... 
+>>> a = 5
+>>> print prod(a,3)
+15
+>>> a
+5
+>>> x
+Traceback (most recent call last):
+  File "<string>", line 1, in <fragment>
+NameError: name 'x' is not defined
+>>> 
+\end{lstlisting}
+
+\end{Exercicio}

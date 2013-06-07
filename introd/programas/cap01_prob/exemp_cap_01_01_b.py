@@ -1,0 +1,1 @@
+# Exemplo simples entradas / saídas / atribuições#  Ernesto Costa# Dada a altura calcula o peso ideal para uma mulherdef main():	"""" Tem o peso ideal?		"""	# mensagem			altura = input("A sua altura por favor: ")			peso_ideal = (62.1 * altura) - 44.7		print "O seu peso ideal e: ", peso_ideal, " kilos"				main()

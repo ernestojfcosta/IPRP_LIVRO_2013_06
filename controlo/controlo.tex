@@ -1,0 +1,1639 @@
+%%% controlo
+%%% 
+%%% 
+
+\chapter{Instruções de Controlo}\label{cap:controlo}
+
+\begin{objectivos}
+
+\item Tomar contacto com as instru\c cões condicionais
+\item Tomar contacto com as instru\c cões de repeti\c cão (ciclos)
+\item Exercitar estes conceitos por meio de exemplos simples
+
+\end{objectivos}
+
+\section{Introdu\c cão}
+
+Na nossa vida todos estamos habituados a tomar decisões:  jantar fora e depois ir ao cinema, comprar  um carro novo ou um carro em segunda mão, programar várias sessões de ginástica, são alguns exemplos simples do nosso dia a dia. As nossas escolhas têm por base a avalia\c cão que fazemos das situa\c cões concretas e seus condicionalismos: se o jantar terminar cedo vamos seguramente ao cinema, se acabámos de receber uma heran\c ca compramos um carro novo, vamos uma vez por semana ao ginásio. Em programa\c cão, a tomada de decisão obriga a fazer testes booleanos e actuar em fun\c cão do seu resultado, sendo uma condi\c cão fundamental para podermos resolver problemas com alguma complexidade. No capítulo \ref{cap:destrut}  vimos a existência de instru\c cões destrutivas, isto é, instru\c cões que alteram a associa\c cão entre nomes e objectos ou instru\c cões que alteram o valor dos objectos. Chegou a vez de estudarmos instru\c cões não destrutivas que permitem determinar qual a próxima instru\c cão a ser executada. São designadas por \marginlabel{Sequências, Condicionais e Ciclos}\textbf{instru\c cões de controlo}. Existem três tipos:
+
+\begin{itemize}
+\item sequências
+\item condicionais
+\item ciclos
+\end{itemize}
+
+\subsubsection{Indentação e Blocos}
+
+Antes de detalharmos a sua sintaxe e o seu funcionamento  \marginlabel{Indenta\c cão e Blocos}, interessa  desde já  referir que, em Python, o código está organizado em \textbf{blocos}, isto é, grupo de instru\c cões que, por exemplo, podem ser executadas se uma dada condi\c cão for verdadeira ou executadas repetidas vezes. Podemos ter blocos dentro de blocos. A marca de início de um boco são os dois pontos (\textbf{:}). Para significar que um conjunto de instru\c cões pertence ao mesmo bloco usa-se o mecanismo de \textbf{indenta\c cão} de código: as instru\c cões estão alinhadas verticalmente gra\c cas ao uso de espa\c cõs ou tabula\c cões\footnote{Não se podem misturar espa\c cos e tabula\c cões.}. A figura \ref{fig:bloco1} ilustra essa situa\c cão e a listagem \ref{lst:bloco1} mostra um exemplo concreto.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{controlo/imagens/bloco1.eps}
+\caption{Os blocos de um programa}
+\label{fig:bloco1}
+\end{center}
+\end{figure}
+
+\begin{lstlisting}[caption=Blocos, label=lst:bloco1]
+x = 1
+if x == 1:
+    y = 2
+    if y == 2:
+        x = 2
+        print('Bloco 2: x = %d, y = %d' % (x,y))
+    y = 1
+    print('Bloco 1: x = %d, y = %d' % (x,y))
+x = 1
+print('Bloco 0: x = %d, y = %d' % (x,y))
+	
+# Resultado da execução
+Bloco 2: x= 2, y= 2
+Bloco 1: x= 2, y= 1
+Bloco 0: x= 1, y= 1
+\end{lstlisting}
+
+\subsubsection{Expressões Booleanas}
+
+O tipo de dados \texttt{boolean} foi introduzido anteriormente (ver \ref{sec:boolean}). Ficámos a saber que só tem dois objectos, denotados por \texttt{True} e por \texttt{False}, e várias operadores relacionais e operadores lógicos. As expressões booleanas são construídas a partir dos objectos e dessas operações. Um exemplo simples do seu uso é dado pela listagem \ref{lst:oprel}.
+
+\begin{lstlisting}[caption=Operadores relacionais, label=lst:oprel]
+>>> x = 7
+>>> y = 20
+>>> z = w =10
+>>> x < y
+True
+>>> z <= w
+True
+>>> y == z
+False
+>>> x != y
+True
+>>> 'A' < 'Z'
+True
+>>> 'a' < 'A'
+False
+>>> 3.4 < 4
+True
+>>> ( x < y) and ( w == 10)
+True
+>>> not ('a' < 'A')
+True
+>>> ('a' < 'A') or (x !=y)
+True
+>>> not ('a' < 'A') or (x !=y)
+True
+>>> not (('a' < 'A') or (x !=y))
+False
+>>> ( x < y) or (x/0)
+True
+>>> 
+\end{lstlisting}
+
+
+Observe-se a última situa\c cão na qual ocorre uma divisão por zero e que não é detectada. Isso acontece devido ao modo como se determina o valor lógico final da expressão. Num \textbf{and} a avalia\c cão termina mal apare\c ca uma situa\c cão falsa, enquanto num \textbf{or} a avalia\c cão cessa mal apare\c ca um resultado parcial verdadeiro.\\
+
+Existem outros operadores que quando são aplicados aos objectos apresentam um  resultado do tipo \texttt{boolean}, como o \textbf{in} que permite responder se um elemento pertence a uma sequência, o \texttt{==}  (ou \texttt{!=}) que permite determinar se dois objectos têm o mesmo valor (valor diferente) ,  ou ainda  o \textbf{is} que permite saber se dois nomes estão associados ao mesmo objecto, isto é se têm a mesma idfentidade (ver listagem \ref{lst:in}).
+
+\begin{lstlisting}[caption=Outros operadores, label=lst:in]
+>>> 'a' in 'bcad'
+True
+>>> 'ola' in 'bolacha'
+True
+>>> not ('pe' in 'sope')
+False
+>>> z = w =10
+>>> x = 5
+>>> y = 10
+>>> z is w
+True
+>>> z is y
+True
+>>> x == z
+False
+\end{lstlisting}
+
+Como acabámos de ver o resultado de uma expressão booleana é um de dois objectos: \textbf{True} ou \textbf{False}. No entanto, em fun\c cão do contexto podemos usar outros objectos para significar \textbf{False}, como se indica na tabela \ref{tab:falso}\footnote{Listas e dicionários serão tratados mais à frente.}.
+
+\begin{table}[!htdp]
+\caption{Representa\c cões de Falso}
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Objecto & Descrição  \\ [0.5ex]
+		\textbf{None} & \textbf{Nada} \\
+		\textbf{0} & \textbf{Zero} \\
+		\textbf{''} & \textbf{Cadeia de Caracteres vazia} \\ 
+		\textbf{()} & \textbf{Tuplo vazio} \\ 
+		\textbf{[]} & \textbf{Lista vazia} \\ 
+		\textbf{\{\}} & \textbf{Dicionário vazio} \\ 
+		\hline
+	\end{tabular}
+	\end{center}
+\label{tab:falso}
+\end{table}
+
+ Por oposi\c cão, tudo o que não denotar falso denota a condi\c cão verdadeira. Dito de outro modo: em fun\c cão do contexto qualquer objecto em Python pode ser interpretado como um valor de verdade. Embora pareça estranho e eventualmente confuso, esta situa\c cão pode ser bastante vantajosa como veremos através de diferentes exemplos.
+
+
+\section{Sequências}
+
+A forma mais simples de organizar a ordem de execu\c cão das instru\c cões de um programa é através da sua sequência\c cão (ver figura \ref{fig:seq1}). Executamos primeiro \textbf{A}, depois \textbf{B} e, finalmente, \textbf{C}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{controlo/imagens/seq1.eps}
+\caption{Sequência}
+\label{fig:seq1}
+\end{center}
+\end{figure}
+
+Para impor essa ordem  recorremos a \textbf{delimitadores}. Estes podem ser implícitos ou explícitos como se mostra na listagem \ref{lst:seq}.
+
+\begin{lstlisting}[caption=Sequência,label=lst:seq]
+>>> import math
+>>> a=5; b=7
+>>> L=[1,2,
+... 3,4]
+>>> L
+[1, 2, 3, 4]
+>>> fich=open('/tempo/\
+... cod.txt')
+>>> fich
+<open file '/tempo/cod.txt', mode 'r' at 0x5b4a0>
+>>> 
+\end{lstlisting}
+
+Na primeira situa\c cão (linha 1) usamos a tecla \textit{<enter>}. No segundo caso (linha 2) a separa\c cão é feita pelo ponto e vírgula. Na terceira situa\c cão trata-se de uma estrutura, neste caso uma lista, que tem uma marca de início (\textbf{[}) e de fim (\textbf{]}). Finalmente a última situa\c cão mostra o uso do \textit{backslash} $\backslash$  introduzido numa cadeia de caracteres.\\
+
+Num programa qualquer também aparece a estrutura sequência, como se mostra na listagem seguinte.
+
+\begin{lstlisting}
+def soma_produto(x,y):
+    soma = x+y
+    produto = x*y
+    print(soma,produto)
+\end{lstlisting}
+
+Aqui temos três instruções executadas em sequência, duas de atribuição (soma e produto) e uma de impressão. Notar o alinhamento das instruções indicando que fazem parte do mesmo bloco.
+
+\section{Condicionais}
+
+Devido à sua natureza, os programas escritos com apenas a estrutura de controlo sequência são muito pobres e resolvem apenas problemas muito simples. A introdução das condicionais, com a sua possibilidade de se fazerem escolhas, vai permitir a escrita de programas mais interessantes. As condicionais dividem-se em três categorias:
+
+\begin{itemize}
+\item simples (uma via)
+\item normal (duas vias)
+\item geral (várias vias)
+\end{itemize}
+
+\paragraph{Condicional Simples}A situa\c cão mais simples corresponde ao caso em que num teste com duas alternativas, numa delas executamos ac\c cões e na outra nada fazemos. A figura \ref{fig:if} ilustra a situa\c cão.
+
+\begin{figura}
+	{0.5}
+	{controlo/imagens/if.eps}
+	{A condicional if-then}
+	{fig:if}
+\end{figura}
+
+Em pseudo código temos:
+
+\begin{lstlisting}
+if <condição>:
+	<corpo>
+\end{lstlisting}
+
+Se uma dada condição booleana for satisfeita executamos o corpo, caso contrário não fazemos nada.
+
+Um exemplo trivial:
+
+\begin{lstlisting}
+def exe1():
+	t= eval(input('temperatura sff:'))
+	if t > 38.5:
+		print('ATENÇÃO: febre!')
+\end{lstlisting}
+
+Outro exemplo:
+
+\begin{lstlisting}
+def exe2():
+	nome=input('Qual é o seu nome?')
+	if nome.endswith('Costa'):
+		print('Olá Senhor Costa')
+\end{lstlisting}
+
+Ainda outro:
+
+\begin{lstlisting}
+def exe3(n):
+	if (n % 2) == 0:
+     print("O número %d é par" % n)
+\end{lstlisting}
+
+E mais outro para concluir.
+
+\begin{lstlisting}
+def exe4():
+	seq='ATGAnnTAG'
+	if 'n' in seq:
+		conta= seq.count('n')
+		print('A sequência %s tem %d bases não definidas' % (seq,conta))
+\end{lstlisting}
+
+Testando os programas.
+
+\begin{lstlisting}
+ATENÇÃO: febre!
+Olá Senhor Costa
+O número 4 é par
+A sequência ATGAnnTAG tem 2 bases não definidas
+\end{lstlisting}
+
+\paragraph{Condicional Normal} Vejamos o caso frequente de termos duas alternativas mas ambas com ac\c cões a realizar. A figura \ref{fig:ifelse} ilustra a ideia. 
+
+\begin{figura}
+	{0.6}
+	{controlo/imagens/ifelse.eps}
+	{A condicional if-then-else}
+	{fig:ifelse}
+\end{figura}
+
+Em termos abstractos temos a seguinte sintaxe:
+
+\begin{lstlisting}
+if <condição>:
+	<corpo1>
+else:
+	<corpo2>
+\end{lstlisting}
+
+Se a condião booleana for verdadeira executamos o <corpo1>, caso contrário executamos o <corpo2>. Alguns exemplos simples aparecem na listagem \ref{lst:else}.
+
+\begin{lstlisting}[label=lst:else, caption=Condicional normal]
+# --- par
+def exe5(n):
+	if (n % 2) == 0:
+		print( "O número %d é par" % n)
+	else:
+		print( "O número %d é impar" % n)
+# -- desconhecido
+def exe6():
+	nome=input('Qual é o seu nome?')
+	if nome.endswith('Costa'):
+		print ('Olá Senhor Costa')
+	else:
+		print( 'Olá desconhecido')
+		
+# -- primer
+def exe7():
+	primer='AACTAACCACTTCGGAATCTAGGACGGGGGAG\
+	CGTTTACATGACGCCGTGGACCAAAGATTAGGCAATCGTCA\
+	GTCGCTGCGCCAAGAACACGGAGAGTACCTCATGCGTGAT\
+	CTTTTCATAGAGCTTGAGAACTGCTGACCTAGGGTTT'
+	comp_primer=len(primer)
+	percent_GC=primer.count('G') + primer.count('C')/comp_primer
+	if percent_GC > 0.50:
+		if comp_primer > 20:
+			programa_PCR=1
+	else:
+		programa_PCR=2	
+\end{lstlisting}
+
+\paragraph{Condicional Geral}
+
+Vamos agora generalizar a condicional permitindo um número variável de vias de decisão (ver figura \ref{fig:ifelif}).
+
+\begin{figura}
+	{0.6}
+	{controlo/imagens/ifelif.eps}
+	{A condicional if-elif-else}
+	{fig:ifelif}
+\end{figura}
+
+
+Genericamente a sintaxe é a seguinte:
+
+\begin{lstlisting}
+if <condição1>:
+	<instruções1>
+elif <condição2>:
+	<instruções2>
+elif <condição3>:
+	<instruções3>
+...
+else:
+	<instruções>
+\end{lstlisting}
+
+ A palavra reservada \textbf{elif} resulta da compressão de \textbf{else} e de \textbf{if}. A semântica é simples: as várias alternativas (i.e. as que envolvem testes) vão sendo percorridas por ordem descendente e a primeira condi\c cão que for verdadeira desencadeia a execu\c cão das instru\c cões associadas. Caso nenhuma seja verdadeira serão activadas as instru\c coes do ramo else.
+
+
+\begin{lstlisting}[caption=Condicional Geral: exemplo,label=lst:geral]
+def exe8():
+	seq='vATGCAnATG'
+	base=seq[0]
+	if base in 'ATGC':
+		print('Nucleótido exacto')
+	elif base in 'dbhkmnrsuvwxy':
+		print('Nucleótido ambíguo')
+	else:
+		print(Não é um nucleótido')
+\end{lstlisting}
+
+
+
+
+\subsection*{Exemplo clássico: raízes de um Polinómio}
+
+Consideremos o problema de calcular as raízes de uma equa\c cão do segundo grau:
+
+\[a \times x^2 + b \times x + c = 0\]
+
+Todos nos lembramos da fórmula resolvente: 
+
+\[ r_{1,2}= \frac{-b \pm \sqrt{b^2 - 4 \times a \times c}}{2 \times a}\]
+
+onde $ (b^2 - 4 \times a \times c)$ é o discriminante. Comecemos por pensar na situa\c cão simples em que criamos um programa que usa directamente a fórmula resolvente (ver listagem \ref{lst:eq21}).
+
+\begin{lstlisting}[caption=Raízes: solu\c cão trivial,label=lst:eq21]
+import math
+
+def main1():
+	""" Calculo das raízes reais de um polinómio."""
+	a,b,c = eval(input("Os coeficientes sff (a,b,c):\t"))	
+	r1,r2=raizes1(a,b,c)
+	print ("As raízes do polinómio de coeficientes\
+	a=%d b=%d c= %d são r1=%3.2f r2=%3.2f" % (a,b,c,r1,r2))
+
+
+def raizes1(a,b,c):
+	""" Calcula raízes reais."""
+	discriminante= pow(b,2) - 4 * a * c
+	raiz_discrim = math.sqrt(discriminante)
+	raiz1=(-b + raiz_discrim) / (2 * a)
+	raiz2=(-b - raiz_discrim) / (2 * a)
+	return raiz1,raiz2
+\end{lstlisting}
+
+O programa está decomposto em duas partes: uma, que pede os coeficientes, calcula as raízes e imprime o resultado, a segunda que calcula efectivamente a solu\c cão usando a fórmula. Claro que esta solu\c cão só funciona para o caso das raízes serem reais. Mas sabemos que podemos ter raízes múltiplas. Para ter esse facto em aten\c cão basta alterar o programa principal introduzindo um teste (ver listagem \ref{lst:eq22}).
+
+\begin{lstlisting}[caption= Raízes múltiplas,label=lst:eq22]
+def main2():
+	""" Calculo das raízes reais de um polinómio."""
+	a,b,c = eval(input("Os coeficientes sff (a,b,c):\t"))	
+	r1,r2=raizes2(a,b,c)
+	if r1 == r2:
+		print("Raízes múltiplas!!")
+		print ("A raíze múltipla do polinómio de coeficientes\
+		a=%d b=%d c= %d é r=%3.2f " % (a,b,c,r1))
+	else:
+		print("As raízes do polinómio de coeficientes\
+		a=%d b=%d c= %d são r1=%3.2f r2=%3.2f" % (a,b,c,r1,r2))
+\end{lstlisting}
+
+É melhor protegermos o programa para o caso de não existirem raízes reais. Isso faz-se uma vez mais com um teste para tentar saber o sinal do discriminante. Isso será aproveitado para uma versão melhorada (ver listagem \ref{lst:eq23}).
+
+\begin{lstlisting}[caption=Testa raízes reais,label=lst:eq23]
+def main3():
+	""" Calculo das raízes reais de um polinómio."""
+	a,b,c = eval(input("Os coeficientes sff (a,b,c):\t"))	
+	r1,r2=raizes3(a,b,c)
+	if r1 == r2 == None:
+		print ("Não tem raízes reais!")
+	elif r1 == r2:
+		print( "O polinómio de coeficientes\
+		a=%d b=%d c= %d tem uma raiz  múltipla r=%3.2f" % (a,b,c,r1))
+	else:
+		print ("As raízes do polinómio de coeficientes\
+		a=%d b=%d c= %d são r1=%3.2f r2=%3.2f" % (a,b,c,r1,r2))
+	
+def raizes3(a,b,c):
+	""" Calcula raízes reais."""
+	discriminante= pow(b,2) - 4 * a * c
+	if discriminante < 0:
+		return None,None
+	elif discriminante == 0:
+		raiz1 = raiz2 = -b/ (2 * a)
+		return raiz1, raiz2
+	else:
+		raiz_discrim = math.sqrt(discriminante)
+		raiz1=(-b + raiz_discrim) / (2 * a)
+		raiz2=(-b - raiz_discrim) / (2 * a)
+		return raiz1,raiz2
+\end{lstlisting}
+
+Alterámos as duas defini\c cões e o programa ficou um pouco melhor. Mas admitamos que alguém insiste em que o programa deve também calcular as raízes mesmo quando são complexas? Bom, para tal basta socorrermo-nos do módulo \textbf{cmath} (ver listagem \ref{lst:eq24}).
+
+\begin{lstlisting}[caption=Raízes: solu\c cão geral,label=lst:eq24]
+import cmath
+
+def main4():
+	""" Cálculo das raízes  de um polinómio."""
+	a,b,c = eval(input("Os coeficientes sff (a,b,c):\t"))	
+	r1,r2=raizes4(a,b,c)
+	if r1 == r2:
+		print( "O polinómio de coeficientes\
+		a=%d b=%d c= %d tem uma raiz  múltipla r=%3.2f" % (a,b,c,r1))
+	elif isinstance(r1,float):
+		print( "As raízes do polinómio de coeficientes\
+		a=%d b=%d c= %d são r1=%3.2f r2=%3.2f" % (a,b,c,r1,r2))	
+	else:
+		print("As raízes do polinómio de coeficientes\
+		a=%d b=%d c= %d são r1=%s r2=%s" % (a,b,c,r1,r2))
+
+
+		
+def raizes4(a,b,c):
+	""" Calcula raízes."""
+	discriminante= pow(b,2) - 4 * a * c
+	if discriminante > 0:
+		raiz_discrim = math.sqrt(discriminante)
+		raiz1=(-b + raiz_discrim) / (2 * a)
+		raiz2=(-b - raiz_discrim) / (2 * a)
+		return raiz1,raiz2	
+	elif discriminante == 0:
+		raiz1 = raiz2 = -b/ (2 * a)
+		return raiz1, raiz2
+	else:
+		raiz_discrim = cmath.sqrt(discriminante)
+		raiz1=(-b + raiz_discrim) / (2 * a)
+		raiz2=(-b - raiz_discrim) / (2 * a)
+		return raiz1,raiz2
+\end{lstlisting}
+
+Atente-se ao modo como separamos a impressão das raízes reais das raízes complexas. 
+
+\section{Ciclos}
+
+Com frequência ficamos perante um problema que se traduz pela repeti\c cão de uma dada tarefa. Por exemplo, podemos querer transferir todos os meses uma certa quantia de dinheiro entre duas contas. Em termos informáticos podemos querer imprimir números entre dois limites conhecidos, ou desenhar um segmento de recta várias vezes, embora em localiza\c cões diferentes (ver listagem \ref{lst:repet1}. Para este tipo de problemas as linguagens de programa\c cão disponibilizam estruturas de controlo repetitivas, também conhecidos por ciclos.
+
+A listagem \ref{lst:repet1} mostra um exemplo gráfico simples em que se pretende repetir quatro vezes o mesmo par comandos.
+\begin{lstlisting}[caption=Desenhar por repetição,label=lst:repet1]
+from turtle import *
+
+def exec1(lado,angulo):
+	pd()
+	fd(lado)
+	rt(angulo)
+	fd(lado)
+	rt(angulo)
+	fd(lado)
+	rt(angulo)
+	fd(lado)
+	rt(angulo)
+	ht()
+\end{lstlisting}
+
+Claro que podemos ter situações mais complexas, quando os comandos a repetir envolvem algumas computações, como no exemplo seguinte.
+
+\begin{lstlisting}
+def exec2(lado,angulo):
+	pd()
+	fd(lado)
+	lado*= 1.5
+	rt(angulo)
+	angulo += 30
+	fd(lado)
+	lado*= 1.5
+	rt(angulo)
+	angulo += 30
+	fd(lado)
+	lado*= 1.5
+	rt(angulo)
+	angulo += 30
+	fd(lado)
+	lado*= 1.5
+	rt(angulo)
+	angulo += 30	
+	ht()
+\end{lstlisting}
+
+As linguagens de programação incluem instruções de controlo de tipo repetitivo que permitem diminuir o tamanho do código, tornar os programas mais inteligíveis e ainda resolver situações em que o número de repetições não é fixo à partida. Como vamos ver, os ciclos repetitivos desdobram-se em duas grandes famílias: \texttt{for} e \texttt{while}\footnote{Existe uma outra forma de repetição designada por \textbf{recursividade} e que será discutida no capítulo \ref{cap:recursividade}.}.
+
+\subsubsection{for}
+
+\marginlabel{Ciclos \textbf{for}}Em aplica\c cões simples os ciclos \textbf{for} são executados um número fixo e pré-definido de vezes. Por exemplo, o exemplo da listagem \ref{lst:repet1} pode ser reescrito conforme mostramos na listagem \ref{lst:repet2}. A adaptação para o segundo exemplo acima é trivial.
+
+\begin{lstlisting}[caption=De novo o quadrado,label=lst:repet2]
+def exec2(lado,angulo):
+	pd()
+	for i in range(4):
+		fd(lado)
+		rt(angulo)
+	ht()
+\end{lstlisting}
+
+Esta constru\c cão pode ser generalizada de modo que o número de vezes que se repete a ac\c cão seja comunicada ao programa no acto de o chamar. Igualmente podemos usar valores diferentes do lado e do ângulo (ver listagem \ref{lst:repet3}.. 
+
+\begin{lstlisting}[caption=Formas simples,label=lst:repet3]
+def exec2(lado,angulo,vezes):
+	pd()
+	for i in range(vezes):
+		fd(lado)
+		rt(angulo)
+	ht()
+\end{lstlisting}
+
+Deixamos ao leitor o cuidado de visualizar as formas que se obtém para diferentes valores dos três parâmetros. A constru\c cão repetitiva \textbf{for} obedece assim ao seguinte padrão sintático:\\
+
+\begin{lstlisting}
+for <nome> in <iterador>:
+	<instrução>
+\end{lstlisting}
+
+O iterador é qualquer objecto composto. Por exemplo, pode ser uma cadeia de caracteres ou um tuplo\footnote{Com a descoberta de novos objectos nos capítulos seguintes veremos que há uma grande variedade de objectos que pode assumir o papel de iterador.}. Antes de executar a <instru\c cão> o <nome> assume o primeiro elemento do iterador. Depois de executada a <instru\c cão> toma o seu segundo valor, e assim sucessivamente.  A figura \ref{fig:for1} ilustra o conceito.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{controlo/imagens/controlo.eps}
+\caption{Ciclo for}
+\label{fig:for1}
+\end{center}
+\end{figure}
+
+
+Um exemplo simples do uso do ciclo \texttt{for} é ilustrado na  listagem \ref{lst:repet4}.
+
+\begin{lstlisting}[caption=Ciclo for,label=lst:repet4]
+# No módulo
+def exec4(seq):
+	for ch in seq:
+		print(ch)
+		
+# no interpretador
+>>>  exec4('abc')
+a
+b
+c
+>>>
+\end{lstlisting}
+
+Este modo de percorrer o iterador,  pelo seu \textbf{conteúdo}, não é o único. Podemos também usar um iterador formado pelos \textbf{índices} dos elementos de um objecto, como ser pode ver na listagem abaixo.
+
+\begin{lstlisting}
+def exec5(seq):
+    for i in range(len(seq)):
+        print(seq[i])
+\end{lstlisting}
+
+\subsubsection{while}
+\marginlabel{Ciclos \textbf{while}}Os ciclos \textbf{while} são utilizados quando garantidamente temos que repetir um conjunto de instru\c cões um número variável e, à partida, desconhecido de vezes. A sua  sintaxe é muito simples:
+
+\begin{lstlisting}
+while <condição>:
+	<instruções>
+\end{lstlisting}
+
+Graficamente apresenta-se de modo semelhante ao ciclo \texttt{for}.
+
+\begin{figura}
+	{0.8}
+	{controlo/imagens/while.eps}
+	{O ciclo while}
+	{fig:while}
+\end{figura}
+
+Imaginemos uma situa\c cão muito simples em que o programa pede ao utilizador a introdu\c cão de um número positivo. Para garantir que o número é mesmo positivo podemos usar um ciclo \textbf{while} que é executado enquanto o utilizador não cumprir com o pretendido. A listagem \ref{lst:while1} mostra um possível programa\footnote{Não queremos dizer com isto que esta é a única forma (ou mesmo a melhor) de resolver este problema concreto. Serve apenas de exemplo muito simples!}.
+
+\begin{lstlisting}[caption=Introdu\c cão protegida de dados,label=lst:while1]
+def main():
+	numero=eval(nput("Número por favor:\t"))
+	while numero <=0:
+		print ("\nO número tem que ser positivo!")
+		numero=eval(input("Número por favor:\t"))
+	print (" Número e igual a %d" % numero)
+\end{lstlisting}
+
+
+
+
+\paragraph{Exemplos Simples}Apresentamos de seguida alguns exemplos simples que recorrem aos ciclos indefinidos. O primeiro vai imprimindo uma cadeia de caracteres, primeiro completa, depois sem o primeiro caracter, de seguida sem os dois primeiros caracteres, e assim sucessivamente até esgotar os caracteres.
+
+\begin{lstlisting}
+def simples():
+	palavra=input("Entre a palavra sff:\t")
+	while palavra:
+		print(palavra, end=' ')
+		palavra=palavra[1:]
+	return 0
+\end{lstlisting}
+
+O segundo exemplo permite imprimir os números ímpares por ordem decrescente a partir de um certo valor fornecido.
+
+\begin{lstlisting}
+def impares():
+	limite=eval(input("Entre o limite superior sff:\t"))
+	while limite:
+		if limite % 2 != 0:
+			print(limite, end=' ')
+		limite = limite -1
+	return 0
+\end{lstlisting}
+
+O terceiro exemplo, envolve cadeias de caracteres e permite contar o número de ocorrências de  um padrão ocorre numa dada sequência. Este problema é inspirado na biologia. Por exemplo, pode servir para  determinar quantas vezes a sequência \textbf{TATA}\footnote{Conhecida por \textit{TATA box} na literatura inglesa.} ocorre numa cadeia de ADN. Quer a cadeia quer o padrão são codificados como cadeias de caracteres.
+
+\begin{lstlisting}
+def conta_modelo(cadeia, padrao):
+    conta = 0
+    sobreposicao = len(padrao) - 1
+    while len(cadeia) > sobreposicao:
+        if cadeia.startswith(padrao):
+            conta += 1
+        cadeia = cadeia[1:]
+    return conta
+\end{lstlisting}
+
+A ideia do programa é simples: ir avançando na cadeia uma posição de cada vez, testando se nessa posição  se inicia o padrão. Avançamos um a um pois admitimos poderem existir padrões sobrepostos. \\
+
+
+\section{Intermezzo}
+
+A experiência acumulada na resolução de problemas por recurso ao computador fez emergir um conjunto se soluções tipo, e estão na origem do aparecimento dos chamados \texttt{padrões de desenho}\marginlabel{Padrões de Desenho}\footnote{Do inglês \textit{Design Patterns}.}. Suponhamos que nos pedem para calcular a soma dos primeiros $n$ números inteiros positivos, isto é:
+
+\[\sum_{i=1}^n i \]
+
+Uma maneira de resolver o problema é dispor dos números em sequência e ir efectuando as sucessivas adições: somamos 1 com 2, o resultado é somado com o número seguinte, 3, o resultado 6é adicionado com 4, e assim sucessivamente. O processo termina quando adicionamos o último número, $n$, ao resultado parcial anterior. Este método obriga então a saber sempre qual o resultado parcial num dado instante e o valor do próximo número a somar a esse resultado parcial. Do ponto de vista informático  recorremos a duas variáveis: uma que guarda o resultado total parcial, a outra que guarda o valor do próximo número a adicionar. A figura \ref{fig:padrao} ilustra o procedimento. 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{controlo/imagens/padrao.eps}
+\caption{O Padrão Acumulador}
+\label{fig:padrao}
+\end{center}
+\end{figure}
+
+Posto isto o programa que resolve o nosso problema é trivial:
+
+\begin{lstlisting}
+def padrao_1(n):
+    acum = 0
+    for val in range(1,n+1):
+        acum = acum + val
+    return acum
+\end{lstlisting}
+
+A solução baseia-se na existência de  um ciclo, sendo que em cada execução do ciclo há um valor que vai sendo acumulado  numa variável. Essa variável de acumulação tem que ser inicializada, o que fazemos atribuindo-lhe o valor do elemento neutro da operação usada na acumulação. Neste exemplo a contagem do número de vezes que o ciclo se repete é implícita, embora noutro tipo de problemas essa contagem seja explícita e, nalguns casos, essa contagem seja o valor que queremos saber. \\
+
+Há um aspecto importante quando se usam ciclos nos nossos problemas: propriedades que são verdadeiras à entrada do ciclo e no final de cada execução do ciclo. São designadas por \textbf{invariantes de ciclo}\marginlabel{Invariantes de ciclo}. Veremos num capítulo mais à frente como os invariantes de ciclo nos podem ajudar a mostrar a textbf{correcção} do nosso programa e a desenvolver o próprio programa. No nosso caso o invariante é:
+
+\[ acum = \sum_{i=1}^k i \wedge \, val = k \]
+
+Quando saímos do ciclo $val$ tem o valor $n$ pelo que $acum$ tem guardado a soma pretendida.\\
+
+Porque chamamos a este tipo de programa um padrão de desenho? Bom, imaginemos que o pretendido não era a soma mas o produto dos primeiros $n$ inteiros positivos. Olhemos para a solução:
+
+\begin{lstlisting}
+def padrao_2(n):
+    acum = 1
+    for val in range(1,n+1):
+        acum = acum * val
+    return acum
+\end{lstlisting}
+
+Quando as comparamos o que se alterou foi apenas a operação de acumulação e a inicialização do acumulador com o valor do elemento neutro para a operação (no caso multiplicação). Seja agora o problema ligeiramente diferente de guardar todos os prefixos de uma dada sequência. Eis o programa:
+
+\begin{lstlisting}
+def padrao_3(seq):
+    acum = ()
+    for val in range(len(seq) + 1):
+        acum = acum + (seq[:val],)
+    return acum
+\end{lstlisting}
+
+Usámos um tuplo para acumular os resultados parciais. A operação agora é a de concatenação de tuplos. Uma vez mais se pode ver a semelhança com os outros dois programas. Deixamos ao leitor o cuidado de definir os invariantes de ciclo para estes dois últimos casos. Todos estes programas
+podem ser definidos em função do mesmo \textbf{padrão}:
+
+\begin{lstlisting}
+def padrao(objecto):
+	acum = func_0()
+	for val in func_1(objecto):
+		acum = func_2(acum, val)
+	return acum
+\end{lstlisting}
+
+
+
+\section{Qual o valor de $\pi$?}
+
+Existem várias categorias de números. Os números irracionais são números que não podem ser expressos como o quociente de dois números inteiros, sendo a sua parte decimal  uma sequência infinita não periódica. Por isso, o melhor que podemos fazer é aproximá-los por meio de um número real, truncando a parte decimal. Mas os números irracionais ainda se podem dividir em algébricos e transcendentais. Os algébricos são raízes de equações algébricas de coeficientes inteiros  como, por exemplo $\sqrt{2}$. Os transcendentais são números como a base dos logaritmos naturais, $e$, ou o número $\pi$. O número $\pi$ define-se como o quociente entre o perímetro e o diâmetro de uma circunferência. Ao longo dos anos muitas foram as soluções para se obter o valor aproximado deste número. Vamos usar \python para implementar algumas das fórmulas e métodos\footnote{Não se esqueça: os computadores têm limitações na representação dos números reais, logo o resultado que obtiver nunca pode ter mais algarismos significativos do que aqueles que o sistema permite.}.  Mas antes de discutir a solução informática importa dizer que desde há longos séculos se procurou encontrar um valor aproximado para $\pi$. A listagem abaixo mostra algumas das tentativas.
+
+\begin{lstlisting}
+>>> # Babilónia
+>>> 3 + 1/8
+3.125
+>>> # Antigo Egipto
+>>> 256/81
+3.1604938271604937
+>>> # Grécia 
+>>> 10**0.5
+3.1622776601683795
+>>> # Hipparchus
+>>> 377/120
+3.1416666666666666
+>>> # Tsu Chung-chih
+>>> 355/113
+3.1415929203539825
+>>> # Fibonacci
+>>> 864/275
+3.1418181818181816
+\end{lstlisting}
+
+Cientistas  mais recentes recentes procuram aproximações tão exactas como quiséssemos. Por exemplo, \textbf{Leibniz} propôs a fórmula, uma série infinita:.
+
+\[ \frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \dots \]
+
+Por seu lado, \textbf{Wallis} propôs como aproximação:
+
+\[ \frac{\pi}{2} = 2 \times \frac{2}{3} \times \frac{4}{3} \times \frac{4}{5} \times \frac{6}{5} \times \frac{6}{7} \ldots \]
+
+São estes dois métodos que vamos usar para construir duas soluções informáticas. Se as duas fórmulas são distintas do ponto de vista informático são muito semelhantes, uma vez que remetem para um mesmo \textbf{padrão} de programação, baseado no recurso a um ciclo e uma variável de   acumulação.  Comecemos pela fórmula de Leibniz. A única dificuldade está em definir o método que nos permite ir enumerando os diferentes termos da série. Cada termo é uma fracção em que o denominador é sempre 1 e o denominador são os números ímpares. Para além disso, o sinal vai alternando. Clarificados estes pontos podemos escrever o programa.
+
+\begin{lstlisting}[caption={$\pi$ segundo Leibniz}, label=lst:xpi_1,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def leibniz_pi(num_termos):
+    """ 
+    Calcula valor de pi segundo fórmula de Leibniz.
+    """
+    acum = 0.0
+    sinal = 1
+    for i in range(1,2*num_termos+1,2):
+        acum = acum + sinal * (1.0/i) 
+        sinal *= -1
+    return 4 * acum
+\end{lstlisting}
+
+Note-se como se faz a alternância do sinal. Claro que podemos imaginar alternativas. Por exemplo, sabendo que a forma compacta da série é dada por
+
+\[\frac{\pi}{4} = \sum_{i=0}^n (-1)^i \times \frac{1}{2 \times i + 1}\]
+
+escrevemos o programa:
+
+\begin{lstlisting}
+def leibniz_pi(num_termos):
+    """ Calcula valor de pi segundo fórmula de Leibniz.
+    """
+    acum = 0.0
+    for i in range(num_termos):
+        acum = acum + ((-1)**i) * (1.0/(2 * i + 1))  
+    return 4 * acum
+\end{lstlisting}
+
+Passemos agora ao caso da fórmula de Wallis. Este caso parece um pouco mais complexo, devido ao modo como se podem gerar os diferentes factores que depois vão ser usados na acumulação do resultado. Uma ideia possível é juntar \textbf{dois} factores de cada vez:
+
+\begin{lstlisting}
+def wallis_1(num_fact):
+    """
+    Calcula o valor de pi usando a fórmula de Wallis.
+    """
+    acum = 1.0
+    for i in range(2, num_fact,2):
+        esquerda = i / float((i-1))
+        direita = i /float((i+1))
+        acum = acum * esquerda * direita
+    return 2 * acum
+\end{lstlisting}
+
+Uma vez mais, temos alternativas a este programa. Uma resulta de considerar o produto dos factores dois a dois:
+
+\begin{lstlisting}
+def wallis_pi(num_fact):
+    """
+    Calcula o valor de pi usando a fórmula de Wallis.
+    """
+    acum = 1.0
+    for i in range(1, num_fact/2):
+        acum = acum * ( float((2 * i) ** 2) / ((2 * i) ** 2 - 1))
+    return 2 * acum
+\end{lstlisting}
+
+Comparando esta versão com a última baseada na fórmula de Leibniz fica patente a semelhança dos dois \textbf{programas} que se baseiam no mesmo padrão que recorre a um acumulador..
+
+\subsubsection{Método de Monte Carlo}
+
+Admitamos  que temos um quadrado de lado 2 unidades e dentro dele uma circunferência de raio 1. Divida-se  o quadrado em quatro partes iguais. É óbvio que  área de cada um dos quatro quadrados pequenos é de 1 (ver figura \ref{fig:mc}). 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{controlo/imagens/monte_carlo.eps}
+\caption{Simulação de monte Carlo: o caso de $\pi$}
+\label{fig:mc}
+\end{center}
+\end{figure}
+
+Por outro lado sabemos que a área da circunferência é igual  a $\pi \times r^2 = \pi$\footnote{Pois o raio é 1.} Logo, a área da parte da circunferência que cobre cada quadrado pequeno vale $\frac{\pi}{4}$. O método de  Monte Carlo\footnote{O nome do método foi uma homenagem ao Principado do Mónaco e à sua cidade Monte Carlo, que, como sabemos, tem uma longa tradição em jogos de fortuna.} , é um método estocástico inicialmente proposto por Stanislaw Ulam  e Nicholas Metropolis, que pode ser usado para calcular o valor aproximado de $\pi$. Neste caso, consiste em simular o lançamento de dardos na direcção de um dos quadrados pequenos, no caso o assinalado, contar a proporção dos que caiem dentro do quarto de circunferência, e multiplicar esse valor por 4. Implementar  uma solução informática obriga a resolver duas questões: primeiro, como simular o lançamento dos dados e, em segundo como determinar o número de dardos que cairam \textit{dentro} da circunferência. A primeira questão, resolve-se recorrendo a uma distribuição uniforme, no intervalo $(0,1)$,  disponibiilzada pelo módulo \texttt{random}. Com ela geramos as coordenadas $(x,y)$ do dardo. A segunda questão, envolve o cálculo da distância euclidiana do ponto $(x,y)$ à origem $(0,0)$. Se essa distância for menor ou igual a 1\footnote{Porque o raio da circunferência é igual a 1!}  é porque o ponto $(x,y)$ está no interior (ou sobre) a circunferência. Postas estas considerações, apresentamos o programa. Deixamos ao leitor  o cuidado de correr o programa com diversos valores para o número de dardos e verificar a precisão do resultado.
+
+\begin{lstlisting}
+import random
+
+def monte_carlo_pi(num_dardos):
+    """
+    Calcula o valor de pi pelo método de Monte Carlo.
+    """
+    # define e inicializa acumulador
+    conta_dardos_in = 0.0
+    for i in range(num_dardos):
+        # gera posição dardo i
+        x= random.random()
+        y= random.random()
+        # calcula distância à origem
+        d = (x**2 + y**2)**0.5
+        if d <= 1:
+            conta_dardos_in = conta_dardos_in + 1
+    res_pi = 4 * (conta_dardos_in/num_dardos)
+    return res_pi
+\end{lstlisting}
+
+Podemos criar uma versão animada do método de Monte Carlo, como se ilustra na listagem \ref{lst:mca}.
+
+\begin{lstlisting}[caption={Método de Monte Carlo animado}, label=lst:mca,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import random
+import turtle
+
+def visualiza(pontos):
+    """
+    Valor de pi pelo método de Monte Carlo.
+    Versão gráfica.
+    """
+    # Prepara a visualização
+    turtle.setworldcoordinates(-2,-2,2,2)
+    janela = turtle.Turtle()
+    janela.hideturtle()
+    # Desenha os eixos
+    janela.up()
+    janela.goto(-1,0)
+    janela.down()
+    janela.goto(1,0)
+    
+    janela.up()
+    janela.goto(0,1)
+    janela.down()
+    janela.goto(0,-1)
+    # Desenha circunferência
+    janela.up()
+    janela.goto(0,-1)
+    janela.down()
+    janela.circle(1, steps=360)
+    # Desenha quadrado
+    janela.up()
+    janela.goto(-1,-1)
+    janela.down()
+    for i in range(4):
+        janela.forward(2)
+        janela.left(90)
+    janela.up()
+    # Mostra dardos
+    for elem in pontos:
+        x,y = elem
+        d = (x**2 + y**2) ** 0.5
+        if d <= 1:
+            janela.color("blue")
+        else:
+            janela.color("red")
+        janela.goto(x,y)
+        janela.dot()   
+    
+    
+def monte_carlo_pi(num_dardos):
+    """
+    Calcula o valor de pi pelo método de monte Carlo.
+    """
+    # define e inicializa acumulador a armazenador
+    conta_dardos_in = 0.0
+    tuplos_dardos = tuple()
+    for i in range(num_dardos):
+        # gera posição dardo i
+        x= random.random()
+        y= random.random()
+        tuplos_dardos += ((x,y),)
+        # calcula distância à origem
+        d = (x**2 + y**2)**0.5
+        if d <= 1:
+            conta_dardos_in = conta_dardos_in + 1
+    res_pi = 4 * (conta_dardos_in/num_dardos)
+    print(res_pi)
+    return tuplos_dardos
+    
+    
+if __name__ == '__main__':
+    dardos= monte_carlo_pi(1500)
+    visualiza(dardos)
+    turtle.exitonclick() 
+\end{lstlisting}
+
+
+Como se pode ver, alterámos ligeiramente o programa que calcula o valor de $\pi$, por forma a guardar num tuplo as coordenadas dos diferentes pontos. O cálculo dos pontos e a sua visualização foi feita separadamente. Ao executar o programa com 1500 dardos obtemos o resultado final ilustrado na figura \ref{fig:mca}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{controlo/imagens/mca.png}
+\caption{Monte Carlo animado}
+\label{fig:mca}
+\end{center}
+\end{figure}
+
+\subsubsection{Simulações}
+
+O método de Monte Carlo pode ser usado em diferentes situações. Suponhamos que queremos calcular a área sob um curva, entre dois pontos determinados\footnote{O leitor reconhecerá que se pretende calcular o integral da função entre dois pontos.}. Para ser mais concreto, admitamos que se trata da função $e^{-x^2}$ cujo gráfico se apresenta na figura \ref{fig:exp}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{controlo/imagens/exp.png}
+\caption{A função $e^{-x^2}$ }
+\label{fig:exp}
+\end{center}
+\end{figure}
+
+A ideia consiste em criar um rectângulo envolvendo a parte que nos interessa, lançar os dardos para esse rectângulo, calcular a percentagem dos que caem por debaixo da curva e usar esse valor para saber o valor da área. Vejamos o programa.
+
+\begin{lstlisting}[caption={Calcular uma área}, label=lst:calc,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import random
+import math
+
+def area_f(f,a,b,min_, max_, num_dardos):
+    """ Calcula a área sob a curva f entre a e b.""" 
+    conta = 0
+    area = (max_ - min_) * (b - a)
+    for i in range(num_dardos):
+        x = random.uniform(a,b)
+        y = random.uniform(min_,max_)
+        if y <= f(x):
+            conta += 1
+    percent = conta / num_dardos
+    return percent * area
+
+def f(x):
+    return math.exp((-x**2)/2)
+
+if __name__ == '__main__':
+    print(area_f(f,0,2,0,1,1000))
+\end{lstlisting}
+
+
+
+
+%----------------------------------------------------------------------------------------------------------------
+\begin{comment}
+\section{Controlar a precisão}
+
+Passamos agora ao cálculo do valor aproximado do seno, que pode ser computado a partir da fórmula:
+
+\[ seno(x)= \sum_{i=0}^\infty \frac{(-1)^i \times x^{(2 \times i +1)}}{(2 \times i +1)!}\]
+
+Como não podemos fazer uma soma infinita, uma solu\c cão é dizer ao utilizador, como no caso do cálculo de $\pi$, qual o número de parcelas que vai somar (ver listagem \ref{lst:while2}).
+
+\begin{lstlisting}[caption=Seno: uso do número de parcelas,label=lst:while2]
+def main():
+	x=float(input("Valor de x:\t"))
+	n=int(input("Numero de termos:\t"))
+	print(seno1(x,n))
+	print("O seno de %4.2f = %5.3f \t" % (x, seno1(x,n)))
+
+
+def seno1(x,n):
+	res=0
+	for i in range(n):
+			res = res + (pow(-1,i) * pow(x,2*i +1)) / float(fact(2*i+1))
+	return res
+
+
+def fact(n):
+	"""Calcula o factorial de n.
+	"""
+	res=1
+	for i in range(1,n+1):
+		res = res * i
+	return res
+\end{lstlisting}
+
+Nesta solução aparece por duas vezes o mesmo padrão de programação:  uma variável onde se \textbf{acumula} o resultado parcial calculado no interior de um ciclo. Não se pode dizer que seja uma solu\c cão interessante pelo simples motivo de que gostamos de saber qual a precisão do resultado obtido. Mas isso consegue-se com uma pequena mudan\c ca (ver listagem \ref{lst:while3}).
+
+\begin{lstlisting}[caption=Seno: quando a precisão conta,label=lst:while4]
+def main():
+	x= float(input("Valor de x:\t"))
+	prec=float(input("Valor da precisao:\t"))
+	print(seno2(x,prec))
+	print("O seno de %4.2f = %5.3f com precisao %15.14f \t" % (x, seno2(x,prec),prec))
+
+
+
+def seno2(x,prec):
+	ordem=0
+	res=0
+	dif=x
+	while dif> prec:
+		termo= (pow(-1,ordem) * pow(x,2*ordem +1)) / float(fact(2*ordem+1))
+		res,ant = res + termo,res
+		dif = abs(res-ant)
+		ordem = ordem +1
+	return res
+
+
+def fact(n):
+	"""Calcula o factorial de n.
+	"""
+	res=1
+	for i in range(1,n+1):
+		res = res * i
+	return res
+\end{lstlisting}
+
+Este exemplo permite ainda mostrar  a diferen\c ca entre os ciclos em que o número de repeti\c cões é conhecido no início dos casos em que o não é.
+
+\end{comment}
+%------------------------------------------------------------------------------------------------------------------
+
+\section{Outras Instru\c cões de controlo}
+
+Existem muitas situa\c cões em programa\c cão em que se justifica interromper um ciclo no meio da sua execu\c cão. Essa interrupe\c cão pode ser definitiva, i.e., o ciclo é abandonado ou então parcial levando apenas ao regresso ao início do ciclo\footnote{Este tipo de quebra do percurso normal da execu\c cão de um programa é semelhante às antigas instru\c cões \textbf{goto} que tanta celeuma geraram nos anos 70. No entanto, estas instru\c cões quebram um programa de modo \textit{controlado}.}.\\
+
+\subsubsection{break}
+\marginlabel{break} Suponhamos que queremos determinar o \textbf{maior} factor que divide um número. Um modo de o fazer consiste em testar de modo descendente os números candidatos. É claro que mal encontremos esse número não temos mais nada a fazer e queremos abandonar o teste. A instru\c cão \textbf{break} permite-nos realizar esse objectivo de modo elegante como nos mostra a listagem \ref{lst:break1}.
+
+\begin{lstlisting}[caption=Break: exemplo de uso,label=lst:break1]
+def factor_max(y):
+	x= y //2
+	while x>1:
+		if y % x == 0:
+			print(''O maior factor de %d é %d'' % (y,x))
+			break
+		x = x-1
+\end{lstlisting}
+
+Por paradoxal que pare\c ca existem programas que funcionam sem nunca parar. Os sistemas operativos são o exemplo paradigmático. Em programa\c cão de aplica\c cões também existem situa\c cões em que nos vemos obrigar a ter um ciclo \textit{potencialmente} infinito. Recorre-se para tal a um padrão de programa\c cão que envolve a trilogia \textbf{while-True-break}. No exemplo da listagem \ref{lst:break2} o programa pede ao utilizador nome e idade até que o utilizador introduza o \textit{nome} \textbf{stop} altura em que o programa deve terminar.
+
+
+\begin{lstlisting}[caption=Ciclos \textit{potencialmente} infinitos,label=lst:break2]
+def entra_dados():
+	""" Exemplo de uso de break."""
+	while True:
+		nome=input("O seu nome:\t")
+		if nome =='stop':
+			break
+		idade=int(input(" A sua idade:\t"))
+		print ("\nViva %s!\t %d é uma linda idade..." % (nome,idade))
+\end{lstlisting}
+
+Num último exemplo, reproduzido na listagem \ref{lst:break3}, procuramos o maior número a partir de um certo limite que é um quadrado perfeito.
+
+\begin{lstlisting}[caption=Break: quadrados perfeitos,label=lst:break3]
+import math
+
+def quad_perfeito(n):
+	"O maior quadrado perfeito menor do que n"
+	for num in range(n,0,-1):
+		raiz=math.sqrt(num)
+		if raiz == int(raiz):
+			print ("Maior quadrado perfeito menor do que %d é %d" % (n,num))
+			break
+\end{lstlisting}
+
+\subsubsection{continue}
+\marginlabel{continue}Há situa\c cões em que não queremos interromper o ciclo mas apenas retomá-lo a partir do início.  
+Um exemplo simples é quando queremos filtrar certos casos em que nada acontece de outros em que é preciso fazer algo. O ciclo fica assim separado em duas partes. O separador é um teste condicional. Na listagem \ref{lst:cont1} mostramos o exemplo (um pouco académico) de queremos imprimir a sequência de números impares.
+
+\begin{lstlisting}[caption=Continue: ímpares,label=lst:cont1]
+def impares(x):
+	""" Exemplo de uso de continue."""
+	while x:
+		x=x-1
+		if x % 2 == 0:
+			continue
+		print( "%d é ímpar." % x)
+	print ("\nFinito!")
+	return 0
+\end{lstlisting}
+
+O exemplo seguinte (listagem \ref{lst:cont2}) mostra a protec\c cão para a entrada de um código. Também exemplifica a possibilidade de combinar \textbf{break} e \textbf{continue}.
+
+\begin{lstlisting}[caption=Continue: entra código,label=lst:cont2]
+def codigo():
+	"Pedir um código com exactamente quatro caracteres"
+	while True:
+		cod = input('Código sff: ')
+		if len(cod) != 4:
+			print('O código tem que ter 4 caracteres')
+			continue
+		else:
+			print('Bem-vindo')
+			break
+\end{lstlisting}
+
+Há um aspecto importante sobre a instru\c cão \textbf{continue} que deve ser sublinhado pois é muitas vezes mal entendido. A instru\c cão faz voltar para o início do ciclo \textbf{obrigando} ao teste da condi\c cão de saída antes de retomar a execu\c cão do ciclo, o que só acontece se o teste vor verdadeiro.
+
+\subsubsection{else}
+
+\marginlabel{else}Os ciclos \textbf{while} e \textbf{for} podem ser enriquecidos por utiliza\c cão de uma cláusula \textbf{else} a seguir ao ciclo. Associada a essa cláusula estão instru\c cões que serão executadas caso o ciclo \textbf{não} tenha sido interrompido por meio de um \textbf{break}. Retomando o exemplo \ref{lst:break1} podemos ver como se pode usar essa possibilidade para encontrar números primos, como ilustra a listagem \ref{lst:else1}.
+
+\begin{lstlisting}[caption=Else: números primos,label=lst:else1]
+def primo(y):
+	x= y//2
+	while x>1:
+		if y % x == 0:
+			print (y, "Tem factor ",x)
+			break
+		x = x-1
+	else:
+		print (y, " é um número primo")
+\end{lstlisting}
+
+Vejamos mais um exemplo de introdu\c cão controlada de um código. No exemplo da listagem \ref{lst:tudo1} podemos ver uma combina\c cão do uso de \textbf{break}, \textbf{continue} e \textbf{else}.
+
+\begin{lstlisting}[caption=Tudo junto,label=lst:tudo1]
+def password(lista_passw):
+	" Três chances para introduzir correctamente uma password"
+	conta=3
+	while conta:
+		codigo=input("Entre o seu código sff:")
+		if codigo in lista_passw:
+			print "Bem-vindo"
+			break
+		print ("Código errado.")
+		conta= conta - 1
+		continue
+	else:
+		print( "Acabaram as suas tentativas!!!")
+\end{lstlisting}
+
+
+\subsubsection{pass}
+
+\marginlabel{pass}O leitor consegue imaginar uma instru\c cão que não faz nada? Pois existe e chama-se \textbf{pass}. Mas para que pode servir? Bom, para algumas coisas como por exemplo:
+
+\begin{itemize}
+\item no desenvolvimento de programas. Deste modo podemos testar partes do programa, deixando para mais tarde completar o que está em desenvolvimento. Consegue-se também deste modo isolar melhor eventuais erros no código.
+\item quando somos obrigados, por razões \textbf{sintáticas}, a colocar uma instru\c cão numa zona do código.
+\item no tratamento de excep\c cões, assunto que será tratado mais adiante.
+\end{itemize}
+
+No desenvolvimento de programas podemos ter situa\c cões por finalizar mas queremos que mesmo assim o resto do código possa ser testado. Um exemplo muito simples:
+
+\begin{lstlisting}
+def verfica(nome):
+	if nome =='Ernesto Costa':
+		print('Bem-vindo')
+	elif nome == 'Bill Gates':
+		print ('Acesso Negado!')
+	else:
+		# depois decido...
+		pass
+\end{lstlisting}
+
+Suponhamos agora uma situa\c cão em que o programa está à espera de uma interrup\c cão via teclado. O programa abaixo ilustra a necessidade sintática da instru\c cão \textbf{pass}.
+
+\begin{lstlisting}
+while True:
+	pass
+\end{lstlisting}
+
+Outro exemplo de necessidade sintática:
+
+\begin{lstlisting}
+def nada(x):
+	if cond1(x):
+		f1(x):
+	elif cond2(x):
+		pass
+	else:
+		fn(x)
+\end{lstlisting}
+
+Aqui pretendo que, no caso de uma dada situa\c cão for verdadeira, não fazer nada!
+
+\section{Excep\c cões}
+Infelizmente quem programa sabe que das coisas mais comuns são erros durante a execução do programa. Isso corresponde em muitos casos ao aparecimento de situações não previstas. O tratamento de excep\c cões permite reagir de modo controlado a situa\c cões anómalas do meu programa, procurando sempre que possível dar informações relevantes ao programador por forma a que possa melhorar o seu código. A situa\c cão da listagem \ref{lst:try1} ilustra o caso simples em que isolamos a situa\c cão de uma divisão por zero.
+
+\begin{lstlisting}[caption=Excep\c cões: divisão por zero,label=lst:try1]
+def try_1(x):
+	try:
+		y=eval(input("\nDenominador: "))
+		print(x / y)
+	except ZeroDivisionError:
+		print("\nCuidado: o denominador não pode ser zero!")
+\end{lstlisting}
+
+O código que se protege é colocado entre a palavra reservada \textbf{try} e a palavra reservada \textbf{except}. Quando  o erro ocorre o código que se segue ao \textbf{except} é executado. O próximo exemplo mostra uma situa\c cão mais realista de protec\c cão de dados de entrada.
+
+\begin{lstlisting}
+def try_2():
+	""" Exemplo de uso de pass.
+	Espera interupção pelo keyboard.
+	"""
+	while True:
+		try:
+			x=int(input("Um numero sff:\t"))
+			break
+		except ValueError:
+			pass
+	print "\nFinito!"
+\end{lstlisting}
+
+Regressando ao nosso exemplo das raízes de uma equa\c cão do segundo grau vejamos (listagem \ref{lst:try2}) como podemos proteger o programa que apenas prevê raízes reais.
+
+\begin{lstlisting}[caption=Try: raízes reais apenas,label=lst:try2]
+def try_3():
+	""" Cálculo das raízes reais de um polinómio.
+	"""
+	try:
+		a,b,c = eval(input("Os coeficientes sff (a,b,c):\t"))	
+		discriminante=pow(b,2)- 4 * a * c
+		raiz_discrim = math.sqrt(discriminante)
+		raiz1= (-b + raiz_discrim) / (2 * a)
+		raiz2 = (-b - raiz_discrim) / (2 * a)
+		if raiz1 == raiz2:
+			print ("O polinómio de coeficientes\
+			a=%d b=%d c= %d tem raizes multiplas raiz1= raiz2=%3.2f " % (a,b,c,raiz1))
+		else:
+			print( "As raízes do polinómio de coeficientes\
+			a=%d b=%d c= %d sao raiz1=%3.2f raiz2=%3.2f" % (a,b,c,raiz1,raiz2))
+	except ValueError:
+		print ("\n Não tem raízes reais!")
+\end{lstlisting}
+
+Um exemplo clássico do uso de excepções involve a abertura de um ficheiro, como se ilustra a seguir.
+
+\begin{lstlisting}
+def try_4():
+	while True:
+		try:
+			fich = input("Nome do ficheiro: ")
+			f_in = open(fich,'r')
+			break
+		except IOError:
+			print("O ficheiro %s não existe. Tente de novo." % fich)
+	# resto do programa	
+\end{lstlisting}
+
+Neste caso estamos a pedir o nome de um ficheiro até ele ser válido, altura em que se abandona o ciclo \texttt{while}.\\
+
+Existem vários tipos de excep\c cões., estando organizadas numa hierarquia. A figura \ref{fig:except} dá uma visão parcial dessa hierarquia.  O leitor é convidado a consultar o manual de referência da linguagem.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{controlo/imagens/except.eps}
+\caption{Hierarquia de excepções (visão parcial)}
+\label{fig:except}
+\end{center}
+\end{figure}
+
+
+Nada impede no entanto o utilizador de definir, ele próprio, excep\c cões. Embora tal exija conhecimentos que o leitor ainda não tem mostramos mesmo assim um exemplo simples na listagem \ref{lst:try3}.
+
+\begin{lstlisting}[caption=Exep\c cões: defini\c cão pelo utilizador,label=lst:try3]
+# nova excepção
+class ParseError(Exception):
+	pass
+
+def testa(x):
+	try:
+		parse(x)	
+	except ParseError:
+		pass
+\end{lstlisting}
+
+Associado com um \textbf{try} podem existir mais do que uma cláusula \textbf{except} embora só uma seja activada (a que corresponder à excep\c cão levantada). 
+
+
+\begin{lstlisting}
+import sys
+
+try:
+    f = open('myfile.txt')
+    s = f.readline()
+    i = int(s.strip())
+except IOError, (errno, strerror):
+    print( "I/O error(%s): %s" % (errno, strerror))
+except ValueError:
+    print( "Os dados não puderam ser convertidos para inteiros.")
+except:
+    print ("Erro inesperado:", sys.exc_info()[0])
+    raise
+\end{lstlisting}
+
+Neste exemplo chamamos a atenção para o último \textbf{except} onde não existe nenhuma excepção definida associada e é levantada (\textbf{raise}) uma geral. Pode ainda aparecer uma cláusula \textbf{else}, sempre a seguir às excepções, e que será executada se nada de anormal se passar com o \textbf{try}. No exemplo abaixo estamos a pedir dados ao utilizador até ele não cometer nenhum erro.
+
+\begin{lstlisting}
+def try_5():
+	while True:
+		try:
+			x=input('o numerador:')
+			y=input('o denominador:')
+			res= x/y
+			print( '%d a dividir por %d = %d' % (x,y,res))
+		except:
+			print ('Entrada inválida. Tente novamente.')
+		else:
+			break
+\end{lstlisting}
+
+Para concluir importa referir que pode também existir uma cláusula opcional denominada \textbf{finally} no fim da excep\c cão e que será \textbf{sempre} executada independentemente do resultado das opera\c cões do \textbf{try - except}. Normalmente é usado para actividades de \textit{limpeza}, como por exemplo fechar um ficheiro com segurança. Veja-se o exemplo da listagem \ref{lst:try4}
+
+\begin{lstlisting}[caption=try: uso de finally,label=lst:try4]
+>>> def divide(x, y):
+...     try:
+...         result = x / y
+...     except ZeroDivisionError:
+...         print ("divisão por zero!")
+...     else:
+...         print( "o resultado é", result)
+...     finally:
+...         print( "a executar a cláusula finally")
+...
+>>> divide(2, 1)
+o resultado é  2
+a executar a cláusula finally
+>>> divide(2, 0)
+divisão por zero!
+a executar a cláusula finally
+>>> divide("2", "1")
+a executar a cláusula finally
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "<stdin>", line 3, in divide
+TypeError: unsupported operand type(s) for /: 'str' and 'str'
+\end{lstlisting}
+
+
+\subsubsection{Asserções}
+Acontece com alguma frequência querermos interromper um programa se uma dada condi\c cão não se verificar. Tal pode ser feito com um teste simples como ilustra a listagem \ref{lst:crash}.
+
+\begin{lstlisting}[caption=Teste para abortar programa,label=lst:crash]
+if <condição>:
+	<aborta_programa>
+\end{lstlisting}
+
+\marginlabel{assert}É mais correcto e genérico usar o comando \textbf{assert}.
+
+\begin{lstlisting}
+def exe_ass(n):
+	assert 7 < n < 77, 'Valores fora dos limites'
+	print(n)
+# -- resultado da  chamada com n = 100
+AssertionError: Valores fora dos limites
+\end{lstlisting}
+
+Como se pode ver, ao falhar a asserção é levantada uma excepção, que podemos usar como anteriormente. As asser\c cões são igualmente importantes para os testes unitários de que falaremos mais adiante.
+
+
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo introduzimos as duas estruturas de controlo fundamentais: condicionais e ciclos. Vimos as várias variantes, condicionais simples, completas ou gerais e os ciclos definidos e indefinidos. No caso dos ciclos exemplificámos ainda as instru\c cões adicionais que podem ser  usadas (\textbf{break}, \textbf{continue}). No final referimos de modo breve o uso da instru\c cão \textbf{pass}, as excepções (\textbf{try}) e as asserções (\texttt{assert}). Ficam assim cobertas as instru\c cões usadas em programa\c cão procedimental.
+
+
+\section*{Testes os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Determine se conhece os conceitos indicados e se consegue responder às questões abaixo colocadas.
+
+
+\begin{itemize}
+\item O que  entende por bloco e como se relaciona com a indentação do código.
+\item De que maneira pode representar os valores booleanos \texttt{True} e \texttt{False}.
+\item Que tipos de instruções condicionais existem e como se deistinguem.
+\item Qual a diferença fundamental entre um ciclo \texttt{for} e um ciclo \texttt{while}.
+\item De que modo pode percorrer um ciclo.
+\item Que formas tem de interromper/quebrar um ciclo.
+\item Em que princípios se baseia o Método de Monte Carlo.
+\item Que diferenças existem entre \textbf{excepções} e \textbf{asserções}.
+\end{itemize}
+
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\facil
+
+Escreva um programa que lhe permita apresentar uma tabela de conversão entre milhas e quilómetros. Uma milha é igual a 1.609 quilómetros. A tabela deve conter todas as equivalências entre dois valores de referência. A tabela deve ter um aspecto semelhante ao da listagem seguinte, que ilustra o caso entre os números 10 e 20.
+\begin{lstlisting}
+Milhas		Quilómetros
+---------------------------
+10.00		      16.09
+11.00		      17.70
+12.00		      19.31
+13.00		      20.92
+14.00		      22.53
+15.00		      24.13
+16.00		      25.74
+17.00		      27.35
+18.00		      28.96
+19.00		      30.57
+20.00		      32.18
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Escreva um programa que apresenta por ordem crescente três números inteiros positivos dados como entrada. Em que medida a sua solução minimiza o número de comparações necessárias?\textbf{Nota}: Não pode usar nenhuma função/método de ordenamento pré-definido de \python.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Para realizar a viagem entre o Porto e  Coimbra (120 km de distância) existem várias estradas como alternativa. A tabela \ref{tab:custo} ilustra as diferentes alternativas em termos de trajecto considerando o custo de combustível por km e o custo das portagens. Escreva um programa que dada a designação da estrada retorne o custo total da viagem para essa alternativa.\\
+
+
+\begin{table}[htdp]
+
+\begin{center}
+\begin{tabular}{|c|c|c|}\hline
+\rowcolor[gray]{0.9} Estradas & Custo combustível / Km & Custo Portagens \\ \hline \hline
+A1 & 0.15 & 6.52 \\ \hline
+A20 &  0.12& 15.2 \\ \hline
+A21 &  0.10 & 5.75 \\ \hline
+\end{tabular}
+\end{center}
+\caption{O que escolher? Preços em euros.}
+\label{tab:custo}
+\end{table}%
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+O vencimento bruto de um trabalhador está sujeito a descontos: 25\% para o IRS, 5\% para a Segurança social e 10\% para a Caixa Nacional de Aposentações. O vencimento líquido é o que resulta da subtracção destes descontos ao vencimento bruto. Desenvolva um programa que dado o vencimento bruto devolve o correspondente vencimento líquido.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+A avaliação nesta cadeira resulta de 5 provas: 4 testes e um exame. Cada teste vale 7.5\% da nota final, enquanto que o exame vale 70\%. Isto significa que a nota é dada pela expressão:
+
+\[ \text{nota} = 0.075 * (t_1 + t_2 + t_3 + t_4) + 0.7 * e\]
+
+Escreva um programa que dadas as 5 notas parciais calcula a nota final e, como resultado devolve a cadeia de caracteres "Aprovado", se a  média for maior ou igual a 14, "Reprovado", se a média for inferior a 7, e "Oral", se a média for maior ou igual a 7 e inferior a 14. Admita que as notas são números reais entre 0 e 20.
+\end{Exercicio}
+
+
+\begin{Exercicio}\facil
+Considere o seguinte pedaço de código \python.
+
+\begin{lstlisting}[caption={Ciclo while}, label=lst:while, numbers=left, numberstyle=\footnotesize, mathescape]
+i = 20
+while (i >= 0):
+    print "i= ",i
+    i = i - 2
+\end{lstlisting}
+
+Escreva um pedaço de código equivalente em que o ciclo \textbf{while} é substituído por um ciclo \textbf{for}.\
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+\begin{lstlisting}
+>>> for i in range(3):
+... 	for j in range(1,3): 
+... 		print float(i)/j
+...
+?
+>>>
+\end{lstlisting}
+Diga, \textbf{justificando}, o que vai aparecer no lugar do \textbf{ponto de interrogação}  quando o código é executado no interpretador.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Duas palavras de igual comprimento  dizem-se \textbf{amigas} se o número de posições em que os respectivos caracteres \textbf{difere} for inferior 10\%. Escreva um programa que dadas duas palavras indica se são ou não amigas.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Escreva um programa que calcula o divisor mais pequeno de um número inteiro maior do que 1. Use esse programa como auxiliar na determinação de um dado inteiro maior do que um é um número primo.
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{random}\medio
+Suponha  um dado em que cada uma das faces está numerada com os inteiros de 1 a 6. Desenvolva um programa que simula o lançamento repetido do dado um certo número de vezes, e calcula a \textbf{percentagem} de vezes em que saiu um número par.
+
+\end{Exercicio}
+
+\begin{Exercicio}
+
+Considere a figura \ref{fig:mc1}. Suponha que o quadrado externo tem uma dimensão 2 por 2 e os internos 1 por 1.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{controlo/imagens/monte_carlo_1.eps}
+\caption{Calcular probabilidades}
+\label{fig:mc1}
+\end{center}
+\end{figure}
+
+
+Use o Método de Monte Carlo para calcular a probabilidade de ao atirar um dardo ele cair numa região de número ímpar.
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+O factorial de um número é dado por:
+
+\[ fact(n) = n! = n \times (n-1) \times (n-2) \times \ldots \times 1 \]
+
+Implemente um programa que lhe permita calcular o factorial de um inteiro positivo.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+O valor  do seno de um ângulo que pode ser computado a partir da fórmula:
+
+\[ seno(x)= \sum_{i=0}^\infty \frac{(-1)^i \times x^{(2 \times i +1)}}{(2 \times i +1)!}\]
+
+Implemente o respectivo programa usando o número de parcelas como parâmetro. Altere o programa por forma a poder usar a precisão como critério de paragem do seu programa.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\modulo{matplotlib}\facil\label{exe:harmo}
+
+O número harmónico $H_n$ define-se pela fórmula:
+
+\[ H_n = \sum_{k=1}^n \frac{1}{k}\]
+
+Escreva um programa que permita calcular o valor de $H_n$, usando $n$ como parâmetro. Use esse programa para poder encontrar os sucessivos valores dos números harmónicos até um dado limite. Recorra ao módulo \texttt{matplotlib} para visualizar o resultado. Que comentários se lhe oferecem fazer face ao gráfico?
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Os números harmónicos podem ser calculados de modo aproximado pela fórmula:
+
+\[  H_n \approx ln(n) + \gamma\]
+com $ln(n)$ o logaritmo natural (base e) e $\gamma= 0.5772156649$ a constante de Euler. Escreva um programa que lhe permita calcular o valor de $H_n$ de modo aproximado para sucessivos valores de $n$. Visualize o resultado e compare com o obtido no exercício \ref{exe:harmo}. Que pode dizer sobre a qualidade da aproximação?
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+O logarithm natural é definido pela fórmula:
+
+\[ e = \sum_{i=0}^\infty \frac{1}{i!} \]
+
+\begin{comment}
+\[ e = \lim_{n \rightarrow \infty} \left( 1 + \frac{1}{n}\right)^n \]
+\end{comment}
+
+Escreva um programa que lhe permita calcular o valor aproximado de $e$ com uma dada precisão.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Um número diz-se perfeito se for igual à soma dos seus divisores próprios. Por exemplo, 6 e 28 são perfeitos. Escreva um programa que determine quais os números perfeitos que existem num dado intervalo.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Considere os padrões de números seguintes.
+
+\begin{lstlisting}
+# Padrão A
+1 
+1 2 
+1 2 3 
+1 2 3 4 
+1 2 3 4 5 
+
+#Padrão B
+1 2 3 4 5 
+1 2 3 4 
+1 2 3 
+1 2 
+1 
+
+# Padrão C
+        1 
+      2 1 
+    3 2 1 
+  4 3 2 1 
+5 4 3 2 1 
+\end{lstlisting}
+
+Escreva três programas, que lhe permitam imprimir  cada um dos padrões. Em que medida a sua solução depende da dimensão do número máximo $n$?
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{turtle}\medio\label{exe:grelha}
+
+Suponha que quer desenhar uma grelha como a da figura \ref{fig:grelha}, em que a dimensão da grelha e o tamanho de cada célula são parâmetros do problema. Use o módulo \texttt{turtle} para o fazer.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{controlo/imagens/grelha.png}
+\caption{Desenho de uma grelha}
+\label{fig:grelha}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+
+\begin{Exercicio}\modulo{turtle}\medio
+
+Um passeio aleatório é um conceito que permite modelizar vários processos que ocorrem na natureza. Admita que tem um agente que se movimenta de modo aleatório num mundo 2D. Suponha que a cada momento o agente decide deslocar-se ou para norte, ou para este, ou para sul ou para oeste, sendo que essa decisão é aleatória. Usando o módulo \texttt{turtle} simule um passeio aleatório do nosso agente, admitindo que o aseu mundo 2D tem a forma de uma grelha como a que obteve no exercício \ref{exe:grelha}. O mundo é suposto ser \textbf{finito}. A figura \ref{fig:palea} ilustra o que se pretende ( o ponto marca o início do passeio e a seta o final).
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{controlo/imagens/passeio.png}
+\caption{Passeio aleatório}
+\label{fig:palea}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+A sequência de Fibonacci define-se indutivamente do modo seguinte: os seus dois primeiros números são iguais a um e a partir daí cada elemento da sequência é igual à soma dos dois elementos imediatamente anteriores. Eis os primeiros números da sequência:
+\begin{lstlisting}
+1, 1, 2, 3, 5, 8, 13, 21,....
+\end{lstlisting}
+Escreva um programa que dado um número \textbf{verifica} se ele pertence ou não à sequência de Fibonacci.
+
+\end{Exercicio}
+
+
+
+

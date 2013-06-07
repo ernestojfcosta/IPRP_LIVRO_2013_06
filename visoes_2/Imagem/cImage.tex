@@ -1,0 +1,89 @@
+\documentclass[12pt,portuguese,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+%\usepackage{picins} % problema com a package
+\usepackage[applemac]{inputenc}
+\usepackage{natbib}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+\usepackage{fancybox,calc}
+\usepackage{alltt}
+\usepackage[Lenny]{fncychap}
+\usepackage{makeidx}
+\usepackage{fancyvrb}
+\usepackage{algorithm2e}
+%% Customiza\c c›es
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+
+%% END Article customise
+
+%%% Para o c—digo
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+
+\lstset{backgroundcolor=\color{yellow},language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true}
+
+%% E mais umas coisas
+\usepackage{pifont}
+\usepackage{lettrine}
+\usepackage{soul}
+\usepackage{epigraph}
+
+% See the ``Article customise'' template for come common customisations
+
+\title{\Large{\textbf{Manipula\c c‹o de imagens e Python}}}
+\author{Ernesto Costa \\ Departamento de Engenharia Inform‡tica \\ Universidade de Coimbra}
+\date{\today} % delete this line to display the current date
+
+
+\renewcommand\lstlistingname{Listagem}
+
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+
+
+
+\maketitle
+
+
+\begin{abstract}
+Vivemos num mundo cada vez mais dominado pelas imagens. A manipula\c c‹o das imagens permite-nos criar uma nova realidade e explorar novas combina\c c›es de formas e de cores. Com os computadores essa possibilidade de altera\c c‹o e de jogo foi potenciada a uma escala nunca antes vista. Hoje, existem imensos programas que nos permitem exercitar a nossa imagina\c c‹o art’stica, de que o \textbf{Photoshop} da Adobe Ž apenas um exemplo. Este pequeno texto pretende mostrar, de um modo elementar, como podemos n—s pr—prios usar e transformar imagens, por recurso ˆ linguagem \textbf{Python} e ao m—dulo \textbf{cImage}.
+\end{abstract}
+
+
+\section{Computadores e Imagens}
+
+\section{Python e Imagens}
+
+\section{O m—dulo cImage}
+
+\section{Exemplos}
+
+
+
+
+
+
+\section{Conclus‹o}
+
+
+
+%\tableofcontents
+\end{document}%% LaTeX - Article customise
+

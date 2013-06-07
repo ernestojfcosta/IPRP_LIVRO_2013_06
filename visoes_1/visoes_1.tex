@@ -1,0 +1,621 @@
+\chapter{Visões (I)}\label{cap:visoes1}
+
+\begin{objectivos}
+\item Introduzir o módulo gráfico \texttt{turtle}
+\item Revisitar os conceitos básicos de programação
+\item Introduzir a diferença entre função e método
+\item Exemplificar o desenho de gráficos de funções
+\end{objectivos}
+
+\section{Coisas que mexem}
+
+
+
+Até agora temos andado ocupados com objectos numéricos (inteiros, vírgula flutuante e complexos), cadeias de caracteres, e booleanos\footnote{Claro que também já sabemos que os módulos e as defini\c cões são objectos, porque em \python\, \ldots tudo são objectos!}. Sabemos que os objectos têm três características: identidade, valor e tipo. Sabemos ainda que os objectos podem ter outros atributos: por exemplo, os nomes associados. Com estes objectos podemos fazer diferentes manipula\c cões como, por exemplo,  opera\c cões como soma, multiplica\c cão de números).   Está na altura de introduzir um outro  \textbf{tipo} de objectos, com atributos   interessantes, e com os quais se pode fazer opera\c cões distintas das aritméticas. Vamos falar de \textbf{tartarugas}. Isso mesmo, tartarugas.\\
+
+As tartarugas são objectos que vivem num mundo a duas dimensões. Têm por isso uma \textbf{posi\c cão} e uma \textbf{direc\c cão}. São várias as operações (i.e., métodos) que podem ser efectuadas sobre objectos do tipo tartaruga. Por exemplo, as tartarugas  podem \textbf{mover-se} (para a frente, para trás), e podem \textbf{rodar} (para a esquerda, para a direita). Enquanto se deslocam podem deixar (ou não) no chão um \textbf{rasto}, isto porque cada tartaruga tem associada uma \textbf{caneta}. A caneta também pode ser controlada, levantando-a ou baixando-a, alterando a sua  cor ou a espessura do seu traço.  A imagem \ref{fig:alea} mostra uma tartaruga e o rasto que deixou enquanto se deslocou. A ponta da seta simboliza a tartaruga.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_1/imagens/tarta_1.png}
+\caption{ O passeio (curto) da tartaruga}
+\label{fig:alea}
+\end{center}
+\end{figure}
+
+Para comandar a tartaruga temos que importar o módulo \texttt{turtle}. Quando iniciamos o comando da tartaruga esta encontra-se na posição (x,y) = (0,0) com uma orientação de $0$ graus, isto voltada para leste, paralela a um eixo dos \textbf{x} imaginário. O desenho da figura \ref{fig:alea} foi obtido com a seguinte sessão \textbf{interactiva}:
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> import turtle
+>>> turtle.forward(100)
+>>> turtle.right(45)
+>>> turtle.forward(50)
+>>> turtle.backward(75)
+>>> turtle.left(80)
+>>> turtle.forward(20)
+>>> 
+\end{lstlisting}
+
+O comando \texttt{forward(n)} faz avançar a tartaruga \texttt{n} unidades, \texttt{right(a)} faz a tartaruga rodar para a direita um ângulo de  \texttt{a} graus. Por seu lado,  \texttt{backward(n)} faz recuar a tartaruga  \texttt{n} unidades e \texttt{left(a)} faz a tartaruga rodar para a esquerda um ângulo de  \texttt{a} graus. 
+
+Depois de executar estes comandos a posição e direcção são diferentes dos valores iniciais e podem ser \textbf{consultados}:
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> turtle.position()
+(98.71,29.15)
+>>> turtle.heading()
+35.0
+>>> 
+\end{lstlisting}
+
+Como se vê no exemplo acima, quando importamos o módulo temos que prefixar todos os comandos pelo nome do módulo, como fazemos com qualquer módulo. 
+
+% ------------------------------------------------------------------------------------
+\begin{comment}
+Podemos também efectuar uma importação selectiva:
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> from turtle import forward, backward, left, right, heading, position
+\end{lstlisting}
+
+ou importar tudo:
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> from turtle import *
+\end{lstlisting}
+
+
+Neste caso é óbvio que para uma dada aplicação, em geral, estamos a importar coisas a mais. Mas é preço que pagamos para não ter que prefixar todas as operações com o nome do módulo. Como conselho diríamos que a possibilidade de importar tudo deve ser usada com parcimónia.
+\end{comment}
+% ---------------------------------------------------------------------------------------
+
+Existem outras operações relacionadas com o movimento e com o estado da tartaruga. Eis algumas:
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> import turtle
+>>> turtle.goto(100,100)
+>>> setx(200)
+>>> turtle.setx(200)
+>>> turtle.ycor()
+100
+>>> turtle.xcor()
+200
+>>> turtle.setheading(225)
+>>> 
+\end{lstlisting}
+
+Podemos controlar a posição (linha 2) e orientação (linha 9) da tartaruga de modo absoluto, e consultar e alterar a posição por componentes (linhas 3 a 8). No anexo \ref{annex:turtle} o leitor encontrará um manual breve de referência ao módulo.
+
+
+\section{Tartarugas e geometria}
+
+\subsubsection*{Quadrados}
+Armados deste conhecimento primitivo, podemos começar a fazer pequenos desenhos. Os exemplos serão escritos no editor e vamos fazer uso da importação selectiva. Vamos começar por escrever um programa que  permita desenhar um quadrado com um dado comprimento do lado. Trata-se de um problema muito simples. A solução passa por desenhar um lado, rodar 90º, desenhar o segundo lado, rodar 90º, repetindo quatro vezes esta sequência de dois comandos.
+
+\begin{lstlisting}
+     turtle. forward(50)
+     turtle.right(90)
+     turtle.forward(50)
+     turtle.right(90)
+     turtle.forward(50)
+     turtle.right(90)
+     turtle.forward(50)
+     turtle.right(90)
+\end{lstlisting}
+
+A primeira coisa que salta à vista é o facto do comprimento do lado ser fixo. Cada vez que quisermos um quadrado com o lado diferente vamos ter que editar o programa e alterar o valor do comprimento.  Temos então uma óptima oportunidade para usar o mecanismo de \textbf{abstracção procedimental}, desenvolvendo um programa em que o comprimento do lado é um parâmetro.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+import turtle 
+
+def quadrado(lado):
+    """
+    Desenha um quadrado de lado,  lado.
+    """
+     turtle.forward(lado)
+     turtle.right(90)
+     turtle.forward(lado)
+     turtle.right(90)
+     turtle.forward(lado)
+     turtle.right(90)
+     turtle.forward(lado)
+     turtle.right(90)
+    
+    
+if __name__ == '__main__':
+    meu_lado = 50
+    quadrado(meu_lado)
+\end{lstlisting}
+
+
+O resultado visual não é difícil de antever (Figura \ref{fig:quad1}).
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/quad_1.png}
+\caption{ Mas que lindo quadrado}
+\label{fig:quad1}
+\end{center}
+\end{figure}
+
+Notar que, ao efectuar uma quarta rotação, a direcção da tartaruga á a mesma que a original. Esta solução, estando correcta, não é elegante. Em particular, é evidente que estamos a repetir um número fixo de vezes um par de comandos. Como sabemos existem instruções que nos permitem efectuar repetições, de modo a tornar o código curto, elegante e legível. Para situações como esta, padrão de contagem simples e com um número de repetições fixo, existe uma instrução de controlo que torna o programa mais simples e legível: a instrução repetitiva \texttt{for}. 
+Vamos usá-la.
+
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def quadrado(lado):
+    """
+    Desenha um quadrado de lado lado. 
+    """
+    for i in range(4):
+         turtle.forward(lado)
+         turtle.right(90)
+\end{lstlisting}
+
+A  variável \texttt{i} faz o papel de  contador, e a operação \texttt{range} gera os sucessivos valores do contador, no nosso caso $0,1,2, 3$. Será que ainda podemos generalizar mais o nosso código? Claro que sim. Uma possibilidade consiste em tornar variável a posição e a orientação inicial da tartaruga, logo do quadrado.  Uma vez mais, a generalização traduz-se pela introdução de dois parâmetros adicionais.
+
+
+\begin{lstlisting}[caption={Um quadrado com o rabo de fora}, label=lst:tarta1, numbers=left, numberstyle=\footnotesize, mathescape]
+import turtle
+
+def quadrado(lado,pos, angulo):
+    """
+    Desenha um quadrado com o comprimento de lado, o vértice inferior
+    esquerdo em pos e  direcção inicial angulo.
+    """
+    # Preparação
+    turtle.goto(pos)
+    turtle.setheading(angulo)    
+    # Desenha
+    for conta in range(4):
+        turtle.forward(lado)
+        turtle.right(90)
+    turtle.hideturtle()
+\end{lstlisting}
+
+Nesta solução acrescentámos um novo comando, \texttt{hideturtle}, que, como o nome deixa antever, permite esconder a tartaruga. Como é natural existe o comando inverso, \texttt{showturtle}, que torna visível a tartaruga. Ao executarmos o programa o resultado não é muito famoso como se pode ver na figura \ref{fig:quad_mal}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/quadrado_mal.png}
+\caption{Um quadrado defeituoso}
+\label{fig:quad_mal}
+\end{center}
+\end{figure}
+
+Acontece que quando iniciamos a tartaruga a caneta que lhe está associada, por defeito, encontra-se em baixo. Logo, ao executar o comando de reposicionamento da tartaruga ela vai deixar o rasto do seu movimento. Nada que não se possa resolver recorrendo a comandos que levantam e baixam a caneta.
+
+\begin{lstlisting}[caption={Um quadrado perfeito}, label=lst:tarta1, numbers=left, numberstyle=\footnotesize, mathescape]
+import turtle
+
+def quadrado(lado,pos, angulo):
+    """
+    Desenha um quadrado com o comprimento de lado, o vértice inferior
+    esquerdo em pos e  direcção inicial angulo.
+    """
+    # Preparação
+    turtle.penup()
+    turtle.goto(pos)
+    turtle.setheading(angulo)   
+    turtle.pendown() 
+    # Desenha
+    for conta in range(4):
+        turtle.forward(lado)
+        turtle.right(90)
+    turtle.hideturtle()
+\end{lstlisting}
+
+
+\subsubsection*{Polígonos regulares}
+
+ Suponhamos que nos é pedido agora para desenhar um triângulo equilátero. Adaptando a solução anterior facilmente chegamos ao resultado pretendido.
+
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+def tri_equi(lado):
+    """
+    Desenha um triângulo equilátero e lado lado.   
+    """
+    for i in range(3):
+        turtle.forward(lado)
+        turtle.right(120)
+    turtle.hideturtle()
+\end{lstlisting}
+
+E se for um pentágono? Sem grande dificuldade chegamos ao código seguinte:
+
+\begin{lstlisting}
+def pentagono(lado):
+    """
+    Desenha um pentágono.
+    """
+    for i in range(5):
+        turtle.forward(lado)
+        turtle.right(72)
+    turtle.hideturtle() 
+\end{lstlisting}
+
+
+Olhando para o código dos três polígonos regulares podemos descobrir algum padrão? Sim: o produto do número de lados pelo ângulo é sempre igual a 360 graus. Nada que a geometria não nos tivesse ensinado. A descoberta de um padrão abre a porta à generalização do código\footnote{Generalizar é outro modo de dizer abstrair.}. Sempre que generalizamos o nosso código torna-se possível \textbf{reutilizá-lo} em diferentes situações. No nosso caso podemos criar um programa para desenhar polígonos regulares.
+
+\begin{lstlisting}
+def poligono_regular(comp_lado,num_lados):
+    """
+    Desenha um polígono regular.
+    """
+    angulo_viragem = 360 /num_lados
+    # Desenha
+    for i in range(num_lados):
+        turtle.forward(comp_lado)
+        turtle.right(angulo_viragem)
+    turtle.hideturtle()  
+\end{lstlisting}
+
+Deixamos ao leitor o cuidado de testar o programa para diferentes polígonos. Mas não resistimos a mostrar-lhe algo. admita que chama o programa com \texttt{poligono\_regular(1, 360)}. O resultado é o da figura \ref{fig:circunf}: um circunferência!
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/circunf.png}
+\caption{Uma bela circunferência}
+\label{fig:circunf}
+\end{center}
+\end{figure}
+
+
+
+
+
+\section{Intermezzo}
+
+Até aqui temos admitido que só existe uma tartaruga. Mas sabemos que existem vários objectos de um dado tipo. Por exemplo, existe uma infinidade de números inteiros. Mesmo um tipo tão limitado como os booleanos tem dois objectos. Cada tipo tem associado um \textbf{construtor} que permite criar um objecto do tipo. Se a operação não tiver argumento, cria um objecto particular, se tiver tentar criar um objecto do tipo a partir do objecto fornecido. O construtor para as tartarugas chama-se \texttt{Turtle}. Com ele podemos criar vários objectos do tipo e  associá-los a diversos nomes.  Acontece que, até aqui, usámos tartarugas sem criar objectivamente nenhuma. Como é que tal é possível? A resposta reside no facto de o módulo \texttt{turtle} ter uma duplicação das operações\footnote{Tecnicamente, num caso usamos implementações procedimentais, isto é funções, e, no outro caso, usamos uma abordagem orientada aos objectos, isto é métodos. Mais adiante este aspecto será clarificado.}. Assim, quando não é criada nenhuma tartaruga recorrendo ao construtor, usamos as funções da forma usual:
+
+ \begin{center}
+\texttt{módulo.operação(argumentos)}.
+ \end{center}
+ 
+ como em:
+ 
+ \begin{center}
+\texttt{turtle.forward(100)}.
+ \end{center}
+ 
+ Vejamos agora o recurso ao construtor. A listagem abaixo exemplifica como podemos criar dois  objectos do tipo tartaruga. Como qualquer outro objecto, eles têm as três características já referenciadas: identidade, valor e tipo. Como se pode ver os objectos têm identidades  diferentes.
+
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>>  import  turtle
+>>> toto = turtle.Turtle()
+>>> toto
+<turtle.Turtle object at 0x1007b2910>
+>>> type(toto)
+<class 'turtle.Turtle'>
+>>> id(toto)
+4303038736
+>>> titi = turtle.Turtle()
+>>> titi
+<turtle.Turtle object at 0x1014c8c10>
+>>> type(titi)
+<class 'turtle.Turtle'>
+>>> id(titi)
+4316761104
+ \end{lstlisting}
+ 
+ Agora podemos comandar as tartarugas de modo independente. Para o fazer usamos \texttt{métodos} próprios para os objectos do tipo \texttt{turtle}\footnote{(Para o leitor curioso) Quando perguntámos pelo tipo a resposta foi \texttt{<class 'turtle.Turtle'>}. A razão é porque em \python os tipos são implementados como classes. Usaremos as duas palavras de modo indistinto. Mas isto leva-nos para conceitos mais avançados, da programação orientada aos objectos, que trataremos mais à frente.}.
+ 
+Os métodos são invocados  por:
+  \begin{center}
+\texttt{objecto.método(argumentos)}.
+ \end{center}
+ 
+
+ 
+
+ Na realidade, quando \textbf{invocamos} um método são executadas \textbf{duas} acções: primeiro, vai-se obter o método associado ao objecto através do seu nome; segundo, executa-se o método sobre o objecto, passando-lhe os argumentos, ou seja, fazemos:
+
+ \begin{center}
+\texttt{método(objecto,argumentos)}.
+ \end{center}
+ 
+ 
+ Quando usamos funções na realidade o que fazemos é apenas este segundo passo, sendo que o objecto é um objecto genérico criado internamente, e que não precisa ser referenciado. É esta criação implícita que permite trabalhar com uma tartaruga sem a ter criado. As duas situações podem estar misturadas como se pode observar na listagem abaixo.
+ 
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+>>> import turtle
+>>> toto = turtle.Turtle()
+>>> toto.pensize(3)
+>>> toto.forward(100)
+>>> toto.write('toto', font=("Arial",14,"bold"))
+>>> turtle.backward(100)
+>>> turtle.write('anónima',font=("Arial",14,"bold"))
+\end{lstlisting}
+
+No código acima nós criámos uma tartaruga de nome \textbf{toto} e o sistema criou uma tartaruga "anónima". Quando indicamos explicitamente o nome do objecto é sobre esse que se aplica o método, quando não indicamos, e referimos apenas o nome do módulo, então o que é aplicado à tartaruga anónima é a função correspondente.  O resultado da execução do código acima pode ser visto na figura \ref{fig:tarta2} onde se evidencia a existência das duas tartarugas a funcionar de modo independente. Para tornar a figura de mais fácil interpretação usámos outros comandos, um que altera a espessura do traço e outro que permite escrever texto.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/anonima.png}
+\caption{ Duas tartarugas independentes}
+\label{fig:tarta2}
+\end{center}
+\end{figure}
+
+Vejamos mais um exemplo de comando independente de duas tartarugas.
+
+\begin{lstlisting}[backgroundcolor=\color{cinza}]
+import turtle
+
+def salta_tartaruga(tarta,distancia):
+    tarta.pu()
+    tarta.forward(distancia)
+    tarta.pendown()
+    
+    
+if __name__ == '__main__':
+    toto = turtle.Turtle()
+    toto.color('gray')
+    toto.shape('turtle')
+    titi = turtle.Turtle()
+    titi.shape('triangle')
+    salta_tartaruga(toto,100)
+    titi.right(180)
+    salta_tartaruga(titi,100)
+    turtle.exitonclick()
+\end{lstlisting}
+
+Ao executar obtemos o resultado da figura \ref{fig:salta}. Notar o recurso a outras possibilidades do módulo \texttt{turtle}: mudar a cor e a forma da tartaruga. Também usamos o método \texttt{exitonclick} que nos permite controlar o fim da execução do programa através do fecho da janela usada para desenhar.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/duas_tarta.png}
+\caption{ De costas voltadas}
+\label{fig:salta}
+\end{center}
+\end{figure}
+
+\begin{comment}
+ \begin{Caixa}
+ { Numa linguagem muito simples podemos dizer que os \textbf{métodos}  de um tipo, são em geral, \textbf{funções específicas} para os objectos do tipo. Tecnicamente, os métodos são atributos dos objectos que referenciam funções. }
+ \end{Caixa}
+\end{comment}
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcdz]{Funções e  Métodos}
+ Numa linguagem muito simples podemos dizer que os \textbf{métodos}  de um tipo, são em geral, \textbf{funções específicas} para os objectos do tipo. Tecnicamente, os métodos são atributos dos objectos que referenciam funções.
+\end{bclogo}
+
+\section{Gráficos de funções}
+
+Um problema comum consiste em desenhar o gráfico de uma dada função. Podemos usar o módulo \texttt{turtle} para resolver esta questão. A ideia baseia-se em aproximar a função através de uma sequência de segmentos de recta. Se tivermos uma função $y = f(x)$, geramos sucessivos valores de $x = x_0, x_1, \ldots$, calculamos os respectivos $y_0 = f(x_0), y_1 = f(x_1), \ldots$. Traçamos depois os segmentos  que resultam de unir os pontos consecutivos $((x_i, y_i), (x_{i+1}, y_{i+1}))$.  Vejamos como podemos implementar esta ideia simples. Vamos escolher a  função seno, e fazer variar o ângulo entre $-\pi$ e $\pi$.
+
+
+\begin{lstlisting}
+import turtle
+import math
+
+def grafico(tartaruga,funcao, inicio,fim, n):
+    """ Desenha o gráfico da função f entre inf e sup usando n segmentos."""
+    # Tamanho dos segmentos
+    tam_seg = (fim - inicio)/n
+    # Posiciona-se
+    x = inicio
+    tartaruga.up()
+    tartaruga.goto(x, funcao(x))
+    tartaruga.down()
+    # Desenha
+    for conta in range(n):
+        x = x + tam_seg
+        tartaruga.goto(x, funcao(x))
+        
+if __name__ == '__main__':t
+    turtle.setworldcoordinates(-math.pi, -2, math.pi, 2)
+    toto = turtle.Turtle()
+    toto.pen(pensize=5, pencolor='gray')
+    grafico(toto,math.sin, -math.pi,math.pi,50)
+    toto.hideturtle()
+    turtle.exitonclick() 
+\end{lstlisting}
+
+Esta solução precisa saber os valores inicial e final e o número de segmentos que vamos usar. Com base nestes três valores é possível calcular a separação entre cada par de valores consecutivos (linha 7). De seguida posicionamos a tartaruga na posição inicial sem deixar rasto (linhas 9 a 12).  Entramos depois num ciclo em que se obtém a segunda extremidade de cada segmento e se usa a função \texttt{goto}  para efectuar o desenho (linhas 14 a16). Ao correr o programa (linhas 19 a 24), obtemos o gráfico da figura \ref{fig:seno1}. 
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.25]{visoes_1/imagens/seno1.png}
+\caption{A função seno}
+\label{fig:seno1}
+\end{center}
+\end{figure} 
+
+O número de segmentos usado determina a qualidade da aproximação. Experimente com diferentes valores e verifique esse fenómeno. O leitor atento terá notado o uso de uma operação chamada \texttt{setworldcoordinates}. Esta operação é fundamental para a visualização pois adapta a janela à escala de valores com que estamos a trabalhar. Se não a usarmos na prática não se vê o gráfico. Tem quatro argumentos: os dois primeiros definem o canto inferir esquerdo da janela, e os dois últimos o canto superior direito. No desenho de gráficos de funções estamos habituados a ver os eixos. Não é difícil juntar essa informação. Para tal definimos uma operação auxiliar que nos permita traçar um segmento de recta entre dois pontos. Com esta alteração o programa será agora o da listagem \ref{lst:seno2}.
+
+\begin{lstlisting}[caption={A função seno}, label=lst:seno2,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import turtle
+import math
+
+def linha(x1,y1,x2,y2):
+    """ Traça uma linha entre dois pontos."""
+    turtle.up()
+    turtle.goto(x1,y1)
+    turtle.pd()
+    turtle.goto(x2,y2)
+    turtle.up()
+    turtle.hideturtle()
+
+def grafico(tartaruga,funcao, inicio,fim, n):
+    """ Desenha o gráfico da função f entre inf e sup usando n segmentos."""
+    # Tamanho dos segmentos
+    tam_seg = (fim - inicio)/n
+    x = inicio
+    # Posiciona-se
+    tartaruga.up()
+    tartaruga.goto(x, funcao(x))
+    tartaruga.down()
+    # Desenha
+    for conta in range(n):
+        x = x + tam_seg
+        tartaruga.goto(x, funcao(x))
+
+
+if  '__name__' == '__main__':
+    turtle.setworldcoordinates(-math.pi, -2, math.pi,2)
+    linha(-math.pi,0,math.pi,0)
+    linha(0,-2,0,2)
+    toto = turtle.Turtle()
+    toto.pen(pensize=3, pencolor='gray')
+    grafico(toto,math.sin, -math.pi,math.pi,50)
+    toto.hideturtle()
+    turtle.exitonclick()    
+\end{lstlisting}
+
+Podemos adicionar outros elementos ao gráfico, como seja os pontos calculados e o nome. Podemos ainda, desenhar mais do que um gráfico. O programa final, completo, é o da listagem \ref{lst:seno3}.
+
+\begin{lstlisting}[caption={Seno e coseno}, label=lst:seno3,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import turtle
+import math
+
+def linha(x1,y1,x2,y2):
+    """ Traça uma linha entre dois pontos."""
+    turtle.up()
+    turtle.goto(x1,y1)
+    turtle.pd()
+    turtle.goto(x2,y2)
+    turtle.up()
+    turtle.hideturtle()
+
+ 
+def grafico(tartaruga,funcao, inicio,fim, n):
+    """ Desenha o gráfico da função f entre inf e sup usando n segmentos."""
+    # Tamanho dos segmentos
+    tam_seg = (fim - inicio)/n
+    x = inicio
+    # Posiciona-se
+    tartaruga.up()
+    tartaruga.goto(x, funcao(x))
+    tartaruga.dot(6)
+    tartaruga.down()
+    # Desenha
+    for conta in range(n):
+        x = x + tam_seg
+        tartaruga.goto(x, funcao(x))
+        tartaruga.dot(6)
+       
+if __name__ == '__main__': 
+    # Inicializa
+    turtle.setworldcoordinates(-math.pi, -2, math.pi,2)
+    linha(-math.pi,0,math.pi,0)
+    linha(0,-2,0,2)
+    # Seno
+    toto = turtle.Turtle() 
+    toto.pen(pensize=3, pencolor='gray')
+    grafico_1(toto,math.sin, -math.pi,math.pi,50)
+    toto.up()
+    toto.goto(0.5,1)
+    toto.write('SENO(X)', font=('ARIAL', 14,'bold'))
+    toto.hideturtle()
+    # Coseno
+    titi = turtle.Turtle() 
+    titi.pen(pensize=3)
+    grafico_1(titi,math.cos, -math.pi,math.pi,50)
+    titi.up()
+    titi.goto(-0.7,1)
+    titi.write('COSENO(X)', font=('ARIAL', 14,'bold'))
+    titi.hideturtle()
+    # Termina
+    turtle.exitonclick()    
+\end{lstlisting}
+
+Ao executar o programa veremos o resultado retratado na figura \ref{fig:seno3}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_1/imagens/seno3.png}
+\caption{Seno e coseno}
+\label{fig:seno3}
+\end{center}
+\end{figure}
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo introduzimos o módulo \texttt{turtle} e alguns das operações que podem ser feitas sobre objectos do tipo \texttt{Turtle}. Introduzimos o conceito de construtor de um tipo e clarificámos a diferença entre o conceitos de função e de método. Exemplificámos o uso do módulo para resolver problemas de geometria e para o gráfico de funções.
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Tente responder às seguintes questões que foram tratadas neste capítulo.
+
+\begin{enumerate}
+\item O que entende por construtor
+\item Quais são as operações básicas sobre tartarugas
+\item Quais as operações básicas sobre a caneta
+\item O que distingue uma função de um método
+\item Como podemos controlar a escala do nosso desenho
+\end{enumerate}
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+\begin{Exercicio}\facil
+Neste capítulo desenvolvemos um programa para desenhar polígonos regulares. No centro do programa está um ciclo que repete um certo número de vezes duas operações: avançar e rodar. Retome o programa e faça variar estes três elementos por forma a obter outro tipo de figuras. A figura \ref{fig:estrela1} ilustra a situação de repetir 5 vezes o avanço de 100 unidades e uma rotação de 144 graus.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/estrela1.png}
+\caption{Uma estrela}
+\label{fig:estrela1}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+Faça um programa que lhe permita simular um passeio aleatório (\textit{random walk}). A figura \ref{fig:acor} ilustra o que se pretende. Procure altera a cor de cada segmento de modo aleatório.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_1/imagens/alea_cor.png}
+\caption{ Sem rei nem roque}
+\label{fig:acor}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+No texto mostrámos como se podia desenhar uma circunferência usando a função \texttt{poligono\_regular}. Mas o desenho é sempre o mesmo, isto é, não podemos controlar o \textbf{raio} da circunferência. Diga como pode usar na mesma a função  \texttt{poligono\_regular} mas tendo em linha de conta o valor do raio.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+O módulo \texttt{turtle} tem um método \texttt{circle} pré-definido que lhe permite desenhar circunferências. O método tem um parâmetro obrigatório que é o raio da circunferência. Adicionalmente podemos indicar qual a extensão que vamos desenhar, tudo (por defeito) ou apenas um arco. como a circunferência é aproximada através a um polígono regular inscrito, existe um terceiro parâmetro que torna possível o uso de \texttt{circle} para desenhar polígonos regulares. Explore essa facilidade para desenhar diversos polígonos regulares.
+\end{Exercicio}
+
+
+\begin{Exercicio}\dificil
+Desenvolva um programa que lhe permita desenhar quadrados concêntricos como, por exemplo, indicado na figura \ref{fig:qc}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_1/imagens/quad_concent.png}
+\caption{ Tanto quadrado...}
+\label{fig:qc}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+Desenvolva um programa que lhe permita desenhar a figura \ref{fig:nauti}. Se reparar bem a figura é formada por quadrados cujos lados têm dimensão diferentes e os ângulos iniciais têm orientações diferentes.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_1/imagens/nautilus.png}
+\caption{ Parece um nautilus...}
+\label{fig:nauti}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+
+
+
+
+

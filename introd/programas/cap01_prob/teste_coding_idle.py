@@ -1,0 +1,5 @@
+#### -*- coding: macroman -*-
+
+teste = u"Ž"
+
+print teste

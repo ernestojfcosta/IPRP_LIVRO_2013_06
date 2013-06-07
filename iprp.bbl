@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{Lutz2009}
+Mark Lutz.
+\newblock {\em Learning Python (4th edition)}.
+\newblock O'Reilly, 2009.
+
+\bibitem{Stefik1986}
+M.~Stefik, D.~Bobrow, and D.~Winter.
+\newblock Object-oriented programming: themes and variations, 1986.
+
+\bibitem{Wegner1987}
+Peter Wegner.
+\newblock Dimensions of object-based language design.
+\newblock In {\em OOPSLA '87 Conference proceedings on Object-oriented
+  programming systems, languages and applications}, 1987.
+
+\end{thebibliography}

@@ -1,0 +1,38 @@
+
+
+
+On Jul 30, 2010, at 4:34 PM, Ernesto Costa wrote:
+
+> Viva,
+> 
+> A proposta do Jorge é muito interessante e corresponde ao que tínhamos falado. Quanto à questão dos alunos da LEGI a minha experiência é a de que não é por encontrar algo que os motive que eles fazem melhor. Ou dito de outra maneira: não sei se haverá algo que os motive!!!
+> 
+> Se o Luís conseguir pensar num problema com o mesmo grau de complexidade e que ache que eles vão preferir .. vamos a isso! Eu falei há alguns meses com o responsável do curso deles que ficou de me arranjar exemplos motivantes. Até hoje...
+> 
+> Quanto à proposta do Jorge, ele está muito boa. Alguns comentários apenas:
+> 
+> a) é preciso implementar a coisa :-( Atenção: seguir as style guides de Python!
+> b) usar um layout consistente com o que vamos fazer nas fichas (se me mandarem a fonte eu ponho tudo no LaTeX).
+> c) as metas estão bem: falta acrescentar datas e assustar acrescentado o paleio "copianço = chumbo!"
+> d) o rendering da imagem deve ser feito a partir de python (PIL, recurso ao comando display do sistema (unix, linux e mac), ou o que der...)
+> e) Deixar o GUI para o final de tudo é capaz de não ser pior (creio que o EasyGUI serve pois não há event driven...)
+> f) A questão da conversão (ficheiro -> estrutura em memória) deve aparecer primeiro, pois é a primeira meta. Pomos no início um boneco que mostra a arquitectura do sistema e os requisitos.
+> g) falta dizer como entregam o trabalho: código, documento, casos de teste, bla, bla... Devem perceber que tudo conta para a nota: não é apenas um programa que funciona!
+> 
+> Eu já não vou ter tempo de fazer nada agora. Estou a fazer as malas para partir :-) Chego a 15 e nessa altura poderei participar.
+> 
+> Ciao
+> 
+> Ernesto Costa
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> -- 
+> 
+

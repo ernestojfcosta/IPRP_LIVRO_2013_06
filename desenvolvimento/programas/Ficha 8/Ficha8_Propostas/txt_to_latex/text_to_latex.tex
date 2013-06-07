@@ -1,0 +1,255 @@
+\documentclass[a4paper,12pt,portuguese]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{luximono}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx,color}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{marvosym}
+\usepackage[Lenny]{fncychap}
+\usepackage{listings}
+\lstloadlanguages{Python,C,Java,Prolog,Lisp}
+\usepackage{pifont}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage[official]{eurosym}
+
+\pdfpagewidth=\paperwidth
+\pdfpageheight=\paperheight
+
+\newcommand{\python}{\textbf {Python}}
+%----------------------------------------------
+
+\definecolor{cinza}{rgb}{0.192,0.192,0.192}
+
+\definecolor{orange}{rgb}{1,0.5,0.0}
+
+\newcommand{\problema}[1]{\noindent \fbox{} \colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Problema #1}}}}
+
+
+\newcommand{\modulo}[1]{\noindent\colorbox{cinza}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{Módulo #1}}}}
+
+\newcommand{\facil}{\noindent \colorbox{green}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{F}}}}
+
+\newcommand{\medio}{\noindent \colorbox{orange}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{M}}}}
+
+\newcommand{\dificil}{\noindent \colorbox{red}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}{D}}}}
+
+%-----------------------------------------------
+\renewcommand\lstlistingname{Listagem}
+
+\lstset{backgroundcolor=\color{yellow},language=Python,captionpos=b,showstringspaces=false,basicstyle=\ttfamily,commentstyle=\color{blue},tabsize=2,breaklines=true, extendedchars=true}
+
+
+%\lstset{language=Python,backgroundcolor=\color{yellow},captionpos=b}
+% ----------------------------------------------------------------
+\newenvironment{objectivos}
+    {\noindent {\bfseries{\Large{Objectivos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+% contador de Exercicios
+\newcounter{exercicio}[chapter]
+\renewcommand\theexercicio{\thechapter.\arabic{exercicio}}
+
+
+\newenvironment{Exercicio}
+{\noindent  \refstepcounter{exercicio}  \colorbox{blue}{  \textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Problema \theexercicio}}}}
+{ \vspace*{0.2cm} \par}
+
+\newenvironment{requisitos}
+    {\noindent {\bfseries{\Large{Requisitos}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{materialapoio}
+    {\noindent {\bfseries{\Large{Material de Apoio}}}
+        \begin{dinglist}{"34}}
+    {\end{dinglist}}
+
+\newenvironment{sol}
+{\noindent  \colorbox{magenta}{\textbf{\textcolor[rgb]{1.00,1.00,1.00}
+{ Solução}}}}
+{ \vspace*{0.2cm} \par}
+
+
+
+
+\begin{document}
+
+\noindent \rule{\linewidth}{1mm}
+
+\begin{center}
+
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{timbre.eps}
+ \end{figure}
+
+\LARGE{\textbf{\textcolor[rgb]{0.98,0.00,0.00}
+{IntroduÁ„o ‡ ProgramaÁ„o \\ e ResoluÁ„o de Problemas}}} \\
+\vspace*{0.25cm}2009/2010 \\\vspace*{0.25cm}
+
+\rule{\linewidth}{1mm}
+
+\vspace*{5.0cm} \textcolor[rgb]{0.00,0.40,0.29}{Ficha \#8 }
+
+\vspace*{2.0cm}
+\noindent Ernesto Costa,\\ LuÌs Macedo, RogÈrio Lemos, Vasco Pereira
+\end{center}
+
+\renewcommand\chaptername{Ficha}
+\setcounter{chapter}{7}
+\chapter{????????}
+\setcounter{chapter}{8}
+
+
+
+\begin{objectivos}
+
+\item Consolidar os conceitos b·sicos
+\item Exercitar a manipulaÁ„o de ficheiros
+\item Exercitar a manipulaÁ„o de cadeias de caracteres
+
+\end{objectivos}
+
+\bigskip
+
+\begin{requisitos}
+\item Conhecimentos sobre cadeias de caracteres e ficheiros
+\item MÛdulo \textbf{string}
+\end{requisitos}
+\bigskip
+
+\begin{materialapoio}
+\item … recomendada a consulta dos slides das aulas teÛricas e da bibliografia neles indicada.
+\end{materialapoio}
+
+
+
+
+\newpage
+\section{De texto para \LaTeX}
+
+A conhecida linguagem de ediÁ„o \LaTeX\ (lÍ-se "latec"), essencialmente dedicada ‡ elaboraÁ„o de documentos para situaÁıes onde se pretende alta qualidade gr·fica em texto e fÛrmulas (por exemplo, artigos e relatÛrios cientÌficos), consiste num conjunto de comandos que definem como deve aparecer o texto no resultado final. Cada comando È sempre precedido do caracter \verb/\/.
+
+Um documento em \LaTeX\ deve comeÁar sempre pelo pre‚mbulo, que comeÁa com a instruÁ„o \verb/\documentclass[opcoes]{<Classe do Documento>}/, algumas chamadas a packages (comandos do tipo \verb/\usepackage.../) atÈ ao inÌcio do texto propriamente dito. O texto consiste num bloco delimitado pelo comandos \verb/\begin{document}/ e \verb/\end{document}/. Cada bloco definido por begin/end È chamado ambiente e identificado dentro de chavetas (neste caso o ambiente È "document").
+
+Dentro do texto, existem v·rios comandos e ambientes especÌficos a cada situaÁ„o. Neste exercÌcio, vamos utilizar apenas os comandos \verb/\section/, \verb/\subsection/, e \verb/\title/.
+
+Assim, se quisermos produzir o seguinte texto:
+
+
+\begin{quotation}
+\normalsize
+O GATO
+
+1. Introducao
+Era uma vez um gato maltes...
+
+1.1. Seccao1
+Tocava piano e falava frances
+
+1.2. Seccao2
+...e dava uns toques de guitarra e falava ingles tambem
+
+2. Desenvolvimento
+Na verdade, o gato apenas miava, ronronava e fugia dos caes
+
+3. Conclusoes
+Moral da historia: os animais sao nossos amigos!
+...mesmo quando nao falam frances nem ingles
+...e mesmo quando nao tocam piano nem guitarra
+
+\end{quotation}
+
+
+usaremos o seguinte ficheiro \LaTeX\:
+
+
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,10pt]{report}
+
+\usepackage{color}
+
+\begin{document}
+
+\title{O GATO}
+\maketitle
+
+\section{ Introducao}
+
+Era uma vez um gato maltes...
+
+\subsection{ Seccao1}
+
+Tocava piano e falava frances
+
+\subsection{ Seccao2}
+
+...e dava uns toques de guitarra e falava ingles tambem
+
+\section{ Desenvolvimento}
+
+Na verdade, o gato apenas miava, ronronava e fugia dos caes
+
+\section{ Conclusoes}
+
+Moral da historia: os animais sao nossos amigos!
+...mesmo quando nao falam frances nem ingles
+...e mesmo quando nao tocam piano nem guitarra
+
+\end{document}
+\end{verbatim}
+\end{quote}
+
+
+
+
+
+
+\begin{Exercicio}\medio
+
+
+No sentido de ajudar os menos habituados ao \LaTeX\, faÁa um programa que converta um texto seu em \LaTeX. Assim, poder· escrever os seus textos numa linguagem de ediÁ„o inventada por si e ter o "output" com a qualidade \LaTeX\:
+\begin{itemize}
+    \item Garanta que o ficheiro de saÌda comeÁa sempre com os seguintes comandos:
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,10pt]{report}
+\begin{document}
+\end{verbatim}
+\end{quote}
+
+    e termina com o seguinte:
+
+\begin{quote}
+\begin{verbatim}
+\end{document}
+\end{verbatim}
+\end{quote}
+
+    \item Converta sequÍncias de mai˙sculas em:
+\begin{quote}
+\begin{verbatim}
+\title{...}
+\maketitle
+\end{verbatim}
+\end{quote}
+
+    \item Converta sequÍncias de dÌgitos separados por pontos em comandos \verb/\section{...}/ (por exemplo, "1" resultar· em \verb/\section{...}/ "1.1" resultar· em \verb/\subsection{...}/, "1.1.2" resultar· em \verb/\subsubsection{...}/)
+\end{itemize}
+
+
+\end{Exercicio}
+
+\end{document} 

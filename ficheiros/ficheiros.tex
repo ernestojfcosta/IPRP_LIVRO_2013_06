@@ -1,0 +1,1367 @@
+%%% cap0???
+%%% Ernesto Costa
+%%% Versão 1: Novembro 2012
+
+
+
+\chapter{Ficheiros }\label{cap:ficheiros}
+
+
+\begin{objectivos}
+\item Introduzir o conceito de ficheiro
+\item Exercitar os conceitos de leitura, escrita e navegação
+\item Introduzir a instrução \texttt{with}
+\item Introduzir os módulos \texttt{csv} e \texttt{urllib.request}
+\item Introduzir o tipo \texttt{bytes}
+\end{objectivos}
+
+
+
+\section{Generalidades}
+
+Vamos supor que você é  meteorologista e que andou a guardar informação relativa à  temperatura e à pluviosidade em diversos locais, ao longo dos meses. Por exemplo, tem essa informação para várias cidades de Portugal, e agora chegou a altura de fazer um estudo comparativo.  Esta é uma situação em que a informação teve que ser guardada de forma permanente, para mais tarde ser acedida, trabalhada e, eventualmente, os resultados da sua análise serem também eles guardados. É para isso que são usados os ficheiros.  Chamamos \marginlabel{Ficheiros} \textbf{ficheiros} aos locais onde guardamos de forma permanente informação\footnote{Como é evidente os programas que escrevemos são eles próprios armazenados em ficheiros.}. Existem dois grandes tipos de ficheiros: de texto e  binários. Na ausência de informação em contrário o que vamos descrever aplica-se aos ficheiros de texto. Um ficheiro de texto não é mais do que  uma (eventualmente muito longa) cadeia de caracteres.\\
+
+ Posto isto vamos come\c car por ver o que são os ficheiros e como se manipulam. A primeira coisa a referir é a opera\c cão de \marginlabel{Abertura de um ficheiro} abertura do ficheiro  através de uma fun\c cão pré-definida e cuja sintaxe é \texttt{open}(\textit{nome}, \textit{modo}). Essa opera\c cão devolve um objecto de tipo \textit{ficheiro}, instância da classe \texttt{\_io.TextIOWrapper}. Como todos os objectos tem identidade, valor e tipo (ver listagem \ref{lst:fich1}).  
+ 
+\begin{lstlisting}[caption={Abertura de um ficheiro}, label=lst:fich1,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+>>> meu_ficheiro = open('toto.txt','r')
+>>> meu_ficheiro
+<_io.TextIOWrapper name='toto.txt' mode='r' encoding='UTF-8'>
+>>> id(meu_ficheiro)
+4479733416
+>>> type(meu_ficheiro)
+<class '_io.TextIOWrapper'>
+>>> 
+\end{lstlisting}
+
+Neste exemplo, abrimos um ficheiro de texto de nome \textbf{toto.txt}, no modo de leitura (\textbf{r}). O objecto devolvido por \texttt{open} foi associado ao nome \textbf{meu\_ficheiro} através do qual podemos aceder às várias operações sobre o ficheiro disponibilizadas pela classe (por exemplo, a operação de leitura \texttt{read}), como se mostra na figura \ref{fig:fiche2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{destrutivas/imagens/ficheiro2012.eps}
+\caption{Representação em memória}
+\label{fig:fiche2}
+\end{center}
+\end{figure}
+
+No exemplo acima apenas tivemos que indicar o nome do ficheiro porque este estava na zona de trabalho corrente. Podemos ter que indicar o caminho absoluto para o ficheiro, caso ele esteja noutro local. Nessa situação, o modo de indicar o caminho depende da plataforma que estivermos a usar. Por exemplo, se for em ambiente \textbf{Windows} podemos usar dois modos alternativos:
+
+\begin{lstlisting}
+meu_ficheiro = open(r"c:\caminho\para\ficheiro\toto.txt",'r')
+meu_ficheiro = open("c:\\caminho\\para\\ficheiro\\toto.txt",'r')
+\end{lstlisting}
+
+Notar que se prefixarmos a cadeia de caracteres que indica o caminho com \textbf{r} podemos usar a notação habitual, caso contrário temos que usar duas barras para trás.\\
+
+Em ambiente \textbf{Mac OS X} ou \textbf{Linux} será:
+
+\begin{lstlisting}
+meu_ficheiro = open("/caminho/para/ficheiro/toto.txt",'r')
+\end{lstlisting}
+
+\texttt{open} é o construtor\marginlabel{Construtor} do tipo. Existem vários modos de abrir um ficheiro dependendo da operação pretendida e da forma como deve ser interpretado o conteúdo. Para o caso de ficheiros de texto a tabela \ref{tab:modos} mostra as alternativas..
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Modo & Interpretação  \\ [0.5ex]
+		r & Modo de leitura\\
+		w & Modo de escrita\\
+		a & Modo de acrescentar\\
+		r+ & Modo de leitura e escrita \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Modos de abertura de ficheiros de texto \label{tab:modos}}
+\end{table}
+
+Para o caso de ficheiros binários devemos acrescentar a letra \textbf{b} ao modo. \\
+
+É boa prática de programação fechar todo o ficheiro que já não está a ser usado. Para tal usa-se a operação de \texttt{close} aplicada ao nome associado ao ficheiro:
+
+\begin{lstlisting}
+meu_ficheiro.close()
+\end{lstlisting}
+
+Deste modo, além de libertarmos espaço, evitamos eventuais corrupções da informação guardada no caso de acontecer alguma situação anómala.
+
+\section{Leitura}
+
+Passemos agora ao problema da leitura de  dados. Comecemos pelos opera\c cões de entrada possíveis como ilustra a tabela \ref{tab:fichent}.
+
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operador & Interpretação  \\ [0.5ex]
+		read() & lê todo o ficheiro de uma só vez  \\
+		read(N) & lê N bytes\\
+		readline() & lê a próxima linha do ficheiro (incluindo $\backslash$n) \\
+		readlines() &  lê e guarda como sequência de linhas (cada linha com $\backslash$n) \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Operações de leitura com ficheiros}
+\label{tab:fichent}
+\end{table}
+
+Como se pode ver na tabela podemos  ler toda a informação de uma só vez, ler um determinado número de caracteres (codificados em bytes), ler por linhas ou ainda ler e guardar como uma sequência de linhas, no caso uma lista. Tratando-se de métodos, a sintaxe a utilizar deverá ser:\\
+
+ \textit{<nome\_ficheiro>}.\textit{<opera\c cão>}.\\
+
+
+
+Vejamos agora o que passa em concreto. Quando abrimos um ficheiro para ler ou consultar dados a situa\c cão é a apresentada na figura \ref{fig:fichent}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{destrutivas/imagens/ficheiro.eps}
+\caption{Um ficheiro depois de aberto}
+\label{fig:fichent}
+\end{center}
+\end{figure}
+
+É como se existisse uma pequena janela que nos mostra o início do ficheiro. A listagem abaixo mostra o uso das operações de leitura\footnote{Mais à frente explicaremos porque fechamos e abrimos o ficheiro antes de cada operação.}.
+
+\begin{lstlisting}
+>>> meu_ficheiro = open('toto.txt','r')
+>>> todo_ficheiro = meu_ficheiro.read()
+>>> todo_ficheiro
+'Um ficheiro pequeno,\ncom caracteres estranhos.\n\npara testar a leitura \\n de\nficheiros.\ne outras coisas \\t mais!'
+>>> print(todo_ficheiro)
+Um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+e outras coisas \t mais!
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> uma_linha = meu_ficheiro.readline()
+>>> uma_linha
+'Um ficheiro pequeno,\n'
+>>> print(uma_linha)
+Um ficheiro pequeno,
+
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> lista_linhas = meu_ficheiro.readlines()
+>>> lista_linhas
+['Um ficheiro pequeno,\n', 'com caracteres estranhos.\n', '\n', 'para testar a leitura \\n de\n', 'ficheiros.\n', 'e outras coisas \\t mais!']
+>>> meu_ficheiro.close()
+>>> meu_ficheiro = open('toto.txt','r')
+>>> alguns_caracteres = meu_ficheiro.read(10)
+>>> alguns_caracteres
+'Um ficheir'
+>>> alguns_caracteres = meu_ficheiro.read(15)
+>>> alguns_caracteres
+'o pequeno,\ncom '
+>>> 
+\end{lstlisting}
+
+Depois de abrir o ficheiro para leitura (linha 1), lemos todo o seu conteúdo e associamos o resultado (uma cadeia de caracteres) ao nome \texttt{meu\_ficheiro} (linha 2). Se consultarmos agora pelo nome obtemos todos os caracteres do ficheiro, incluindo as marcas de escape e as mudanças de linha (linhas 3 e 4). Se mandarmos imprimir o conteúdo da variável (linha 5) os sinais são correctamente interpretados e o ficheiro aparece na forma desejada (linhas 6 a 10). O restante da listagem ilustra  as outras operações possíveis.\\
+
+Estas operações são frequentes pelo que normalmente se escrevem pequenos programas que podem depois ser reutilizados. Um exemplo simples para a leitura completa dos dados é dado na listagem \ref{lst:fichent1}.
+
+\lstinputlisting[caption={Leitura completa de um ficheiro}, label= lst:fichent1]{destrutivas/programas/ficheiro_entrada.py}
+
+Analisemos com detalhe a defini\c cão \texttt{ler\_tudo}. Come\c camos por pedir ao utilizador o nome do ficheiro.  De seguida abrimos o ficheiro em modo de leitura e associamos o objecto correspondente ao nome \textbf{fich\_ent}. Passamos à leitura completa do ficheiro que se traduz pela cria\c cão de um objecto do tipo cadeia de caracteres associada à variável \textbf{dados}. Porque não queremos fazer mais nada, fechamos o ficheiro e devolvemos o resultado. 
+
+Consideremos a sessão \ref{lst:fichent1}.
+
+\begin{lstlisting}[caption={Leitura de ficheiros},label= lst:fichent1]
+>>> import leitura
+>>> dir(fleitura)
+['__builtins__', '__doc__', '__file__', '__name__', 'ler_tudo']
+>>> leitura.ler_tudo()
+
+ Nome absoluto do ficheiro:	/Users/ernestojfcosta/python/toto.txt
+Um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+
+e outras coisas \t mais!
+>>>
+\end{lstlisting}
+
+
+Que comentários podemos fazer? Em primeiro lugar temos uma linha em branco antes do pedido do nome do ficheiro seguida de alguns espa\c cos em branco. Tal deve-se aos caracteres de controlo no interior da cadeia de caracteres. O nome do ficheiro é absoluto, ou seja, indicamos o caminho para o ficheiro. De seguida o ficheiro é impresso aparecendo exactamente na forma como o escrevemos. As marcas de fim de linha no entanto não aparecem!\\
+
+Vejamos agora o resto das opera\c cões de entrada para o que escrevemos o programa da listagem \ref{lst:leitura}.
+
+\lstinputlisting[caption={Opera\c cões de entrada}, label= lst:leitura]{ficheiros/programas/leitura.py}
+
+A sessão no interpretador foi a seguinte:
+
+\begin{lstlisting}
+>>> import leitura
+>>> dir(leitura)
+['__builtins__', '__doc__', '__file__', '__name__', 'leitura']
+>>> leitura.leitura()
+
+ Nome absoluto do ficheiro:	/Users/ernestojfcosta/python/fichent.txt
+Bytes:  Um fiche
+Linha:  iro pequeno,
+
+Linhas:  ['com caracteres estranhos.\n', '\n', 'para testar a leitura \\n de\n', 'ficheiros.\n', '\n', 'e outras coisas \\t mais!']
+'Fim'
+>>> 
+\end{lstlisting}
+
+Olhando para o resultado notamos a importância do conceito de \textbf{janela} acima referido. Come\c camos por mandar ler 8 bytes \footnote{Cada byte corresponde a um caracter.}. Quando pedimos a leitura de uma linha ela é feita \textbf{a partir} do local onde a janela ficou depois de serem lidos os 8 bytes (ver figura \ref{fig:fich8}). Igualmente quando mandamos ler as linhas do ficheiro são apenas as que restam que  são lidas. Mas se quisermos que todas as leituras tenham como referência o início como proceder? Mais à frente trataremos dessa questão.
+
+\begin{figure}[!]
+\begin{center}
+\includegraphics[scale=0.8]{destrutivas/imagens/ficheiro2.eps}
+\caption{Situa\c cão depois de lidos os primeiros 8 bytes}
+\label{fig:fich8}
+\end{center}
+\end{figure}
+
+
+\section{Escrita}
+
+A escrita num ficheiro é a opera\c cão inversa da leitura. Pressupõe que um ficheiro foi aberto para escrita gra\c cas ao comando \texttt{open}(\textit{nome}, 'w'). Como se pode ver na tabela \ref{tab:fichs} existem duas opera\c cões fundamentais. Podemos escrever algo simples  com \texttt{write()} ou algo mais complicado gra\c cas a \texttt{writelines()}.A sintaxe geral do comando de escrita é:
+
+\begin{alltt}
+<ficheiro>.write(<cadeia_de_caracteres>)
+\end{alltt}
+
+
+Notar que o que se escreve tem que ser um objecto do tipo cadeia de caracteres. Se o não for terá que ser convertido! A listagem abaixo ilustra o processo, com um exemplo simples admitindo que o objecto ficheiro pode ser acedido pelo nome \textbf{fout}.
+
+\begin{lstlisting}]
+>>> x = 15
+>>> fout.write(str(x))
+\end{lstlisting}
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{ll}
+		\rowcolor[gray]{0.7} Operador & Interpretação  \\ [0.5ex]
+		write(\textit{str}) & escreve a cadeira de caracteres num ficheiro\\
+		writelines(\textit{seq}) &  escreve \textit{seq} como sequência de linhas \\
+		close() & opera\c cão de fecho do ficheiro\\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Opera\c cões de escrita com ficheiros}
+\label{tab:fichs}
+\end{table}
+
+Vejamos um exemplo simples como o indicado na listagem \ref{lst:fichout}.
+
+\begin{lstlisting}[caption={Escrita num ficheiro}, label=lst:fichout]
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','w')
+>>> f.write('Teste de escrita\na\tb\c\nParece o abecedário!\nFim.')
+>>> f.close()
+>>> g=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> print(g.read())
+Teste de escrita
+a	b\c
+Parece o abecedário!
+Fim.
+>>> 
+\end{lstlisting}
+
+Como se pode verificar os caracteres de controlo que incluímos na cadeia de caracteres são preservados. Devemos ter em aten\c cão que quando se abre um ficheiro para escrita (modo 'w') caso o ficheiro já exista ele é destruído. Para que tal não acontece temos que abrir o ficheiro em modo de acrescentar (modo 'a'). Um exemplo.
+
+\begin{lstlisting}
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','a')
+>>> f.write('Vamos colocar mais \n qualquer coisa \nno ficheiro')
+>>> f.close()
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> print(f.read())
+Teste de escrita
+a	b\c
+Parece o abecedário!
+Fim.Vamos colocar mais 
+ qualquer coisa 
+no ficheiro
+>>> f.close()
+>>> f=open('/Users/ernestojfcosta/python/escreve.txt','r')
+>>> f.read()
+'Teste de escrita\na\tb\\c\nParece o abeced\xe1rio!\nFim.Vamos colocar mais \n qualquer coisa \nno ficheiro'
+>>> 
+\end{lstlisting}
+
+Este exemplo mostra duas coisas. Por um lado, o que se acrescenta é colocado no final do ficheiro. Em segundo lugar, o que vemos ao ler o ficheiro é diferente caso utilizemos o comando \texttt{print} ou não. Porque será esta diferen\c ca?.
+
+
+
+
+\section{Navegar}
+Tratemos agora do problema de querer ler ou escrever em determinadas partes do ficheiro. Isso obriga a ter comandos que controlem o posicionamento da janela sobre o ficheiro. Para navegar num ficheiro existem dois comandos. O comando \textbf{tell}, que  nos indica a posi\c cão da janela relativamente ao início do ficheiro. O comando \textbf{seek}, que nos permite reposicionar a janela. O funcionamento deste último comando depende do tipo de ficheiro (binário ou de texto). 
+
+
+
+
+\begin{table}[!htdp]
+	\begin{center}
+	\begin{tabular}{|c|c|l|}
+	       \rowcolor[gray]{0.7}Nome & Operador & Interpretação  \\[0.5ex]
+		seek & fich.seek(pos,como=0) & movimenta para uma nova posi\c cão\\ \hline
+		tell &  fich.tell() & qual a posi\c cão relativamente ao início? \\ \hline
+	\end{tabular}
+	\end{center}
+\label{tab:navega}
+\caption{Operadores de naveg\c cão}
+\end{table}
+
+Vamos começar com um ficheiro de texto,  mais concretamente o ficheiro \textit{ficheiro2013.txt}\footnote{Use um editor de texto simples para criar o ficheiro. Em alternativa para is ao sítio do livro, em \url{http_//iprp.net} e baixar o ficheiro.} de conteúdo:
+
+\begin{lstlisting}
+um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+e outras coisas \t mais!
+\end{lstlisting}
+
+A listagem \ref{lst:st}, ilustra como podemos navegar pelo ficheiro.
+
+\begin{lstlisting}[caption='Navegar num ficheiro', label=lst:st]
+>>> f_ent = open('/data/ficheiro2013.txt','r')
+>>>  bytes = f_ent.read(8)
+>>>  bytes
+'um fiche'
+>>>  f_ent.seek(6)
+6
+>>>  mais_bytes = f_ent.read(10)
+>>>  mais_bytes
+'heiro pequ'
+>>>  f_ent.tell()
+16
+>>>  f_ent.seek(0,2)
+111
+>>> novos_bytes = f_ent.read(5)
+>>>  novos_bytes
+''
+>>> f_ent.tell()
+111
+>>> f_ent.seek(0)
+0
+>>> ler_tudo = f_ent.read()
+>>> ler_tudo
+'um ficheiro pequeno,\ncom caracteres estranhos.\n\npara testar a leitura \\n de\nficheiros.\ne outras coisas \\t mais!'
+\end{lstlisting}
+
+Começámos por abrir o ficheiro de texto em modo de leitura e mandamos ler os primeiros 8 bytes (linhas 1 a 4). De seguida reposicionamos a janela na posição 6 e lemos os dez bytes seguintes (linhas 5 a 9). Indagamos depois em que posição estamos (linhas 10 e 11). Colocamo-nos depois no final do ficheiro, ficando a saber quantos caracteres tem (linhas 12 e 13). Se tentarmos ler para além do final o que recebemos é uma cadeia de caracteres vazia (linhas 14 a 16). Verificamos que continuamos no fim do ficheiro (linhas 17 e 18). Voltamos ao início do ficheiro e lemos tudo (linhas 19 a 23).
+
+Podemos fazer movimentações relativas ao ponto em que nos encontramos, se conjugarmos os dois comandos (\texttt{seek} e \texttt{tell}), como se ilustra na listagem.
+
+\begin{lstlisting}
+>>> f_ent.seek(0)
+0
+>>> car = f_ent.read(15)
+>>> car
+'um ficheiro peq'
+>>> f_ent.tell()
+15
+>>> f_ent.seek(f_ent.tell() + 5)
+20
+>>> mais_car = f_ent.read(10)
+>>> mais_car
+'\ncom carac'
+>>> f_ent.tell()
+30
+\end{lstlisting}
+
+
+No caso dos ficheiros binários estes movimentos relativos são mais simples de fazer.  Na realidade, nestes casos o segundo argumento de \textbf{seek} pode assumir os valores 0, quando a referência é o início do ficheiro, 1, quando a referência é a posi\c cão corrente da janela, ou ainda 2, quando nos movimentamos relativamente ao fim do ficheiro. O valor do primeiro argumento pode ser um inteiro positivo ou negativo para nos movimentarmos para a direita ou para a esquerda, respectivamente do ponto de referência. É óbvio que se o ponto de referência for o início do ficheiro não nos podemos movimentar para a esquerda e, de modo semelhante, se a referência for o fim do ficheiro não podemos deslocarmos para a direita
+
+\begin{lstlisting}
+>>> f = open('/data/temp_fich', 'wb+')
+>>> f.write(b'0123456789abcdef')
+16
+>>> f.seek(5,0)
+5
+>>> f.read(2)
+b'56'
+>>> f.seek(-2,1)
+5
+>>> f.read(4)
+b'5678'
+>>> f.tell()
+9
+>>> f.seek(-5,2)
+11
+>>> f.read(2)
+b'bc'
+f.close()
+\end{lstlisting}
+
+\section{Intermezzo}
+
+\subsubsection{A instrução \texttt{with}}
+
+Por defeito, quando estamos a escrever para num ficheiro, os dados vão primeiro para uma memória tampão e só posteriormente são escritos em disco. A operação de fecho de um ficheiro começa por esvaziar a memória tampão e só depois fecha efectivamente o ficheiro. Podemos forçar o esvaziamento recorrendo ao método \texttt{flush}. O facto de se usar uma memória tampão pode colocar problemas caso haja um fim inesperado da execução do programa devido a um erro. Podemos evitar o uso deste tipo de memória com um parâmetro adicional no método \texttt{open} mas tal tem custos ao nível do desempenho. Deve pois ser pesado o uso, ou não, da memória tampão e como o método \texttt{flush} nos pode ajudar nesta questão.\\
+
+Podemos no entanto garantir que o ficheiro é encerrado de forma conveniente mesmo quando ocorre uma interrupção anormal do programa. A solução baseia-se no conceito de \textbf{gestores de contexto}\marginlabel{Gestores de contexto} e no uso da instrução \texttt{with}.  Gestores de contexto são objectos que têm associados duas operações, uma de entrada e outra de saída, operações essas que são executadas quando se entra ou se sai de um contexto, respectivamente. A instrução \texttt{with} define um contexto, tendo como sintaxe:\\
+
+\begin{lstlisting}
+with expressão as var:
+   bloco
+\end{lstlisting}
+
+A parte \texttt{as} \textit{var} é opcional. \textit{expressão} tem que ser,ou gerar, um gestor de contexto,  \textit{var} é o nome que vai ficar associado ao objecto. É como se se tivesse feito uma atribuição do nome à expressão. Acontece que o objecto devolvido pela instrução \texttt{open} é um gestor de contexto. Podemos então fazer algo como:
+
+\begin{lstlisting}
+with open(ficheiro,'r') as meu_fich:
+   bloco
+\end{lstlisting}
+
+Demos modo temos a garantia de que, mesmo que ocorra um erro durante a execução do bloco, o ficheiro será fechado.
+
+\subsubsection{Formatação por linhas}
+
+Embora um ficheiro seja uma longa cadeia de caracteres ele está organizado por linhas. Quando manipulamos um ficheiro temos que ter isso em atenção. A listagem abaixo ilustra uma consequência dessa organização.
+
+\begin{lstlisting}
+>>> f_ent = open('/data/ficheiro2013.txt','r')
+>>> for linha in f_ent:
+...     print(linha)
+... 
+um ficheiro pequeno,
+
+com caracteres estranhos.
+
+
+
+para testar a leitura \n de
+
+ficheiros.
+
+e outras coisas \t mais!
+>>> f_ent.seek(0)
+0
+>>> for linha in f_ent:
+...     print(linha[:-1])
+... 
+um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+e outras coisas \t mais
+>>> 
+\end{lstlisting}
+
+Nestes dois exemplos procuramos imprimir o conteúdo do ficheiro, mantendo a estrutura por linhas. Como as linhas terminam por um indicador de fim de linha que a função \texttt{print} interpreta, vemos que no primeiro caso cada linha é seguida de  uma linha vazia. Na segunda abordagem tal não acontece pois retiramos explicitamente o último caracter.
+
+\section{Exemplo}
+
+Regressemos agora ao problema dos dados climatéricos de algumas cidades de Portugal. Comecemos por uma versão muito simples do problema: ler um ficheiro onde estão guardadas as temperaturas médias mensais ao longo de um dado ano. Apenas pretendemos ler e mostrar através de um gráfico, os resultados. O código é o da listagem \ref{lst:temp1}.
+
+\lstinputlisting[caption={Ler e mostrar pemperaturas}, label=lst:temp1,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]{ficheiros/programas/temperatura1.py}
+
+O programa principal executa em sequência as duas tarefas: primeiro lê os dados e depois mostra os resultados por recurso ao módulo \textbf{matplotlib}.  A leitura do ficheiro não oferece dificuldades. O ficheiro é aberto para leitura e o contexto é definido com o recurso à instrução \texttt{with}. Os dados são lidos de uma vez só e separados pelo método \texttt{split} (linha 5). Entre as linhas 6 e 9 transformamos as cadeias de caracteres que representam os números em número em vírgula flutuante.\\
+
+ O código desta rotina pode ainda ser simplificado neste último aspecto pois estamos perante um padrão conhecido: um ciclo que acrescenta no final de uma lista, inicialmente vazia, o resultado de uma certa operação. Podemos por isso recorrer a listas por compreensão. Acresce que, se formos eliminando as variáveis que são usadas como memória temporária, o programa fica mais pequeno ainda. A listagem \ref{lst:temp2} mostra as diferentes alternativas.
+
+\lstinputlisting[caption={Ler ficheiro: alternativas}, label=lst:temp2,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]{ficheiros/programas/lertemp.py}
+
+Está na hora de tornar o problema mais interessante, considerando que no nosso ficheiro estão as temperaturas de várias cidades de Portugal.  A listagem \ref{lst:temp3} mostra o código inicial com duas funções. A primeira, lê o ficheiro linha a linha, guardando os sucessivos resultados, até o ficheiro ter sido todo lido. Usa a segunda função, que lê a próxima linha ainda não lida, devolvendo -1 caso não haja mais nada para ler. Funciona em três passos. Começa por procurar a primeira linha significativa (linhas 19 a 21), isto é, com números. Depois testa se efectivamente encontrou uma linha com dados. Se não encontrou devolve -1, se encontrou fabrica a lista dos números e devolve o resultado.
+
+\lstinputlisting[caption={Todas as temperaturas}, label=lst:temp3,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]{ficheiros/programas/ler_tudo.py}
+
+
+Podemos visualizar os dados com pequenas alterações ao código, como mostra a listagem \ref{lst:temp4}.
+
+\begin{lstlisting}[caption={Temperaturas}, label=lst:temp4,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import matplotlib.pyplot 
+plt = matplotlib.pyplot
+
+def le_todas_temperaturas(fich):
+    """
+    Extrai os dados de temperaturas relativos a Portugal.
+    """
+    with open(fich,'r')  as f_ent:
+        portugal = list()
+        dados = le_uma_temperatura(f_ent)
+        while dados != -1:
+            portugal.append(dados)
+            dados = le_uma_temperatura(f_ent)
+    f_ent.close()
+    return portugal
+
+def le_uma_temperatura(f_ent):
+    """
+    Ler dados da temperatura de uma cidade.
+    Devolve -1 se  fim de ficheiro
+    """
+    linha = f_ent.readline()
+    while (linha !='') and (linha == '\n'):
+        linha = f_ent.readline()
+    if linha == '':
+        return -1
+    else:
+        linha = linha[:-1].split()
+        return [float(dado) for dado in linha]
+    
+def mostra_todas(xetiq,yetiq,tit,dados):
+    plt.xlabel(xetiq)
+    plt.ylabel(yetiq)
+    plt.title(tit)
+    for cidade in dados:
+        plt.plot(cidade)
+
+
+def main(ficheiro):
+    dados = le_todas_temperaturas(ficheiro)
+    mostra_todas('Meses','Temperatura','Temperaturas Médias das Cidades',dados)
+    plt.show()
+
+if __name__ == '__main__':
+    main('/data/temperaturas.txt')
+\end{lstlisting}
+    
+ Ao correr o programa obtemos o gráfico da figura \ref{fig:temp4}.
+ 
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{ficheiros/imagens/todas_temp.png}
+\caption{Temperaturas das cidades de Portugal}
+\label{fig:temp4}
+\end{center}
+\end{figure}
+    
+    
+A solução apresentada cumpre o seu papel mas não deixa de ter um defeito muito grande: não sabemos a que cidade corresponde cada curva. Mas existe uma solução simples. Alteramos o ficheiro de modo a que, no início de cada linha, esteja o nome da cidade. Depois é só alterar a função que lê uma linha e a função que mostra os resultados, como indicamos na listagem \ref{lst:temp5}.
+
+\begin{lstlisting}[caption={Gráfico com legendas}, label=lst:temp5,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+def le_uma_temperatura(f_ent):
+    """
+    Ler dados da temperatura de uma cidade.
+    Devolve -1 se  fim de ficheiro
+    """
+    linha = f_ent.readline()
+    while (linha !='') and (linha == '\n'):
+        linha = f_ent.readline()
+    if linha == '':
+        return -1
+    else:
+        linha = linha[:-1].split()
+        cidade = linha[0] 
+        dados = [float(dado) for dado in linha[1:]]
+        return cidade, dados
+        
+def mostra_todas(xetiq,yetiq,tit,dados):
+    plt.xlabel(xetiq)
+    plt.ylabel(yetiq)
+    plt.title(tit)
+    for dado in dados:
+        cidade = dado[0]
+        plt.plot(dado[1], label=cidade)
+        plt.legend()
+\end{lstlisting}
+
+Agora quando executamos o programa o gráfico já nos mostra toda a informação relevante.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.4]{ficheiros/imagens/tempcidades.png}
+\caption{Gráfico com legenda}
+\label{fig:leg}
+\end{center}
+\end{figure}
+
+Para concluir este exemplo,  vamos considerar a situação em que o ficheiro é mais complexo pois contém informação sobre a temperatura e a pluviosidade. Em concreto, admitamos que a informação por cada cidade está na forma.
+
+\begin{lstlisting}
+Lisboa
+Pluviosidade	95.2	 86.7	 84.7	 59.5	 44.4	 17.9	 4.3	 5.2	 33.0	 74.7	 99.6	 96.7
+Temperatura	10.5	11.3	12.8	14.5	16.7	19.4	21.5	21.9	20.4	17.4	13.7	11.1
+\end{lstlisting}
+
+Assim, na primeira linha temos o nome da cidade, na segunda linha o identificador pluviosidade seguido dos dozes valore mensais e, na terceira linha a informação correspondente à temperatura. A nossa solução desdobra-se em duas partes: primeiro obtemos os dados e depois visualizamos o resultado. 
+
+\begin{lstlisting}
+def main(fich):
+    dicio = dados_portugal(fich)
+    mostra(dicio)
+\end{lstlisting}
+
+A extracção dos dados é feita retirando a informação relevante por cada cidade e colocando-a num dicionário. Este dicionário tem por chaves os nomes das cidades. A cada uma delas está associado um outro dicionário com duas chaves: pluviosidade e temperatura. Os respectivos valores são guardados numa lista.
+
+\begin{lstlisting}
+def dados_portugal(fich):
+    """
+    Extrai os dados relativos a Portugal.
+    """
+    f_ent = open(fich,'r')
+    portugal = dict()
+    
+    ficha = le_cidade(f_ent)
+    while ficha != -1:
+        cidade,pluviosidade,temperatura = ficha
+        portugal.update({cidade:{'pluviosidade':pluviosidade,'temperatura':temperatura}})
+        ficha = le_cidade(f_ent)
+    f_ent.close()
+    return portugal
+\end{lstlisting}
+
+Para obter os dados de cada cidade
+
+\begin{lstlisting}
+def le_cidade(f_ent):
+    """
+    Lê os dados de uma cidade.Devolve -1 se alcançou o fim de ficheiro
+    """
+    # procura primeira linha significativa 
+    linha = f_ent.readline()
+
+    while (linha !='') and (linha == '\n'):
+        linha = f_ent.readline()
+    
+    if linha == '':
+        return -1
+    else:
+        # extrai dados 
+        cidade = linha[:-1]
+        pluviosidade = [float(dado) for dado in f_ent.readline()[:-1].split('\t')[1:]]
+        temperatura = [float(dado) for dado in f_ent.readline()[:-1].split('\t')[1:]]
+        return (cidade,pluviosidade,temperatura)
+\end{lstlisting}
+
+Para obter os dados de uma cidade começamos por procurar a primeira linha com texto, obrigatoriamente o nome da cidade. Depois lemos as duas linhas seguintes, retiramos a palavra que identifica o tipo da informação e convertemos o resto para uma lista de números em vírgula flutuante. Falat agora resolver a quesão da visualização. Vamos usar o módulo \texttt{matplotlib}.
+
+\begin{lstlisting}
+def mostra(dados):
+    """
+    dados é um dicionáro. A chave é o nome da cidade, o valor é outro dicionário
+    de chaves 'pluviosidade' e 'temperatura'
+    """
+    meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio','Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+    chuva = []
+    cidades = []
+    temp = []
+    for c,v in dados.items():
+        chuva.append(v['pluviosidade'])
+        temp.append(v['temperatura'])
+        cidades.append(c)
+    
+    figura = plt.figure()
+    fig_1 = figura.add_subplot(211)
+    plt.title('Cidades de Portugal')
+    fig_2 = figura.add_subplot(212)
+    
+
+    for indice in range(len(cidades)):
+        fig_1.plot(chuva[indice])
+        fig_2.plot(temp[indice])
+    
+    fig_1.set_ylabel('Pluviosidade (mm)')
+    fig_2.set_ylabel('Temperatura (C)')
+    plt.xticks(range(0,12),meses, rotation=17)
+    plt.legend(cidades, loc=0)
+   
+    plt.show()  
+\end{lstlisting}
+
+Quando executamos o programa obtemos o resultado da figura \ref{fig:tudo}.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.4]{ficheiros/imagens/tudo.png}
+\caption{Temperatura e pluviosidade}
+\label{fig:tudo}
+\end{center}
+\end{figure}
+
+
+%%%%% Vindo de Objectos_2
+\section{De um ficheiro de palavras a um dicionário de frequências}
+
+Suponhamos que temos um dicionário com palavras e queremos construir um dicionário cujas chaves são inteiros que traduzem o tamanho das palavras  e cujos valores são listas de palavras com esse tamanho. Apresentemos primeiro uma solução simples:
+
+\begin{lstlisting}
+def fich_dic_a(ficheiro):
+    """ Lê o conteúdo do ficheiro e constrói um dicionário 
+    com chave um inteiro e valor uma lista com as palavras de
+    comprimento igual ao valor da chave.
+    """
+    f_in = open(ficheiro, 'r')
+    lista_pal = f_in.read().split()
+    dic = {}
+    for palavra in lista_pal:
+        comp = len(palavra)
+        dic[comp] = dic.get(comp,[]) + [palavra]
+    return dic
+\end{lstlisting}
+
+
+Agora uma solução que prevê o uso de \textbf{símbolos especiais}.
+\begin{lstlisting}
+def fich_dic_b(ficheiro):
+    """ Lê o conteúdo do ficheiro e constrói um dicionário 
+    com chave um inteiro e valor uma lista com as palavras de
+    comprimento igual ao valor da chave.
+    """
+    f_in = open(ficheiro, 'r')
+    lista_pal = f_in.read().split()
+    dic = {}
+    especiais = ['\n','.',',','!','?']
+    for palavra in lista_pal:
+        if palavra[-1] in especiais:
+            palavra = palavra[:-1]
+        comp = len(palavra)
+        if comp:
+            dic[comp] = dic.get(comp,[]) + [palavra]
+    return dic
+\end{lstlisting}
+
+
+Notar o uso de uma lista onde guardamos caracteres especiais que não devem fazer parte da palavra. Notar ainda o teste ao comprimento: se um símbolo estiver isolado, ao ser retirado passa a ser uma cadeia sem caracteres e não deve ser incluída.
+
+Finalmente, uma solução em que as \textbf{palavras repetidas} só são incluídas um vez.
+\begin{lstlisting}
+def fich_dic_c(ficheiro):
+    """ Lê o conteúdo do ficheiro e constrói um dicionário 
+    com chave um inteiro e valor uma lista com as palavras de
+    comprimento igual ao valor da chave.
+    """
+    especiais = ['\n','.',',','!','?']
+    f_in = open(ficheiro, 'r')
+    lista_pal = f_in.read().split()
+    # filtra
+    lista_final = []
+    for palavra in lista_pal:
+        # símbolos especiais fora
+        if palavra in especiais:
+            continue
+        elif palavra[-1] in especiais:
+            palavra = palavra[:-1]
+        # repetições fora
+        if palavra not in lista_final:
+            lista_final.append(palavra)   
+    # Constrói dicionário   
+    dic = {}
+    for palavra in lista_final:
+        comp = len(palavra)
+        dic[comp] = dic.get(comp,[]) + [palavra]
+    return dic
+\end{lstlisting}
+
+\begin{comment}
+\subsubsection{Ainda ficheiros e dicionários}
+
+Imaginemos um problema que nos pede para ler um ficheiro de texto e construir um dicionário em que as chaves são inteiros e os valores a lista das palavras cujo comprimento é igual ao valor da chave. Este problema obriga a saber o que são e como se podem manipular ficheiros de texto e dicionários. Para resolver este problema vamos tentar dividi-lo em sub-problemas, avan\c cando lenta mas seguramente até à solu\c cão.\\
+
+E neste problema a solução passa por dois subproblemas:
+(1) obter a lista das palavras, e (2)  a partir da lista das palavras construir o dicionário
+
+\begin{lstlisting}
+def exame(ficheiro):
+   # (1) obtém palavras
+   # (2) forma dicionário
+   return # dicionário
+\end{lstlisting}
+
+
+\textbf{Primeiro comentário} à solução: existem grosso modo dois modos de introduzir informação num programa (pelos parâmetros e por instruções de entrada) e dois modos de comunicar resultados (por \texttt{return} e por instruções de impressão). A escolha depende do problema e do que nos é pedido. Neste caso, era evidente que a entrada de dados era por parâmetro e a saída por \texttt{return}.
+
+Passemos ao primeiro sub-problema. Um ficheiro é uma longa cadeia de caracteres, que vamos ter que ler e dividir em palavras. 
+
+\begin{lstlisting}
+# (1) obtém lista palavras
+f_in = open(ficheiro, ‘r’)
+lista_palavras = f_in.read().split()
+\end{lstlisting}
+
+
+\texttt{Segundo comentário} relacionado com um erro frequente. Qual o sentido de fazer:
+
+\begin{lstlisting}
+string = ‘’
+string += abrir.read()
+\end{lstlisting}
+
+ou de fazer
+\begin{lstlisting}
+lista = []
+lista.append(string.split())
+\end{lstlisting}
+
+
+Nenhum! Ainda por cima pode dar origem a erros. As associações entre nomes e objectos são feitas através da operação de atribuição, por exemplo \texttt{a = 5}. Só depois disto é que o nome existe no espaço de nomes, associado a objecto. Neste caso, se quero associar ao nome string a cadeia de caracteres do ficheiro, faço:
+
+\begin{lstlisting}
+string = abrir.read()
+\end{lstlisting}
+
+
+e o mesmo para a lista:
+
+\begin{lstlisting}
+lista = string.split()
+\end{lstlisting}
+
+
+Neste segundo caso está uma parte do erro comum. É que, em vez de lista estar associada à lista das palavras, fica associada a uma lista que só tem um elemento que é a lista das palavras! Exemplificando, fica:\\
+
+lista = [[‘toto’,‘abacadabra’]] \\
+
+e não\\
+
+lista = [‘toto’,‘abacadabra’]\\
+
+uma maneira de resolver o problema seria fazer como no caso de string (feio, como já se disse, mas funcional):
+ 
+\begin{lstlisting}
+lista = []
+lista += string.split()
+\end{lstlisting}
+
+
+Tem que se perceber melhor os métodos. E, já agora, outra coisa. Os métodos têm uma sintaxe simples:
+\texttt{<objecto>.<método>(<argumentos>)}
+
+Aplico o método ao objecto, usando eventualmente argumentos. Mas qual é o resultado da aplicação?? Um objecto!!! Implicações?  Podermos aplicar métodos em cadeia;\\
+
+\texttt{<objecto>.<método>(<argumentos>).<método>(<argumentos>)....<método>(<argumentos>)}\\
+
+como no exemplo acima:
+
+\begin{lstlisting}
+lista_palavras = f_in.read().split()
+\end{lstlisting}
+
+
+Ao objecto ficheiro aplica-se o método read, que devolve um objecto que é uma cadeia de caracteres à qual se aplica o método split!!!
+
+Agora é tempo de resolver a segunda parte. Para simplificar, vamos supor que não nos preocupam nem as palavras repetidas nem os eventuais sinas de pontuação. A solução que tem isto em conta está no post com a solução do exame.
+
+Então o que temos que fazer:
+\begin{lstlisting}
+# (2)
+por cada palavra em lista de palavras:
+	acrescentar a palavra ao dicionário
+\end{lstlisting}
+
+
+Temos assim uma estratégia que envolve um ciclo. Quem controla o ciclo é o conteúdo da lista e não os índices (ver outro post recente sobre o assunto). Mas precisamos da chave também! Claro, mas isso é fácil é que, por definição a chave é igual ao comprimento da palavra. E como acrescentamos? Existe a possibilidade de a chave já existir! Certo. Mas usando um \texttt{get} podemos resolver as duas situações possíveis só com uma instrução. Logo o código:
+
+\begin{lstlisting}
+dic = {}
+for palavra in lista_palavras:
+	comp = len(palavra)
+          dic[comp] = dic.get(comp,[]) + [palavra]
+\end{lstlisting}
+
+
+\textbf{Terceiro comentário} sobre o código apresentado. O ciclo é controlado pelos índices da lista de palavras (não é por colocar \lstinline !for palavra in ...!  que palavra é uma palavra!) Então, palavra,  vai valer, 0, 1, 2,.... Essas serão as chaves do dicionário criado. Mas não é feita a ligação entre as palavras e o seu comprimento. O que se está a fazer é criar uma associação (chave: valor) = (indice da palavra na lista : palavra). Juntando este erro, ao outro já anteriormente referido e relacionado com o mau uso do \textbf{append}, vai dar algo como:
+
+\begin{lstlisting}
+{0: [‘toto’,‘abacadabra’]}
+\end{lstlisting}
+
+Juntando agora todas as peças do puzzle:
+\begin{lstlisting}
+def exame_ec(ficheiro):
+    f_in = open(ficheiro,'r')
+    lista_palavras = f_in.read().split()
+    dic = {}
+    for palavra in lista_palavras:
+        comp = len(palavra)
+        dic[comp] = dic.get(comp, []) + [palavra]
+    return dic
+  
+\end{lstlisting}
+
+\end{comment}
+
+
+%%%%%  Fim
+
+\section{Outros Tipos de Ficheiros}
+
+Em \python é possível manipular de modo simples informação guardada em ficheiros organizados de modo específico. Vamos analisar dois módulos que  permitem aumentar as capacidades da linguagem no que se refere a certos tipos de ficheiros.
+
+\subsection{csv}
+
+Como sabe existem muitos módulos adicionais em \python\,  Um deles é o módulo \texttt{csv}, que permite a manipula\c cão de ficheiros organizados por linhas, e em que cada linha tem os seus elementos separados por um certo delimitador (\textit{Comma Separated Values}). No caso dos ficheiros \textbf{csv} o delimitador  é a vírgula, como se depreende pelo seu nome. Mas existe a possibilidade de trabalhar com outros delimitadores. Estes ficheiros têm a vantagem de serem simples, mas têm o inconveniente de existirem algumas variantes. É por isso que o módulo \textbf{csv} é interessante pois permite lidar com essas variantes. Nesta secção apenas apresentaremos exemplos simples, ficando para o leitor complementar os seus conhecimentos sobre o módulo recorrendo, por exemplo, ao manual da linguagem.  O módulo \texttt{csv} permite essencialmente efectuar as operações de leitura e de escrita. Suponhamos que já existe um ficheiro com informação acerca das notas dos nossos alunos.  A listagem ilustra um possível conteúdo
+
+\begin{lstlisting}
+Nome,Testes,Projecto,Normal,Recurso,Nota
+Ernesto Costa,75,60,45,52,?
+Zeus Euclides,12,34,45,30,?
+Anaximandro Heraclito, 36,47,67,12,?
+\end{lstlisting}
+
+Ler este ficheiro e devolver o resultado pode ser feito através de um pequeno programa.
+
+\begin{lstlisting}
+import csv
+
+def le_csv(nome_fich):
+    """ Lê  um ficheiro em formato csv."""
+    with open(nome_fich) as fich:
+        csv_reader = csv.reader(fich)
+        dados = []
+        for linha in csv_reader:
+            dados.append(linha)   
+        fich.close()
+        return dados
+\end{lstlisting}
+
+Como se vê pela listagem, abre-se um  ficheiro da forma habitual e depois deixa-se ao método \texttt{reader} do módulo \texttt{csv} a tarefa de ler todo o ficheiro. Chamando a função  sobre o ficheiro das notas o resultado é dado sob a forma de uma lista em que cada elemento é uma lista com os dados de cada linha.
+
+\begin{lstlisting}
+[['Nome', 'Testes', 'Projecto', 'Normal', 'Recurso', 'Nota'], ['Ernesto Costa', '75', '60', '45', '52', '?'], ['Zeus Euclides', '12', '34', '45', '30', '?'], ['Anaximandro Heraclito', ' 36', '47', '67', '12', '?']]
+\end{lstlisting}
+
+Realizada esta operação podemos querer introduzir os dados de um novo aluno, isto é, queremos escrever no ficheiro uma nova linha. O método \texttt{writer} vem em nosso auxílio facilitando-nos a tarefa.
+
+\begin{lstlisting}
+import csv
+
+def insere_linha_csv(fich, linha):
+    """ Insere uma linha no fim do ficheiro."""
+    with open(fich,'a') as nome_fich:
+        csv_writer = csv.writer(nome_fich)
+        csv_writer.writerow(linha)
+        nome_fich.close()
+\end{lstlisting}
+
+
+Mais uma vez usamos o processo de abrir para acrescentar convencional, e depois escrevemos a nova linha. Um exemplo de utilização do programa:
+
+\begin{lstlisting}
+insere_linha_csv('/data/notas.csv',['Calvin Hobbes','90','85','93','89','?'])
+\end{lstlisting}
+
+Vamos agora criar um ficheiro, na realidade uma pequena base de dados, de raiz com informação sobre restaurantes (com os campos: Nome, Morada, Tipo e Custo) . Começamos por apresentar o programa genérico.
+
+\begin{lstlisting}
+def escreve_csv(fich, dados,delimitador):
+    """ Escreve um ficheiro em formato csv."""
+    with open(fich,'w') as csv_fich:
+        csv_writer = csv.writer(csv_fich,delimiter=delimitador) 
+        csv_writer.writerows(dados)    
+        csv_fich.close()
+\end{lstlisting}
+
+Como se pode ver no exemplo, é possível escolher um delimitador diferente da vírgula. Claro que depois, para ler, essa informação tem que ser dada. Executando a função como no exemplo:
+
+\begin{lstlisting}
+escreve_csv('/data/rest.csv', [['Nome','Morada', 'Tipo', 'Custo'],['Manel dos Ossos','Coimbra','Portuguesa','$'],['Chez Lui','Paris','Francesa','$$$$$'],['McMe':'Burgos','Fast Food','$$']],':')
+\end{lstlisting}
+
+A base de dados seguinte é criada.
+
+\begin{lstlisting}
+Nome:Morada:Tipo:Custo
+Manel dos Ossos:Coimbra:Portuguesa:$
+Chez Lui:Paris:Francesa:$$$$$
+McMe:Burgos:Fast Food:$$
+\end{lstlisting}
+
+Vamos considerar agora um problema mais realista e que consiste em definir a nota final do aluno conhecidas as notas parciais guardadas no ficheiro de notas.
+
+\begin{lstlisting}
+def nota_final(fich):
+    """ Calcula nota final. """
+    # Lê
+    dados = le_csv(fich)
+    notas_parciais = dados[1:]
+    # Manipula
+    for i in range(len(notas_parciais)):
+        nome, teste,projecto,normal,recurso,nota = notas_parciais[i]
+        notas_parciais[i][5] = str(0.2 * int(teste) + 0.2 * int(projecto) + 0.6 * max(int(normal),int(recurso)))
+    dados = [dados[0]] + notas_parciais
+    
+    # Escreve
+    escreve_csv(fich,dados,',') 
+\end{lstlisting}
+
+A solução indicada pode dividir-se em três partes: leitura dos dados (linhas 3 a 5), cálculo da nota (linhas 6 a 11)  e reescrita total do ficheiro com os novos valores (linha 13). Depois de correr o programa temos o ficheiro das notas actualizado.
+
+\begin{lstlisting}
+Nome,Testes,Projecto,Normal,Recurso,Nota
+Ernesto Costa,75,60,45,52,58.2
+Zeus Euclides,12,34,45,30,36.2
+Anaximandro Heraclito, 36,47,67,12,56.8
+Calvin Hobbes,90,85,93,89,90.8
+\end{lstlisting}
+
+
+\subsection{urllib}
+
+Vivemos no tempo da \textbf{Internet}, todos sabemos. Daí que, com naturalidade, a linguagem \python tenha construções que nos permitam interagir com informação guardada na grande rede global que é a Web. Um dos módulos que nos auxilia na tarefa é o módulo \texttt{urllib.request}. Vejamos, por exemplo, como posso obter  a minha página web.
+
+\begin{lstlisting}
+import urllib.request
+
+meu_sitio = urllib.request.urlopen("http://ernesto.dei.uc.pt")
+meus_bytes = meu_sitio.read()
+minha_cadeia = meus_bytes.decode("utf8")
+meu_sitio.close()
+\end{lstlisting}
+
+Este exemplo mostra algumas coisas importantes. Em primeiro lugar, podemos abrir uma página web de modo semelhante ao que fazemos para qualquer outro ficheiro (linha 3). Temos depois a possibilidade de ler toda a informação contida na página (linha 4). Só que agora o objecto devolvido pelo método \texttt{read} é de um tipo diferente: é uma cadeia de  \texttt{bytes}\marginlabel{bytes}. O que fazemos de seguida é converter essa cadeia para uma cadeia de caracteres \textit{normal}, do tipo \texttt{str}, o que fazemos recorrendo ao método \texttt{decode} (linha 5). O conteúdo que é lido pode ser salvo localmente, e guardado com extensão \textbf{html}. 
+
+\begin{lstlisting}
+novo_fich = open('/Users/ernestojfcosta/tmp/urlteste.html', 'w')
+novo_fich.write(minha_cadeia)
+novo_fich.close()
+\end{lstlisting}
+
+
+\subsubsection{Exemplo}
+
+Vamos exemplificar um uso possível deste módulo. A ideia é ir ler na web as cotações de duas empresas, no caso a \textbf{Apple} e a \textbf{Coca-Cola}, num determinado período de tempo, e verificar se existe alguma correlação entre as respectivas variações. Para analisar a existência de correlação (ou não) vamos recorrer ao coeficiente de correlação de Pearson. O \textbf{Coeficiente de Correla\c cão de Pearson}(CCP) é definido por:
+
+\[  r = \frac{\sum_{i=1}^{n} (x_{i} - \overline{x})  (y_{i} - \overline{y})}{(n - 1) S_{x} S_{y}} \]
+
+
+\noindent em que $\overline{x}$ e $\overline{y}$ são  as médias das duas variáveis $x$ e $y$, $S_{x}$ e $S_{x}$ são os respectivos desvios padrão.
+
+O CCP varia entre -1 (negativamente correlacionados) e 1 (positivamente correlacionado. A figura \ref{fig:corre1} mostra alguns exemplos típicos (sem correlação, correlação forte - positiva e negativa, e correlação média).
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{ficheiros/imagens/corre1.png}
+\caption{Coeficiente de Correlção de Pearson: exemplos}
+\label{fig:corre1}
+\end{center}
+\end{figure}
+
+Escrever  um programa que calcula o CCP não apresenta dificuldades de maior. 
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import math
+
+def media(lista):
+    """ Calcula a média."""
+    med = sum(lista) / len(lista)
+    return med
+
+def desvio_padrao(lista):
+    """ Calcula o desvio padrão."""
+    a_media = media(lista) 
+    soma = 0
+    for elem in lista:
+        soma = soma + (elem - a_media) ** 2   
+    desvio = math.sqrt(soma/(len(lista) - 1))
+    return desvio
+
+def pearson(lista_a, lista_b):
+    """ Calcula o coeficiente de correlação entre duas listas de valores."""
+    media_a = media(lista_a)
+    media_b = media(lista_b)
+    desvio_a = desvio_padrao(lista_a)
+    desvio_b = desvio_padrao(lista_b)
+    n = len(lista_a) 
+    soma = 0
+    for indice in range(n):
+        soma = soma + (lista_a[indice] - media_a) * (lista_b[indice] - media_b)
+    correlacao = soma / ((n - 1) * desvio_a * desvio_b)   
+    return correlacao
+\end{lstlisting}
+
+Uma vez resolvida esta questão acessória, podemos concentrarmo-nos no problema da comparação concreta dos dados das cotações de fecho de duas empresas. Esses dados vão ser retirados directamente da Web. O formato do ficheiro é o seguinte:
+
+\begin{lstlisting}
+Date,Open,High,Low,Close,Volume,Adj Close
+2009-10-19,50.26,50.70,50.05,50.39,5141800,50.39
+2009-10-16,50.27,50.33,49.65,50.08,6769200,50.08
+2009-10-15,51.11,51.15,50.00,50.42,8629800,50.42
+\end{lstlisting}
+
+Existe uma primeira linha que descreve os atributos (data da cotação, valor na abertura, mais alto, mais baixo, fecho, volume transacções, próximo do fecho). As linhas seguintes dão os valores concretos. A cotação de fecho está na posição 4. Finalmente o código.
+
+
+\begin{lstlisting}[caption={Compara cotações}, label=lst:cota1,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+import urllib
+import math
+import matplotlib.pyplot as plt
+
+# código para CCP omitido
+
+def compara(url_1,url_2, valor_1,valor_2,elem):
+    """ 
+    Determina o coefeciente de correlação no período valor_1 - valor_2
+    relativamente ao elemento elem.
+    """
+    with urllib.request.urlopen(url_1) as handler_1:
+        dados_1 = handler_1.readlines()[valor_1:valor_2]  
+        dados_elem_1 = [float(str(linha[:-1],'utf-8').split(',')[elem]) for linha in dados_1] 
+        nome_1 = url_1.split('=')[-1]
+ 
+    with urllib.request.urlopen(url_2) as handler_2:
+        dados_2 = handler_2.readlines()[valor_1:valor_2]
+        dados_elem_2 = [float(str(linha[:-1],'utf-8').split(',')[elem]) for linha in dados_2]   
+        nome_2 = url_2.split('=')[-1]
+    
+    corre = pearson(dados_elem_1, dados_elem_2)
+    mostra(dados_elem_1,dados_elem_2,nome_1, nome_2, valor_1, valor_2)
+    return corre 
+  
+
+def mostra(dados_1, dados_2,nome_1,nome_2, data_1, data_2):
+    etiqueta = nome_1 + ' vs ' + nome_2 + ':' + '(' + str(data_1) + ' - ' + str(data_2) + ')'
+    plt.plot(dados_1,dados_2,'ro', label= etiqueta)
+    plt.xlabel(nome_1)
+    plt.ylabel(nome_2)
+    plt.title('Pearson')
+    plt.legend(loc=0)
+    plt.show()    
+
+if __name__ == '__main__':
+    url_apple = 'http://ichart.finance.yahoo.com/table.csv?s=AAPL'
+    url_coke = 'http://ichart.finance.yahoo.com/table.csv?s=Coke'
+    
+    print(compara(url_apple,url_coke,1,24,4))
+\end{lstlisting}
+
+O programa da listagem \ref{lst:cota1} exemplifica o caso concreto das cotações de fecho da Apple e da Coca-cola. Permite visualizar o resultado graças à função \texttt{mostra}. Está escrito para poder ser usado com qualquer empresa e entre qualquer período. Devemos ter em atenção que a primeira linha do ficheiro deve ser descartada, pelo que o período inicial terá que ser sempre maior ou igual a 1 (segunda linha do ficheiro). Notar uma vez mais a necessidade de fazer a descodificação para cadeia de caracteres (linhas 14 e 19).
+
+A figura \ref{fig:corre2} mostra um dos resultados da análise para o período 1 a 120. O valor do CCP é de 0.523. Para o leitor fica a tarefa de estudar diferentes janelas temporais.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{ficheiros/imagens/ap_co_1.png}
+\caption{A Apple e a Coca-cola}
+\label{fig:corre2}
+\end{center}
+\end{figure}
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+Neste capítulo estivemos concentrados no conceito de ficheiro e das operações que com eles podemos fazer: leitura, escrita e navegação. Usámos esta oportunidade para introduzir a instrução \texttt{with}, o tipo de dados \texttt{bytes} e ainda os módulos \texttt{csv} e \texttt{urllib}.
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Tente responder às seguintes questões, tratadas neste capítulo.
+
+
+\begin{itemize}
+\item Quais as características dos ficheiros?
+\item Como identifico um ficheiro vazio?
+\item Qual é o construtor do tipo ficheiro?
+\item Qual a diferen\c ca entre \textbf{seek} e \textbf{tell}?
+\item Só existem ficheiros de texto? Se não, que outros tipos e quais as difere\c cas?
+\item Os ficheiros de texto são uma longa cadeia de caracteres. Existe a opera\c cão de fatiamento para ficheiros?
+\item É possível ter um ficheiro aberto simultaneamente para leitura e para escrita?
+\item Qual a importância de usar sempre o método \textbf{close}?
+\item Para que serve a construção \texttt{with}
+\item O que é o tipo dados \texttt{bytes}
+\item O que é e para que serve o módulo \textbf{csv}
+\item O que é e para que serve o módulo \textbf{urlib}
+\end{itemize}
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+
+Alguns destes exercícios requerem alguns ficheiros específicos. Podem ser encontrados no sítio do livro em \url{}.\\
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que crie um ficheiro \textbf{primeiro.txt} com o seguinte conte\'{u}do ``Acabei de criar o meu primeiro ficheiro em Python.''. Depois de criado, use um editor para ver o que foi guardado. Pode escolher se, e como, divide o texto em linhas.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que  mostre uma sequência de caracteres, em número pré-definido, presentes no ficheiro \textbf{primeiro.txt} a partir de uma dada posi\c cão de referência.
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que adicione uma nova linha ao ficheiro \textbf{primeiro.txt} contendo a data de hoje, mas sem criar um novo ficheiro. 
+\end{Exercicio}
+
+\begin{Exercicio}\medio \label{exo:num}
+
+Desenvolva um programa que permita identificar se um ficheiro contém números. O resultado do programa deve ser uma lista dos números existentes no ficheiro. Pode testar com um ficheiro de texto criado por si com um editor.
+\end{Exercicio}
+
+
+\begin{Exercicio}\modulo{matplotlib}\medio
+
+Desenvolva um programa que analise as temperaturas médias de várias cidades portuguesas, guardadas no ficheiro \textbf{temperaturas.txt}\footnote{Disponível em \url{http://iprp.net}.}, determine os valores máximo e mínimo, e mostre o gráfico do resultado. Cada linha representa os dados referentes a  uma cidade.
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Escreva um programa que crie uma cópia de um ficheiro. O nome dos ficheiros origem e destino devem ser pedidos ao utilizador e, de seguida, deve ser chamada uma fun\c{c}\~{a}o que fa\c{c}a a c\'{o}pia. Os nomes dos ficheiros dever\~{a}o ser argumentos da fun\c{c}\~{a}o. Pode testar com um ficheiro de texto criado por si com um editor.
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{random} \modulo{turtle} \medio \label{exo:dados1}
+
+Desenvolva um programa que coloca, num  ficheiro a criar,  pares de números. Esses pares devem estar um por linha e ser gerados aleatoriamente. Admita que esses valores correspondem  aos números (entre 1 e 6) de dois dados. Leia depois o ficheiro, interprete cada par como coordenadas num espa\c co 2D, e use o módulo turtle para desenhar a figura que resulta de unir esses pontos respeitando a ordem em que aparecem no ficheiro..
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{matplotlib} \modulo{turtle}\medio \label{exo:dados2}
+
+Usando o ficheiro de dados do exercício \ref{exo:dados1}, desenvolva um programa que permita analisar a frequ\^{e}ncia dos valores que existem no ficheiro. A informa\c{c}\~{a}o deve ser representada visualmente, e deve mostrar o n\'{u}mero de vezes que cada um dos valores saiu. Utilize o m\'{o}dulo \textbf{matplotlib} ou o módulo \textbf{turtle} para fazer um diagrama de barras que represente o n\'{u}mero de vezes que um valor saiu.  
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{matplotlib} \modulo{turtle}\medio
+
+Usando o ficheiro obtido para os problemas \ref{exo:dados1} e \ref{exo:dados2}, desenvolva um programa que permita analisar a frequ\^{e}ncia da \textbf{soma} de dois valores. A informa\c{c}\~{a}o deve ser representada visualmente, e deve ser mostrada em termos de percentagens. Utilize o m\'{o}dulo \textbf{matplotlib} ou o módulo \textbf{turtle}, para fazer um diagrama de barras das \textbf{percentagens} referentes a soma dos dois valores. 
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{matplotlib} \modulo{turtle}\medio
+
+Desenvolva um programa que permita analisar a frequência dos caracteres que existem num ficheiro. A informa\c cão deve ser mostrada visualmente. Pode socorrer-se do módulo \textbf{matplotlib} ou do módulo \textbf{turtle}. Pode testar com um ficheiro de texto criado por si com um editor.
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio
+
+Escreva um programa que permita gerir vendas a dinheiro. Num ficheiro de texto tem informa\c cão sobre vendas já efectuadas. Cada linha do ficheiro tem informa\c cão sobre uma transa\c cão, na forma: número da transa\c cão, nome da empresa, número de contribuinte, data e valor. O seu programa deve obter os elementos de uma nova transac\c cão e actualizar o ficheiro. Deve também imprimir um documento onde constem os elementos referidos e ainda o nome do funcionário que fez a venda. A listagem ilustra o pretendido para a impressão.
+
+\begin{lstlisting}
+Venda a Dinheiro No 100
+-----------------------
+Empresa: Vendas&Vendas
+N.C.: 987654321
+Data: 6/Out/2008
+Valor: 100.20 Euros
+Vendedor: Manuel Antunes
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+ Admita que tem um \textbf{ficheiro} de texto em memória. Pretende-se um programa que leia o ficheiro e construa um \textbf{dicionário} em que as chaves são inteiros e os valores a \textbf{lista} das palavras cujo comprimento é igual ao valor da chave. A título de \textbf{exemplo} do que se pretende, mostramos o resultado para o ficheiro cujo conteúdo é o seguinte (\textbf{fich\_dic} é o nome do programa que tem que implementar.):
+
+\begin{lstlisting}
+isto pode ser uma conversa
+banal, entre duas pessoas
+banais e que, pasme-se, adoram dizer
+banalidades! Entendido?
+\end{lstlisting}
+
+
+\begin{lstlisting}
+>>> print fich_dic('/tempo/data/ex_normal.txt')
+{1: ['e'], 3: ['ser', 'uma', 'que'], 4: ['isto', 'pode', 'duas'], 5: ['banal', 'entre', 'dizer'], 6: ['banais', 'adoram'], 7: ['pessoas'], 8: ['conversa', 'pasme-se'], 9: ['Entendido'], 11: ['banalidades']}
+>>> 
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Admita que tem um ficheiro onde estão guardados números \textbf{inteiros}.  Não sabe quantos existem por linha, nem quantos existem no total. Agora o que sabe é que podem existir números \textbf{repetidos} espalhados pelo ficheiro. Pretende-se um programa que leia o conteúdo do ficheiro e crie um \textbf{dicionário} em que as chaves são os números e os valores o número de vezes em que cada um aparece no ficheiro.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+Suponha que tem um ficheiro com informa\c cão sobre dados pessoais. Mais concretamente em cada linha do ficheiro tem o nome, apelido, idade, código da  profissão e código do estado civil. A figura \ref{fig:genin} ilustra uma situa\c cão possível
+.\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{ficheiros/imagens/gentein.jpg}
+\caption{Ficheiro de dados: entrada}
+\label{fig:genin}
+\end{center}
+\end{figure}
+
+Escreva um programa que leia este ficheiro e produza um novo no qual o nome e apelido foram substituídos pelas respectivas iniciais, a idade se manteve, e os códigos de profissão e estado civil alterados para os respectivos nomes. A figura \ref{fig:genout} mostra a saída resultante de aplicar o programa ao ficheiro de entrada da figura \ref{fig:genin}. A rela\c cão entre os códigos e os nomes correspondentes (por exemplo, 102 corresponde a professor, 1 corresponde a casado) estão guardadas em dois \textbf{dicionários}. É evidente que pode definir a correspondência do modo que entender.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{ficheiros/imagens/genteout.jpg}
+\caption{Ficheiro transformado}
+\label{fig:genout}
+\end{center}
+\end{figure}
+
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\dificil
+
+Pretendemos saber se existe alguma \textbf{correla\c cão} entre o crescimento do produto interno bruto ( \textbf{PIB}) e o \textbf{desemprego}, na zona Euro. Para isso temos dois ficheiros com essa informa\c cão.  A informa\c cão cobre anos distintos nos dois ficheiros, e a informa\c cão neles presente tem periodicidade diversa.
+
+\begin{lstlisting}[caption='Desemprego']
+# Desemprego na Zona euro
+# Fonte: http://www.economagic.com
+ 1993 01  1512·202          
+ 1993 02  4112.391          
+ 1993 03  8812.655         
+ 1993 04  4512·842
+ 1993 05  2913·036
+ ...
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption='Crescimento do PIB']
+# Crescimento do Produto Interno Bruto : Zona EURO
+# fonte http://www.economagic.com
+ 1996 01 502.7         
+ 1996 02 262·0          
+ 1996 03 11.6          
+ 1996 04 471·4
+ 1997 01  591·4
+  ...
+\end{lstlisting}
+Desenvolva um programa que \textbf{dado um período de tempo}, analisa a informa\c cão, calcula o 
+coeficiente de correla\c cão e visualiza os dados. 
+\end{Exercicio}
+
+\begin{Exercicio} \dificil
+
+Suponha que é dono de uma empresa e tem uma pequena base de dados com informa\c cões sobre os seus clientes. Essa informa\c cão, guarda num ficheiro, inclui, entre outras coisas, o nome, a data de nascimento, morada e número de telefone. Imagine que quer enviar aos clientes nascidos antes de um dado ano uma carta. A diferen\c ca nas cartas é apenas no cabe\c calho, que deve personalizar pelo nome e pela morada. Admita que antes de enviar as cartas as guarda todas em ficheiros separados. Desenvolva  a respectiva aplica\c cão, isto é, um programa que leia o modelo da carta de um ficheiro, determine quais os clientes a quem deve enviar a carta, produza acarta para cada cliente e a guarde num ficheiro individual.
+\end{Exercicio}
+
+
+
+
+
+
+\begin{Exercicio} \dificil
+
+Admita que tem uma pequena base de dados com informa\c cão sobre a sua biblioteca de músicas. Cada música deve ter como informa\c cão: intérprete, titulo, tipo de música, dura\c cão e se está emprestado ou não. Desenvolva uma aplica\c cão que lhe permita:
+
+\begin{itemize}
+\item introduzir um novo título
+\item marcar uma música como emprestada
+\item mostrar todas as músicas de um certo tipo
+\end{itemize}
+
+\end{Exercicio}
+
+\begin{Exercicio}\dificil
+Admita que tem um ficheiro em que \textbf{cada linha} contém um endereço de Internet com o \textbf{URL} para a  página pessoal de um utilizador, no formato habitual que o exemplo abaixo ilustra.
+
+\url{http://eden.dei.uc.pt/~ernesto}\\
+
+Notar que a parte final é sempre o nome do utilizador precedido pelo \textit{til}. Suponha também que definiu um dicionário onde a cada nome de utilizador faz corresponder uma lista com o nome completo do utilizador e o seu endereço de correio electrónico (ver exemplo). 
+
+\begin{lstlisting}
+{'ernesto': ['Ernesto Costa', 'ernesto@dei.uc.pt'], ...}
+\end{lstlisting}
+
+Escreva um programa que, dados um dicionário e o endereço de um ficheiro, cada um com a informação acima descrita, faça a  leitura deste último e, a partir dos dados obtidos, extraia o nome dos utilizadores, usando-o em conjunção com o dicionário para devolver uma lista com os  \textbf{nomes completos} dos utilizadores presentes no ficheiro, \textbf{ordenada} por ordem alfabética.
+\end{Exercicio}
+
+
+
+\begin{Exercicio}\modulo{csv}\dificil
+O ficheiro \textit{zoo.csv}\footnote{Pode ser obtido no sítio da cadeira em \url{http://iprp.net}.} tem informação diversa sobre animais. Em cada linha encontra a descrição de um animal específico, o nome na primeira posição e a sua classificação na última. Leia o ficheiro e construa uma estrutura do tipo dicionário em que as chaves são a classe e o valor a lista com os nomes dos animais da classe.
+\end{Exercicio}
+
+\begin{Exercicio}\modulo{urllib}\dificil
+
+Os ficheiros HTML têm no seu início um conjunto importante de informações. Eis um exemplo retirado do sítio \url{http://www.python.org}.
+
+\begin{lstlisting}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+\end{lstlisting}
+
+
+Uma delas é o tipo de codificação usada no texto, identificado através de \textbf{charset}. Escreva um programa que lhe permita ir buscar a um ficheiro HTML essa informação. 
+
+
+
+\end{Exercicio}

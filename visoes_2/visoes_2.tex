@@ -1,0 +1,1581 @@
+\chapter{Vis›es (II)}\label{cap:visoes2}
+
+\begin{objectivos}
+\item Exercitar o uso de estruturas de dasdos e mecanismos de controlo para objectos bidimensionais
+\item Introduzir conceitos b‡sicos sobre processamento de imagens digitais 
+\item  Introduzir o m—dulo cImage
+\item Exercitar ao uso de fun›es como par‰metros
+\end{objectivos}
+
+\section{Introdu‹o}
+
+Vivemos num mundo cada vez mais dominado pelas imagens. A manipula\c c‹o das imagens permite-nos criar uma nova realidade e explorar novas combina\c c›es de formas e de cores. Com os computadores essa possibilidade de altera\c c‹o e de jogo foi potenciada a uma escala nunca antes vista. Hoje, existem imensos programas que nos permitem exercitar a nossa imagina\c c‹o art’stica, de que o \textbf{Photoshop} da Adobe Ž apenas um exemplo. Neste cap’tulo iremos ver como podemos n—s pr—prios usar e transformar imagens, por recurso ˆ linguagem \textbf{Python}. Mas comecemos por clarificar o que s‹o  imagens e como podem ser guardadas num computador. De um modo informal uma imagem Ž uma estrutura bidimensional, uma matriz de pontos, cada um deles designado por \textbf{pixel}\footnote{Acr—nimo derivado do ingls \textit{picture element}.}. Uma representa‹o comum das imagens em computador consiste em representar cada pixel separadamente, falando-se ent‹o em imagens \textit{bitmap}\footnote{Uma alternativa designa-se por imagens \textbf{vectoriais}. De um modo grosseiro, isso significa que em vez da imagem o que Ž guardado e manipulado Ž o programa que produz a imagem.}. Cada pixel, por sua vez, Ž codificado de acordo com um dado \textbf{modelo}. No caso do modelo \textbf{RGB},  a cor Ž decomposta em trs componentes, ou \textbf{canais}\footnote{ƒ poss’vel a existncia de mais canais, como seja o canal \textbf{alfa} para a transparncia.}, uma para Vermelho (\textit{Red}), outro para Verde (\textit{Green}), e outro para azul (\textit{Blue}), ˆ semelhana do modo como n—s humanos percebemos a cor. Cada canal Ž representado por um byte, o que significa que um pixel ocupa 3 bytes (24 bits) e podemos representar em teoria $256^3 = 16777216$ cores diferentes, visto cada canal poder assumir$2^8 = 256$ valores diferentes\footnote{Outros modelos de cor s‹o o HSB e o CMYK, este œltimo usado pelas impressoras.}. \\
+
+
+A figura \ref{fig:cores} mostra algumas cores e respectivas codifica›es RGB.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.6]{visoes_2/imagens/cores.jpg}
+\caption{Mapeamento RGB cores}
+\label{fig:cores}
+\end{center}
+\end{figure}
+
+Na œltima linha da figura apresentamos diversos n’veis de cinzento, que se obtŽm usando o mesmo valor para os trs canais. No caso extremo temos a cor branca (255 em cada canal) e a cor preta (0 em cada canal).\\
+
+As imagens ocupam muito espao. A tabela \ref{tab:pix} mostra alguns valores, isto Ž, o espao ocupado para diferentes \textbf{resolu›es} das imagens.
+
+\begin{table}[htdp]
+\caption{Imagens e tamanhos}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+& 320 $\times$ 240 & 640 $\times$ 480 & 1024 $\times$ 768\\ \hline \hline
+24-bits cor & 230400 bytes&921600 bytes&2359296 bytes  \\ \hline
+\end{tabular}
+\end{center}
+\label{tab:pix}
+\end{table}%
+
+
+ƒ pois com naturalidade que se procuraram mŽtodos de compress‹o de imagem. Existem v‡rios mŽtodos de compress‹o, como Ž o caso da norma JPEG\footnote{Acr—nimo derivado do ingls \textit{Joint Photographic Experts Group}},  que especifica o modo como uma imagem Ž transformada numa sequncia de bytes e o processo inverso. Tipicamente perde-se alguma informa‹o durante a compress‹o/descompress‹o, mas nalgumas situa›es essa perda de qualidade Ž aceit‡vel\footnote{Em certas aplica›es, e.g., na ‡rea mŽdica, essa perda de qualidade n‹o pode ser tolerada.}. Existem algoritmos que tornam poss’vel comprimir a imagem sem perda de informa‹o, como acontece com a tŽcnica conhecida por RLE\footnote{Do ingls \textit{run lenght encoding}.}. Existem v‡rios outros formatos de imagem, nomeadamente os que n‹o provocam perdas como sejam o TIFF, GIF ou PNG.
+
+
+\section{Representa‹o de imagens}
+
+A manipula‹o de imagens num computador envolve em geral a sua transferncia de um ficheiro em disco para a mem—ria interna. ƒ preciso por isso encontrar uma boa representa‹o, isto Ž um contentor. Do que j‡ conhecemos de \python e da natureza das imagens \textit{bitmap}, n‹o nos surpreende que uma representa‹o escolhida simples seja uma lista de listas, uma matriz. Cada lista interior representa uma \textbf{linha} da matriz. Por exemplo:\\
+
+$>>>$ matriz = [[1,2,3],[4,5,6],[7,8,9]]\\
+
+No caso das imagens os elementos primitivos n‹o ser‹o nœmeros mas (a representa‹o de) pixeis. No modelo RGB um modo simples de representar um pixel Ž atravŽs de um tuplo com o valor das trs componentes, ou canais. Estes valores podem variar entre 0 e 255. Um exemplo de uma pequena imagem de 3 por 2 pixeis podia ser:\\
+
+
+imagem = [[(131, 27, 223), (4, 243, 68), (195, 107, 123)], [(246, 205, 141), (154, 60, 154), (40, 31, 223)]]\\
+
+
+
+Resolvida a quest‹o da representa‹o, passemos a alguns exemplos simples de manipula‹o\footnote{Os exemplos que se seguem envolvem listas de listas de nœmeros. Adiante usaremos o que aprendemos para o tratamento de imagens.}. Para comear, vamos ver como podemos visualizar os elementos de uma matriz quadrada qualquer.  A quest‹o essencial que temos que ter em conta Ž que, havendo duas dimens›es, temos que criar \textbf{dois} ciclos, cada um deles respons‡vel por percorrer de modo ordenado cada uma das \textbf{dimens›es}. Vejamos o caso mais simples, ou seja, mostrar todos os elementos, por linhas.
+
+\begin{lstlisting}
+def mostra_por_linhas(matriz):
+	"""Indexa‹o pelo conteœdo."""
+	for linha in matriz:
+		for coluna in linha:
+			print("%5d" % coluna, end=' ')
+		print()
+
+def mostra_por_linhas_b(matriz):
+	"""Indexa‹o pela posi‹o."""
+	for pos_linha in range(len(matriz)):
+		for pos_coluna in range(len(matriz[0])):
+			print("%5d" % matriz[pos_linha][pos_coluna], end ='')
+		print()
+\end{lstlisting}
+
+
+O que tm estes dois programas de diferente? O simples facto de, no primeiro, percorremos a matriz usando o seu conteœdo, enquanto que, no segundo, usamos as posi›es. E de comum, que pontos devem ser salientados? Essencialmente o modo como fazemos a impress‹o: o comando \textbf{print}  usa uma marca de formata‹o (\textbf{\%5d}) e termina com  \textbf{end =''}. ƒ este œltimo facto que permite colocar os elementos de uma linha todos ao lado uns dos outros. O segundo \textbf{print} sem argumento serve apenas para mudar de linha.
+
+Admitamos agora que queremos mostrar a matriz por colunas e n‹o por linhas.
+
+\begin{lstlisting}
+def mostra_por_colunas(matriz):
+	"""  Indexa‹o pelo posi‹o."""
+	for pos_coluna in range(len(matriz[0])):
+		for pos_linha in range(len(matriz)):
+			print("%3d" % matriz[pos_linha][pos_coluna], end='')
+		print()
+\end{lstlisting}
+
+
+Bastou \textbf{trocar} a ordem dos ciclos: o primeiro, trata das colunas, enquanto o segundo, mais interior, trata das linhas! E se forem as matrizes triangulares superior?
+
+
+\begin{lstlisting}
+def mostra_tri_sup(matriz):
+	"""Matriz triangular superior.Indexa‹o pela posi‹o."""
+	for pos_linha in range(len(matriz)):
+		print(' '* 4 * pos_linha,end='') 
+		for pos_coluna in range(pos_linha,len(matriz[0])):
+			print("%4d" % matriz[pos_linha][pos_coluna],end='')
+		print()
+
+\end{lstlisting}
+
+
+Atente-se como tratamos de mostrar de modo conveniente usando uma express‹o de formata‹o apropriada. Uma vez mais o comando \textbf{print} Ž essencial para esse objectivo. 
+
+\begin{comment}
+Terminamos os exemplos de consulta com o caso da matriz diagonal.
+
+\begin{lstlisting}
+def mostra_diag_principal(matriz):
+	""" Mostra diagonal principal."""
+	for pos_linha in range(len(matriz)):
+		print(' '* 3 * pos_linha,end='')
+		for pos_coluna in range(0,pos_linha+1):
+			if pos_linha == pos_coluna:
+				print("%2d" % matriz[pos_linha][pos_coluna])
+\end{lstlisting}
+\end{comment}
+
+Deixamos ao leitor a tarefa de testar estes programas. \\
+Passemos ao problema n‹o de visualizar mas de \textbf{criar} uma matriz conhecida a sua dimens‹o. Uma solu‹o banal ser‡:
+
+\begin{lstlisting}
+def cria_mat(n,m,val):
+	"""Cria uma matrix nXm sendo que todos os elementos s‹o iguais a val."""
+	mat = []
+	for j in range(n):
+		linha = []
+		for i in range(m):
+			linha.append(val)
+		mat.append(linha)
+	return mat
+\end{lstlisting}
+
+Mas com o que j‡ sabemos de \python podemos fazer melhor.
+
+\begin{lstlisting}
+def cria_mat_b(n,m,val):
+	"""Cria uma matrix nXm sendo que todos os elementos s‹o iguais a val."""
+	mat = [[val for i in range(m)] for j in range(n)]
+	return mat
+	
+def cria_mat_c(n,m,val):
+	"""Cria uma matrix nXm sendo que todos os elementos s‹o iguais a val."""
+	return[[val] * m] * n
+\end{lstlisting}
+
+A primeira alternativa baseia-se em listas por compreens‹o, enquanto que a œltima no operador de repeti‹o para listas. O recurso a dois ciclos imbricados expl’citos Ž um \textbf{padr‹o} que pode ser usado em muitas situa›es. \\
+
+S‹o v‡rias as opera›es que podemos fazer com matrizes e que nos obrigam a percorrer os seus elementos de acordo com uma determinada ordem. O exemplo mais simples Ž talvez o da soma de duas matrizes. O programa que se segue pressup›e que as matrizes tm a mesma dimens‹o.
+
+\begin{lstlisting}
+def soma_matriz(mat_1,mat_2):
+	""" Soma duas matrizes da mesma dimens‹o."""
+	n_linhas = len(mat_1)
+	n_colunas = len(mat_1[0])
+	mat = cria_mat(n_linhas,n_colunas,0)
+	# Soma
+	for i in range(n_linhas):
+		for j in range(n_colunas):
+			mat[i][j]= mat_1[i][j]+ mat_2[i][j]
+	return mat
+\end{lstlisting}
+
+Do mesmo modo podemos efectuar a multiplica‹o de duas matrizes $C = A \times B$, sabendo que:\\
+
+\[ c_{ij} = \sum_{k=1}^n a_{ik} * b_{kj} \]
+
+
+\begin{lstlisting}
+def mult_matriz(mat_1,mat_2):
+	"""Multiplica duas matrizes iXk e kXj."""
+	n_linhas_1 = len(mat_1)
+	n_colunas_1 = len(mat_1[0]) # igual a n_linhas_2
+	n_colunas_2 = len(mat_2[0])
+	mat_prod = cria_mat(n_linhas_1,n_colunas_2,0)
+	# Multiplica
+	for i in range(n_linhas_1):
+		for j in range(n_colunas_2):
+			val=0
+			for k in range(n_colunas_1):
+				val = val + mat_1[i][k]* mat_2[k][j]
+			mat_prod[i][j]=val
+	return mat_prod
+\end{lstlisting}
+
+Em qualquer destes casos cri‡mos uma matriz  onde depois guardamos o resultado da opera‹o. Mas podemos ter opera›es em que isso n‹o Ž um requisito e portanto o resultado da opera‹o resulta na altera‹o de uma das matrizes.  Suponhamos que queremos modificar uma matriz alterando o seu conteœdo, por exemplo somando uma dada constante a todos os elementos nas posi›es ’mpares.
+
+\begin{lstlisting}
+def prod_const_mat(mat,val):
+	"""Multiplica os elementos nas colunas ’mpares por val."""
+	n_linhas = len(mat)
+	n_colunas = len(mat[0])
+	for linha in range(n_linhas):
+		for col in range(1,n_colunas,2):
+			mat[linha][col] *= val
+	return mat
+\end{lstlisting}
+
+Todos estes exemplos mostram a import‰ncia fundamental dos dois ciclos \texttt{for} imbricados para percorrer a estrutura bi-dimensional, no interior dos quais se encontra a fun‹o de manipula‹o. Em alguns casos precisamos de criar uma matriz nova, com a dimens‹o necess‡ria para guardar o resultado da manipula‹o. Todos estes elementos estar‹o presentes nos programas de manipula‹o de imagens que s‹o estruturas a duas dimens›es.
+
+\section{O m—dulo cImage}
+
+Regressemos ˆs imagens e ao problema da sua constru‹o, consulta e manipula‹o.  Vamos utilizar o m—dulo \texttt{cImage}\footnote{TBD:...colocar informa‹o sobre o modo de obter...} que disponibiliza uma interface  de alto n’vel para tratamento de imagens. Este m—dulo socorre-se de outros dois: o m—dulo nativo \texttt{Tkinter} e o m—dulo \texttt{PIL}\footnote{Acr—nimo de \textit{Python Imaging Library}. Pode ser obtido em \url{http://www.pythonware.com}.}. Enquanto o \texttt{Tkinter} nos permite definir uma Interface de Utilizador Gr‡fica\footnote{Em ingls \textit{Grapgical User Interface} (GUI).}, com o \textbf{PIL} podemos manipular imagens de diferentes formatos, como seja jpeg, eps, gif, png, ou tiff, s— para mencionar alguns.  Para poder funcionar o PIL socorre-se de um processo de codifica‹o/descodifica‹o mais ou menos complexo, ew cuja descri‹o sai fora do ‰mbito deste livro.. No momento em que escrevemos, o m—dulo PIL derivou em \textbf{Pillow}\footnote{Mais informa›es sobre o m—dulo em \url{https://pypi.python.org/pypi/Pillow/2.0.0}.} o que permite ser compat’vel com a vers‹o 3 da linguagem. Estes m—dulos dependem ainda de um conjunto importante de bibliotecas para os diversos \textit{codecs} necess‡rios e que devem estar (ou ser) instalados no computador.\\
+
+O m—dulo permite criar, consultar e manipular trs grandes tipos de objectos: janelas, imagens e pixeis. As janelas funcionam como contentores para as imagens, enquanto estas s‹o formadas por pixeis. Existem trs (sub-)tipos de imagens: imagens de ficheiro, imagens vazias, imagens de listas de dados (ver figura \ref{fig:cimage}). As primeiras s‹o imagens prŽ-existentes em disco num dos formatos permitidos, as segundas s‹o imagens por n—s criadas, pixel a pixel, e as terceiras s‹o imagens dadas no formato lista de listas de pixeis, semelhante ao acima referido para matrizes. Nestes dois œltimos casos o formato em que as imagens s‹o guardadas externamente depende do sufixo usado no nome, sendo que na ausncia de sufixo o formato por defeito Ž o jpeg.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/cimage.eps}
+\caption{Os tipos de cImage}
+\label{fig:cimage}
+\end{center}
+\end{figure}
+
+\subsubsection{Janelas} O construtor do tipo janela chama-se \texttt{ImageWin()}. Tem por argumentos o nome da janela, a sua largura e a sua altura. Existem v‡rios outros mŽtodos como sejam o que permite obter a largura da janela (\texttt{getWidth()}),  a altura da janela (\texttt{getHeight()}), as coordenadas do rato (\texttt{getMouse()}), ou definir a cor de fundo (\texttt{setBackground()}).
+
+\subsubsection{Imagens} Para cada tipo de imagem existe um construtor. Assim temos trs construtores espec’ficos: \texttt{FileImage()},  \texttt{EmptyImage()} e  \texttt{ListImage()}.  As imagens podem ser desenhadas numa janela (\texttt{draw()}), salvas (\texttt{save()}), podemos obter a sua largura (\texttt{getWidth()}) e/ou a sua altura (\texttt{getHeight()}), modificar um determinado pixel (\texttt{setPixel()}), entre outras opera›es.
+
+\subsubsection{Pixeis} O construtor designa-se por \texttt{Pixel()}. Podemos consultar cada um dos trs canais (\texttt{getRed()},\texttt{getGreen()},\texttt{getBlue()}), ou modificar cada uma das componentes (\texttt{setRed()},\texttt{setGreen()},\texttt{setBlue()}).
+
+\section{Exemplos B‡sicos}
+
+O\marginlabel{Janelas} primeiro exemplo envolve simplesmente a cria‹o de uma janela. Apenas temos que indicar o seu nome e a sua resolu‹o (largura e altura em pixeis).
+
+\begin{lstlisting}
+import cImage
+
+def cria_janela(nome,largura,altura):
+    janela= cImage.ImageWin(nome,largura,altura)
+    janela.exitOnClick()
+    
+ if __name__ =='__main__':
+    cria_janela('Janela Indiscreta', 320,240)
+\end{lstlisting}
+
+A execu‹o do c—digo produz a imagem da figura \ref{fig:jan_1}.O mŽtodo \texttt{exitOnclick()} actua sobre objectos do tipo \texttt{ImageWin()} e permite encerrar a janela e abandonar a execu‹o. Tipicamente Ž a ultima ac‹o a realizar pelos programas.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/janela_1.png}
+\caption{Um janela simples}
+\label{fig:jan_1}
+\end{center}
+\end{figure}
+
+Como se verifica a janela tem um fundo branco. Mas podemos criar uma janela em que a cor de fundo Ž, por exemplo, vermelha. Vejamos agora alguns aspectos b‡sicos envolvendo janelas e o desenho de formas simples. O primeiro exemplo mostra a cria‹o de uma janela em que a cor de fundo Ž vermelha\footnote{A cor tambŽm pode ser definida em hexadecimal ou atravŽs de um tuplo (r,g,b). Por exemplo, a cor vermelha podia ter sido definida pela cadeia de caracteres '\#ff0000' ou por (255,0,0).}.
+
+\begin{lstlisting}
+def cria_janela_cor(nome,largura,altura,cor):
+    janela= cImage.ImageWin(nome,largura,altura)
+    janela.setBackground(cor)
+    janela.exitOnClick()
+    
+if __name__ =='__main__':
+    cria_janela_cor('Teste de Cor de Fundo', 320,240,'red')
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/red.png}
+\caption{Fundo vermelho}
+\label{fig:red}
+\end{center}
+\end{figure}
+
+
+As\marginlabel{Imagens} janelas existem, como referimos, como contentores para objectos que s‹o imagens. Estas imagens ou s‹o criadas por n—s ou existem guardadas externamente em disco. O caso mais simples Ž o de uma imagem por n—s criada \ldots sem nada.
+
+\begin{lstlisting}
+import cImage
+
+def cria_imagem_vazia(largura,altura):
+    imagem = cImage.EmptyImage(largura,altura)
+    return imagem
+
+def mostra_imagem_simples(imagem):
+    # Dimens‹o
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    # Cria janela
+    janela = cImage.ImageWin('Imagem', 2*largura,2*altura)
+    # Mostra imagem na janela
+    imagem.draw(janela)
+    # Termina
+    janela.exitOnClick()    
+\end{lstlisting}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/janela_2.png}
+\caption{Uma imagem em branco  \ldots Ž preta!}
+\label{fig:jan_2}
+\end{center}
+\end{figure}
+
+
+Alguns aspectos a referir. Em primeiro lugar,  cri‡mos uma janela que tem o dobro do tamanho em cada dimens‹o do que o da imagem criada (linha 12) e o posicionamento da imagem Ž feito por defeito a partir do canto superior esquerdo, que corresponde ˆs coordenadas $(0,0)$. Em segundo lugar, a imagem criada Ž preta. Estes dois aspectos podem ser alterados, ou seja podemos posicionar a imagem   noutro local da janela e podemos alterar a cor da imagem. Sem mexer no c—digo de modo substantivo podemos alterar a sua cor (linha 5)  e posicionar a imagem (linha 6) e como se pode ver na figura  \ref{fig:jan_3}.
+
+\begin{lstlisting}
+if __name__ =='__main__':
+    largura = 320
+    altura = 240
+    imagem = cImage.EmptyImage(largura,altura)
+    imagem.setSolidColor((0,0,255))
+    imagem.setPosition(largura//2,altura//2)
+    mostra_imagem_simples(imagem)
+\end{lstlisting}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/janela_3.png}
+\caption{Lidar com a cor e a posi‹o}
+\label{fig:jan_3}
+\end{center}
+\end{figure}
+
+
+\begin{bclogo}[couleur=black!20,arrondi=0.2,barre=snake,tailleOndu=1.5,logo=\bcbook]{Coordenadas}
+Cada pixel tem associado as suas coordenadas. As coordenadas $(x,y) = (0,0)$ situam-se no canto superior esquerdo da imagem. Os valores de $x$ crescem horizontalmente para a direita, enquanto os valores de $y$ crescem verticalmente para baixo. A figura ilustra a situa‹o.
+
+%\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.68]{visoes_2/imagens/coordenadas.eps}
+%\caption{Sistema de coordenadas}
+\label{fig:coord}
+\end{center}
+%\end{figure}
+\end{bclogo}
+
+
+Falta\marginlabel{Pixeis} apenas referir como podemos alterar os pixeis individualmente. O caso que apresentamos refere-se a uma situa‹o simples em que traamos uma linha horizontal vermelha, sobre fundo preto.
+
+\begin{lstlisting}
+ def desenha_linha(imagem):
+    altura = imagem.getHeight()
+    largura = imagem.getWidth()
+    janela = cImage.ImageWin('Imagem',largura,altura)
+    pix = cImage.Pixel(255,0,0)
+    for col in range(largura):
+        imagem.setPixel(col, altura//2,pix)
+    imagem.draw(janela)
+    janela.exitOnClick()
+\end{lstlisting}
+
+
+Dados estes exemplos sabemos agora que as quest›es centrais a resolver no tratamento de imagens s‹o essencialmente trs: definir uma janela, definir uma imagem (construindo-a, ou carregando-a do disco seguido de eventual manipula‹o), e mostrar a imagem.  Apresentamos de seguida um exemplo simples, sem manipula‹o dos pixeis, que envolve estes trs aspectos. 
+\begin{lstlisting}
+import cImage
+
+def mostra_imagem(img_fich):
+    # Carrega a imagem do disco
+    imagem = cImage.FileImage(img_fich)
+    # Obtem Componentes
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    # Cria janela
+    janela = cImage.ImageWin('Imagem', largura,altura)
+    # Mostra imagem na janela
+    imagem.draw(janela)
+    # Termina
+    janela.exitOnClick()
+    
+if __name__ =='__main__':
+    mostra_imagem('/images/calvin_leia.jpg')   
+\end{lstlisting}
+
+Este exemplo pretende ser um modelo para o programa principal dos exemplos que apresentamos de seguida. O c—digo, com os seus coment‡rios, Ž auto-explicativo. Ao executar obtemos a imagem da figura \ref{fig:cl}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_2/imagens/calvin_leia.png}
+\caption{Reproduzir uma imagem}
+\label{fig:cl}
+\end{center}
+\end{figure}
+
+
+\section{Manipula›es simples}
+
+\subsubsection{Negativo} O primeiro exemplo simples em que uma imagem Ž manipulada consistir‡ na obten‹o do  seu negativo. Sabemos, por exemplo, que o preto se transforma em branco, o verde em magenta,  o vermelho em ciano, o azul em amarelo. A forma de  conseguir esta transforma‹o consiste em substituir o valor da intensidade em cada canal pela sua diferena para o valor m‡ximo 255. Deste modo a nossa solu‹o Ž trivial: depois de carregar a imagem, vamos percorr-la pixel a pixel transformando cada um no seu equivalente negativo.
+
+\begin{lstlisting}
+import cImage
+
+# Negativo de imagem
+def main_negativo(imagem_ficheiro):
+    """Constr—i e vizualiza o negativo de uma imagem."""
+    # ObtŽm imagem
+    imagem = cImage.FileImage(imagem_ficheiro)
+    # Fabrica o negativo
+    imagem_nova = negativo_imagem(imagem)
+    # Define janela
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    janela = cImage.ImageWin('Negativo',2*largura, altura)
+    # vizualiza
+    imagem.draw(janela)
+    imagem_nova.setPosition(largura+1,0)
+    imagem_nova.draw(janela)
+    # Termina
+    janela.exitOnClick()
+  
+def negativo_imagem(imagem):
+    """ Negativo de uma imagem."""
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    imagem_nova = cImage.EmptyImage(largura,altura)
+    # percorre pixel a pixel
+    for coluna in range(largura):
+        for  linha in range(altura):
+            # transforma
+            pixel_original = imagem.getPixel(coluna,linha)
+            novo_pixel = negativo_pixel(pixel_original)
+            imagem_nova.setPixel(coluna,linha,novo_pixel)
+    return imagem_nova
+\end{lstlisting}
+
+\begin{comment}
+\begin{lstlisting}
+import cImage
+
+def negativo_pixel(pixel):
+    red = 255 - pixel.getRed()
+    green = 255 - pixel.getGreen()
+    blue = 255 - pixel.getBlue()
+    novo_pixel = cImage.Pixel(red,green,blue)
+    return novo_pixel
+
+def negativo_imagem(imagem_ficheiro):
+    """ Constr—i o negativo de uma imagem gfuardada em disco."""
+    imagem_velha = cImage.FileImage(imagem_ficheiro)
+    largura = imagem_velha.getWidth()
+    altura = imagem_velha.getHeight()
+    janela = cImage.ImageWin('Negativos',2*largura,altura)
+    imagem_velha.draw(janela)
+    imagem_nova = cImage.EmptyImage(largura,altura)
+    for coluna in range(largura):
+        for  linha in range(altura):
+            pixel_original = imagem_velha.getPixel(coluna,linha)
+            novo_pixel = negativo_pixel(pixel_original)
+            imagem_nova.setPixel(coluna,linha,novo_pixel)
+    imagem_nova.setPosition(largura+1,0)
+    imagem_nova.draw(janela)
+    janela.exitOnClick()
+\end{lstlisting}
+\end{comment}
+
+Vale a pena perder algum tempo com este c—digo pois ele ilustra um padr‹o para percorrer uma imagem semelhante ao apresentado para o percurso de matrizes\footnote{Devemos ter em aten‹o no entanto que quando acedemos a uma matriz, na forma de listas de listas, primeiro indicamos a linha e depois a coluna. No caso das imagens, indicamos primeiro a posi‹o ao longo do eixo dos x (largura) e depois ao longo do eixo dos y (altura).}. Comeamos por definir o nosso programa principal (\texttt{main\_negativo}) que decomp›e numa sequncia de cinco passos a concretiza‹o da solu‹o para o nosso problema: obten‹o da imagem, fabrico do negativo, defini‹o da janela onde v‹o ser colocadas as duas imagens, a visualiza‹o das imagens e o abandono  do programa. O negativo Ž fabricado sem destrui‹o do original, sendo criada uma imagem vazia que depois vai receber os pixeis modificados. O uso do mŽtodo \texttt{setPosition()} permite-nos colocar as duas imagens neste caso o ao lado uma da outra (ver  figura \ref{fig:negat}). Como se pode ver pelo c—digo da fun‹o \texttt{negativo\_imagem}, abstra’mos numa defini‹o (i.e., \texttt{negativo\_pixel} a transforma‹o de um pixel no seu negativo. Isto permite melhor legibilidade e p™r em evidncia um padr‹o geral de tratamento de \textbf{todos} os pixeis de uma imagem pela mesma fun‹o de transforma‹o: dois ciclos imbricados que v‹o gerando de modo ordenado as coordenadas  dos pixeis. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/negativo.png}
+\caption{Negativo de uma imagem}
+\label{fig:negat}
+\end{center}
+\end{figure}
+
+\subsubsection{Cinzentos} Esta ideia de abstrac‹o pode ser ilustrada se agora pretendermos transformar a imagem de colorida para escala de cinzentos. Basta substituir no programa principal a fun‹o de transforma‹o por uma que forma o valor na escala de cinzentos. A forma mais simples de o fazer Ž usar como valor de todos os canais a mŽdia dos valores na imagem original:
+
+\[ cinza = \frac{red + green + blue}{3} \]
+
+\begin{lstlisting}
+import cImage
+
+def main_cinzento(imagem_ficheiro):
+    """Constr—i e vizualiza a escala de cinzentos de uma imagem."""
+    # ObtŽm imagem
+    imagem = cImage.FileImage(imagem_ficheiro)
+    # Fabrica a escala de cinzentos
+    imagem_nova = cinzento_imagem(imagem)
+    # Define janela
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    janela = cImage.ImageWin('Cinzento',2*largura, altura)
+    # vizualiza
+    imagem.draw(janela)
+    imagem_nova.setPosition(largura+1,0)
+    imagem_nova.draw(janela)
+    # Termina
+    janela.exitOnClick()
+  
+def cinzento_imagem(imagem):
+    """ Escala de cinzentos de uma imagem."""
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    imagem_nova = cImage.EmptyImage(largura,altura)
+    # percorre pixel a pixel
+    for coluna in range(largura):
+        for  linha in range(altura):
+            # transforma
+            pixel_original = imagem.getPixel(coluna,linha)
+            novo_pixel = cinzento_pixel(pixel_original)
+            imagem_nova.setPixel(coluna,linha,novo_pixel)
+    return imagem_nova
+
+def cinzento_pixel(pixel):
+    """ Converte um pixel para escala de cinzentos."""
+    vermelho = pixel.getRed()
+    verde = pixel.getGreen()
+    azul = pixel.getBlue()
+    int_media = (vermelho + verde + azul) // 3
+    novo_pixel = cImage.Pixel(int_media,int_media, int_media)
+    return novo_pixel
+\end{lstlisting}
+
+\begin{comment}
+\begin{lstlisting}
+import cImage
+
+def pixel_cinzento(pixel):
+    """ Converte um pixel para escala de cinzentos."""
+    vermelho = pixel.getRed()
+    verde = pixel.getGreen()
+    azul = pixel.getBlue()   
+    int_media = (vermelho + verde + azul) // 3
+    novo_pixel = cImage.Pixel(int_media,int_media, int_media)
+    return novo_pixel
+
+def imagem_cinzentos(imagem_fich):
+    """ Transforma para escala de cinzentos a imagem."""
+
+    imagem = cImage.FileImage(imagem_fich)
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    
+    janela = cImage.ImageWin('Escala de cinzentos', 2* largura, altura)
+    imagem.draw(janela)
+    nova_imagem=cImage.EmptyImage(largura,altura)
+    
+    for coluna in range(largura):
+        for linha in range(altura):
+            pixel = imagem.getPixel(coluna,linha)
+            novo_pixel = pixel_cinzento(pixel)
+            nova_imagem.setPixel(coluna,linha,novo_pixel)
+    nova_imagem.setPosition(largura+1,0)
+    nova_imagem.draw(janela)
+    janela.exitOnClick()
+    \end{lstlisting}
+    \end{comment}
+
+ Executando o c—digo para a imagem \ref{fig:cl} obtemos o resultado da figura \ref{fig:cinza}.
+ 
+ \begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/cinza.png}
+\caption{Escala de cinzentos}
+\label{fig:cinza}
+\end{center}
+\end{figure}
+ 
+ Esta solu‹o simplifica um pouco o problema da escala de cinzentos, pois a vis‹o humana tem uma percep‹o da lumin‰ncia diferente e dependente do canal considerado (vermelho, verde e azul). O c—digo  que se segue calcula a mŽdia pesada dos trs canais.
+ 
+ \begin{lstlisting}
+def cinzento_pixel(pixel):
+    """ Converte um pixel para escala de cinzentos tendo em aten‹o a diferena dos canais."""
+    vermelho = pixel.getRed()
+    verde = pixel.getGreen()
+    azul = pixel.getBlue()
+    
+    int_media = int(0.299*vermelho + 0.587*verde + 0.114*azul) // 3
+    novo_pixel = cImage.Pixel(int_media,int_media, int_media)
+    return novo_pixel
+\end{lstlisting}
+
+Usando esta vers‹o obtemos uma imagem em escala de cinzento como se pode ver na figura \ref{fig:cinzab}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/cinzab.png}
+\caption{Mais cinzento}
+\label{fig:cinzab}
+\end{center}
+\end{figure}
+
+Mais uma vez, o c—digo apresentado p›e em relevo um padr‹o de transforma‹o de toda uma imagem pixel a pixel: percorremos as colunas e, para uma dada coluna todas as linhas; identificado o pixel transformamo-lo.
+
+\subsubsection{Sepia} Todos conhecem aquele tom amarelado t’pico das fotografias antigas. Esse efeito pode ser obtido mediante o recurso a f—rmulas de transforma‹o do valor de cada canal:
+
+\begin{align*}
+r_n = r \times 0.393 + g \times 0.769 + b \times 0.189)\\
+g_n = r \times 0.349 + g \times 0.686 + b \times 0.168)\\
+b_n = r \times 0.272 + g \times 0.534 + b \times 0.131)
+\end{align*}
+
+Daqui resulta o programa seguinte (onde se tem que ter o cuidado de manter os novos valores dentro do intervalo (0,255).).
+
+\begin{lstlisting}
+def sepia_pixel(pixel):
+    """ Tempo do passado."""
+    r = pixel.getRed()
+    g = pixel.getGreen()
+    b = pixel.getBlue()
+    novo_r = int((r * 0.393 + g * 0.769 + b * 0.189))
+    novo_g = int((r * 0.349 + g * 0.686 + b * 0.168))
+    novo_b = int((r * 0.272 + g * 0.534 + b * 0.131))
+    if novo_r > 255: novo_r = r 
+    if novo_g > 255: novo_g = g 
+    if novo_b > 255: novo_b = b
+    novo_pixel = cImage.Pixel(novo_r,novo_g,novo_b)
+    return novo_pixel  
+\end{lstlisting}
+
+Para obter a transforma‹o de uma imagem para sepia s— precisamos de usar o modelo j‡ conhecido. O resultado Ž mostrado na figura \ref{fig:sepia}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/sepia.png}
+\caption{Sepia}
+\label{fig:sepia}
+\end{center}
+\end{figure}
+
+
+\section{Intermezzo: abstrac‹o}
+
+Os exemplos anteriores envolvem a altera‹o de cada pixel de uma imagem de acordo com um determinado efeito pretendido: passar a negativo, passar a escala de cinzentos, passar a sepia. Para resolver esta quest‹o implement‡mos a fun‹o de transforma‹o do pixel e cri‡mos uma fun‹o geral para cada caso. Mas podemos aplicar o \textbf{princ’pio da abstrac‹o} baseados na ideia de que s— a fun‹o Ž que muda. O objectivo Ž ter uma  œnica defini‹o para \textbf{todos} os casos. Isto consegue-se passando a fun‹o como argumento do programa geral. Lembre-se que as defini›es tambŽm s‹o objectos! Da’ o novo c—digo que se segue.
+
+\begin{lstlisting}
+def transforma_imagem(imagem, funcao):
+    """ Manipula uma imagem de acordo com uma fun‹o."""
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    nova_imagem = cImage.EmptyImage(largura,altura)
+    for coluna in range(largura):
+        for linha in range(altura):
+            pixel = imagem.getPixel(coluna,linha)
+            novo_pixel = funcao(pixel)
+            nova_imagem.setPixel(coluna,linha, novo_pixel)
+    return nova_imagem
+\end{lstlisting}
+
+O programa espec’fico de transforma‹o Ž usado por um programa principal que se encarrega de mostrar as imagens numa janela.
+
+\begin{lstlisting}
+def main_funcao(imagem_ficheiro, funcao):
+    """Transforma uma imagem de acordo com a funcao."""
+    # ObtŽm imagem
+    imagem = cImage.FileImage(imagem_ficheiro)
+    # Transforma a imagem
+    imagem_nova = transforma_imagem(imagem, funcao)
+    # Define janela
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    janela = cImage.ImageWin( funcao.__name__,2*largura, altura)
+    # vizualiza
+    imagem.draw(janela)
+    imagem_nova.setPosition(largura+1,0)
+    imagem_nova.draw(janela)
+    # Termina
+    janela.exitOnClick()
+\end{lstlisting}
+
+Notar o modo como definimos o t’tulo da janela usando o atributo \texttt{\_\_name\_\_} do objecto \texttt{funcao}.
+
+\subsubsection{Brilho} Nem sempre podemos usar este padr‹o em toda a sua pureza. Escurecer, ou tornar mais clara, um imagem resume-se a diminuir, ou a aumentar, respectivamente, de um certo valor a intensidade de cada canal. Como se trata  de uma opera‹o que envolve toda a imagem, basta ent‹o definir a fun‹o de transforma‹o de um pixel e usar o mesmo modelo geral dos casos anteriores.
+
+\begin{lstlisting}
+def brilho_pixel(pixel,brilho):
+    """ Altera o brilho do pixel."""
+    r = restringe(pixel.getRed() + brilho, 0, 255)
+    g = restringe(pixel.getGreen() + brilho, 0, 255)
+    b = restringe(pixel.getBlue() + brilho,0, 255)
+    novo_pixel = cImage.Pixel(r,g,b)
+    return novo_pixel
+
+def restringe(canal,inf,sup):
+    if canal > sup:
+        canal = sup
+    elif canal < inf:
+        canal = inf
+    return canal
+\end{lstlisting}
+
+
+Para escurecer o valor do brilho deve ser negativo e para aumentar deve ser positivo. As imagens que se seguem (ver figura \ref{fig:brilho})  resultam de uma varia‹o de 100. Notar que os valores tm que ser eventualmente  truncados, recorrendo ˆ fun‹o genŽrica \texttt{restringe},  para n‹o sa’rem do intervalo permitido, no caso de imagens (0,255).
+
+\begin{figure}[h] \centering
+\subfloat[Mais Claro]
+{\includegraphics [scale=0.3]{visoes_2/imagens/brilho_mais.png}\label{fig:bmais}}
+\qquad
+\subfloat[Mais Escuro]
+{\includegraphics [scale=0.3]{visoes_2/imagens/brilho_menos.png}\label{fig:bmenos}}
+
+\caption{Alterando o brilho}\label{fig:brilho}
+\end{figure}
+
+
+
+\section{Exemplos complementares}
+Apresentados os princ’pios b‡sicos e alguns exemplos de programas que modificam de modo uniforme uma imagem, dando origem a um padr‹o de programa, est‡ na altura de passar a exemplos diferentes.
+
+
+\subsubsection{Colorir o ch‹o} Suponha que pretende cobrir o ch‹o da sua cozinha com quadrados coloridos. As cores devem ser colocadas de acordo com um padr‹o. A figura \ref{fig:chao} mostra um exemplo poss’vel. As duas cores s‹o parte da especifica‹o, ou seja devem ser consideradas como par‰metros do programa.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_2/imagens/mosaico2.jpg}
+\caption{O ch‹o da cozinha}
+\label{fig:chao}
+\end{center}
+\end{figure}
+
+ Olhando para a figura acima vemos que existe um \textbf{padr‹o}: os quadrados s‹o colocados de modo alternado. Por outro lado, como Ž dito  as formas s‹o quadradas. Finalmente, embora na imagem a cozinha tenha uma dimens‹o 4 x 3, n—s queremos uma solu‹o \textbf{geral}, ou seja, para cozinhas de dimens‹o $n \times m$. Do ponto de vista inform‡tico o que precisamos fazer? De acordo com o princ’pio geral deste tipo de aplica›es vamos ter que responder a trs sub-problemas:
+\begin{itemize}
+\item Definir uma janela onde possam ser colocados os azulejos;
+\item Gerar os quadrados de duas cores
+\item Posicionar os quadrados  na janela e mostrar a imagem
+\end{itemize}
+
+
+
+
+A primeira quest‹o, obriga-nos a saber a dimens‹o dos quadrados e as dimens›es $n \times m$ da cozinha. Claro que as duas cores tambŽm s‹o importantes. Mas disso trataremos de seguida. Da’ o nosso programa principal poder ser definido do seguinte modo:
+
+\begin{lstlisting}
+def main1(nx,ny,lado,cores):
+    janela = cImage.ImageWin('Ladrilhos',nx * lado, ny*lado)
+   # -- resto do programa  a definir aqui 
+    janela.exitOnclick()
+\end{lstlisting}
+
+
+
+A segunda quest‹o, remete para a gera‹o de quadrados coloridos. Trata-se de uma quest‹o geral, pelo que a solu‹o para o problema de gerar quadrados de \textbf{duas ou mais} cores diferentes pode ser resolvido por um œnico programa que gera um quadrado de uma cor espec’fica\footnote{Aplicamos aqui de novo o princ’pio da abstrac‹o procedimental.}. Esse programa pode depois ser chamado tantas vezes quantas as necess‡rias sendo a cor um par‰metro do programa.
+\begin{lstlisting}
+def quadrado(lado,cor):
+    """  Cria um quadrado colorido de lado. """
+    imagem = cImage.EmptyImage(lado,lado)
+    pixel = cImage.Pixel(cor[0],cor[1],cor[2])
+    for linha in range(lado):  
+        for coluna in range(lado):
+            imagem.setPixel(coluna,linha,pixel)       
+    return imagem
+\end{lstlisting}
+
+Como se pode ver, comeamos por criar uma imagem vazia, com as dimens›es apropriadas. Depois definimos um pixel com a cor indicada. A   cor Ž dada por um tuplo com os valores (r,g,b). Finalmente, colocamos o pixel em cada ponto da imagem.
+
+Falta agora a parte mais dif’cil, a quest‹o trs: posicionar os quadrados e mostrar a imagem. Pensemos um pouco e olhemos para a figura \ref{fig:lad}, que \textbf{ilustra} o caso de quadrados 2 x 2, para serem colocados numa cozinha 4 x 3.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.85]{visoes_2/imagens/ladrilhos.jpg}
+\caption{O problema do posicionamento}
+\label{fig:lad}
+\end{center}
+\end{figure}
+
+
+Os c’rculos alaranjados indicam os pontos onde cada quadrado deve comear a ser desenhado. Correspondem aos ’ndices de uma matriz 4 x 3. (0,0), (1,0), (2,0) ....ƒ a’ que devemos colocar as imagens. Mas, Ž claro, que neste caso estes pontos est‹o afastados entre si do valor do lado. Assim, na realidade, em termos da imagem, esses pontos s‹o (0,0), (lado,0), (2*lado, 0), ..... Assim o problema reduz-se a colocar 4 x 3 = 12 imagens nas posi›es referidas. Isso faz-se com dois ciclos \textbf{for}, um dentro do outro, em que s‹o gerados os \textbf{’ndices} da matriz, calculando-se em fun‹o deles o posicionamento na \textbf{imagem}. Para simplificar admitamos, por agora, que os quadrados s‹o \textbf{todos} da mesma cor:
+
+\begin{lstlisting}
+def cozinha_mono(nx,ny,lado, cor, janela):
+    """ Desenha os azulejos todos da mesma cor."""
+    for coluna in range(nx):
+        for linha in range(ny):
+            imagem = quadrado(lado, cor)
+            imagem.setPosition(coluna * lado,linha * lado)
+            imagem.draw(janela)
+\end{lstlisting}
+
+
+Se executarmos o programa apenas vemos desenhar uma cozinha com o ch‹o todo da mesma cor. N‹o Ž muito impressionante! Ent‹o com alternar entre duas cores?? Um modo poss’vel Ž notar que a soma das posi›es (x,y) do canto superior esquerdo das imagens s‹o, alternadamente, pares e ’mpares. E sabermos como determinar se um nœmero Ž par. Logo:
+\begin{lstlisting}
+def cozinha_poli(nx,ny,lado, cores, janela):
+    """ Desenha os azulejos com duas cores alternadas."""
+    for coluna in range(nx):
+        for linha in range(ny):
+            if (coluna + linha)%2 == 0:
+                # par
+                imagem = quadrado(lado, cores[0])
+            else:
+                # ’mpar
+                imagem = quadrado(lado, cores[1])
+                
+            imagem.setPosition(coluna * lado,linha * lado)
+            imagem.draw(janela)
+\end{lstlisting}
+
+
+Juntando agora todas as peas temos o programa completo:
+
+\begin{lstlisting}
+import cImage
+
+def cozinha_poli(nx,ny,lado, cores, janela):
+    """ Desenha os azulejos com duas cores alternadas."""
+    for coluna in range(nx):
+        for linha in range(ny):
+            if (coluna + linha)%2 == 0:
+                # par
+                imagem = quadrado(lado, cores[0])
+            else:
+                # ’mpar
+                imagem = quadrado(lado, cores[1])
+                
+            imagem.setPosition(coluna * lado,linha * lado)
+            imagem.draw(janela)
+                
+def quadrado(lado,cor):
+    """
+    Cria um quadrado colorido de lado.
+    """
+    imagem = cImage.EmptyImage(lado,lado)
+    pixel = cImage.Pixel(cor[0],cor[1],cor[2])
+    for linha in range(lado):  
+        for coluna in range(lado):
+            imagem.setPixel(coluna,linha,pixel)       
+    return imagem
+
+def main1(nx,ny,lado,cores):
+    janela = cImage.ImageWin('Ladrilhos',nx * lado, ny*lado)
+    cozinha_poli(nx,ny,lado,cores, janela) 
+    janela.exitOnClick()
+    
+if __name__=='__main__':
+    main1(4,3,50,[(255,0,0),(0,0,255)])
+
+\end{lstlisting}
+
+\subsubsection{Distorcer uma imagem}
+
+Pretendemos implementar uma fun‹o que nos permita ampliar uma imagem eventualmente com distor‹o. A figura \ref{fig:dist} ilustra o que se pretende. No exemplo apresentado a imagem foi ampliada duas vezes em largura e trs vezes em altura.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/distorcer.png}
+\caption{Distorcer uma imagem}
+\label{fig:dist}
+\end{center}
+\end{figure}
+
+Como podemos resolver esta quest‹o? Uma ideia muito simples consiste em \textit{ampliar cada pixel} de acordo com dois factores: um para a largura ($factor_x$) e outro para a altura ($factor_y$). Ou seja, Um pixel vai ser clonado um nœmero de vezes igual a $factor_x \times factor_y$. A figura \ref{fig:clonar} exemplifica a ideia para o caso de $3 \times 2$.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.6]{visoes_2/imagens/distorcer.eps}
+\caption{Clonar um pixel}
+\label{fig:clonar}
+\end{center}
+\end{figure}
+
+
+Entendida a ideia fica a quest‹o de saber  como determinar as posi›es dos pixeis na imagem final. Ap—s alguma reflex‹o n‹o Ž dif’cil chegar ˆ seguinte solu‹o semelhante ˆ encontrada para o problema dos ladrilhos (ver uma vez mais a figura \ref{fig:clonar}):
+
+\begin{lstlisting}
+            pixel = imagem.getPixel(coluna, linha)
+            # repete o pixel numa ‡rea definida pelos factores
+            for i_x in range(factor_x):
+                for i_y in range(factor_y):
+                    nova_imagem.setPixel(factor_x * coluna + i_x, factor_y * linha + i_y, pixel)
+\end{lstlisting}
+
+Neste modo, um pixel vai ser clonado numa ‡rea rectangular definida pelos dois factores de distor‹o. Este processo deve ser repetido para todos os pixeis da imagem original. Os exemplos anteriores mostram como se pode percorrer uma imagem pixel a pixel. Da’ o c—digo:
+
+
+\begin{lstlisting}
+def distorcer(imagem,factor_x, factor_y):
+    """
+    Altera a imagem de acordo com os factores.
+    Estes devem ser nœmeros inteiros positivos.
+    """
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    nova_imagem = cImage.EmptyImage(factor_x * largura, factor_y * altura)
+    for coluna in range(largura):
+        for linha in range(altura):
+            pixel = imagem.getPixel(coluna, linha)
+            # repete o pixel numa ‡rea definida pelos factores
+            for i_x in range(factor_x):
+                for i_y in range(factor_y):
+                    nova_imagem.setPixel(factor_x * coluna + i_x, factor_y * linha + i_y, pixel)
+    return nova_imagem
+\end{lstlisting}
+
+O que falta fazer resume-se: (1) a criar uma janela onde se possam guardar as imagens e, (2) mostrar o resultado.
+
+\begin{lstlisting}
+def ampliar(imagem, factor_x, factor_y):
+    """
+    Distorce uma imagem de acordo com os factores indicados.
+    Cada pixel vai darorigem a um rect‰ngulo de dimens›es
+    factor_x X factor_y.
+    """  
+    # Cria imagens
+    img = cImage.FileImage(imagem)
+    nova_img = distorcer(img, factor_x,factor_y)
+    # Cria janela
+    largura = img.getWidth()
+    altura = img.getHeight()    
+    janela = cImage.ImageWin('Distorce', (factor_x + 1)  * largura  , factor_y  * altura )
+    # Coloca imagens
+    img.draw(janela)
+    nova_img.setPosition(largura + 1,0)
+    nova_img.draw(janela)
+    # Termina
+    janela.exitOnClick()    
+\end{lstlisting}
+
+Note-se como se determina o tamanho da janela e a forma como se procede ao posicionamento das imagens.
+
+\subsubsection{Espelho}
+Vamos agora resolver o problema de pegar numa metade de uma imagem efectuar uma c—pia e juntar as duas partes como se uma fosse a imagem no espelho da outra. Vamos supor que usamos a metade  esquerda da nossa imagem original. A figura \ref{fig:espelho} mostra o efeito pretendido.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/espelho.png}
+\caption{Espelho vertical}
+\label{fig:espelho}
+\end{center}
+\end{figure}
+
+A quest‹o que se coloca Ž a de saber  onde vai ficar a c—pia de um dado pixel da metade esquerda. Uma observa‹o evidente Ž de que, dado o facto de o espelho ser feito em fun‹o de um eixo vertical, a linha do pixel e da c—pia Ž a mesma. J‡ em rela‹o ˆ coluna note-se que estes dois pixeis devem estar a igual dist‰ncia da extremidades (ou do meio)  da imagem final. A figura \ref{fig:pp} tenta mostrar a situa‹o.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_2/imagens/espelho.eps}
+\caption{Onde colocar os pixeis?}
+\label{fig:pp}
+\end{center}
+\end{figure}
+
+Com a informa‹o e os exemplos que j‡ acumul‡mos vamos chegar sem dificuldades a uma solu‹o inform‡tica.
+
+\begin{lstlisting}
+def espelho_v_e(imagem):
+    """Faz o espelho vertical de uma imagem, usando a sua parte esquerda."""
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    nova_imagem = cImage.EmptyImage(largura,altura)
+    for coluna in range(largura//2):
+        for linha in range(altura):
+            pixel = imagem.getPixel(coluna, linha)
+            nova_imagem.setPixel(coluna,linha,pixel)
+            nova_imagem.setPixel(largura - coluna - 1,linha,pixel)
+    return nova_imagem 
+    
+
+def espelhar(imagem_fich):
+    imagem = cImage.FileImage(imagem_fich)
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    janela = cImage.ImageWin('Espelho Vertical - Esquerda', 2*largura,altura)
+    nova_imagem = espelho_v_e(imagem)
+    nova_imagem.setPosition(largura + 1, 0)
+    imagem.draw(janela)
+    nova_imagem.draw(janela)
+    janela.exitOnClick()   
+\end{lstlisting}
+
+
+A primeira fun‹o cria a janela, cria a nova imagem e coloca tudo na janela. A segunda fun‹o (\texttt{espelhar}) faz o trabalho de manipula‹o da imagem de acordo com a estratŽgia delineada.
+
+
+\section{Filtros}
+
+Acontece com frequncia vermos imagens que sofrem de um problema conhecido como pixeliza‹o: de um modo simples esse efeito caracteriza-se por conseguirmos ver os pixeis. Muitas vezes tal resulta, por exemplo, de termos deliberadamente manipulado a imagem para esconder certa informa‹o ou de termos ampliado a imagem. A baixa resolu‹o origina o efeito de  pixeliza‹o. Uma maneira de melhorar a qualidade da imagem baseia-se numa tŽcnica que permite suavizar as transi›es entre intensidades de pixeis vizinhos.  A figura \ref{fig:blur} mostra uma imagem pixelizada e o resultado da suaviza‹o das transi›es.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_2/imagens/blur.png}
+\caption{Tratamento da pixeliza‹o}
+\label{fig:blur}
+\end{center}
+\end{figure}
+
+ƒ not—rio o desaparecimento do efeito de escada nas linhas inclinadas. Vamos ver como podemos implementar o respectivo programa de suaviza‹o da imagem. Para tal iremos modificar o valor da intensidade de um pixel em fun‹o das intensidades dos seus 9 vizinhos (ver figura \ref{fig:viz}).
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_2/imagens/vizinhos.eps}
+\caption{Vizinhana}
+\label{fig:viz}
+\end{center}
+\end{figure}
+
+A fun‹o  que vamos considerar substitui a intensidade de cada canal pelo valor \textbf{mŽdio} das intensidades dele e dos seus vizinhos. Comecemos por resolver essa quest‹o.
+
+\begin{lstlisting}
+def media(coluna, linha, imagem):
+    """Calcula o valor mŽdio dos pixeis na vizinhana do pixel (coluna,linha)."""
+    # Extrai pixeis
+    vizinhos = []
+    for c in [-1,0,1]:
+        for l in [-1,0,1]:
+            vizinhos.append(imagem.getPixel(coluna+c,linha+l))                    
+    # Calcula pixel "mŽdio" por canal
+    r = sum([vizinhos[i].getRed() for i in range(9)])//9
+    g = sum([vizinhos[i].getGreen() for i in range(9)])//9
+    b = sum([vizinhos[i].getBlue() for i in range(9)])//9
+    # Constr—i Pixel
+    novo_pixel = cImage.Pixel(r,g,b)
+    return novo_pixel
+\end{lstlisting}
+
+A nossa solu‹o desdobra-se em trs passos: (1) extrair a lista dos 9 pixeis que formam a vizinhana (linhas 4 a 7); (2) calcular o valor mŽdio por canal (linhas 9 a 11); e (3) construir o novo pixel (linha 13). A extrac‹o dos pixeis vizinhos Ž feita fabricando o endereo de cada pixel atravŽs da sua posi‹o \textbf{relativa} ao pixel que estamos a considerar. No segundo passo, vamos identificar todos os valores de cada canal espec’fico (\textit{red},\textit{green} e \textit{blue}) e calcular a sua mŽdia. O uso de listas por compreens‹o ajuda-nos a resolver a quest‹o e a tornar o programa mais leg’vel. \\
+A solu‹o apresentada resulta de uma decomposi‹o em sub-problemas que se traduz por primeiro determinar \textbf{todos} os vizinhos e s— depois ir fazer a extrac‹o da intensidade por canal. Esta Ž uma abordagem simples  e que nos permite  diminuir  a complexidade do problema inicial. E evidente que podemos proceder de outro modo juntando as duas fases: cada pixel Ž extra’do e actualiza-se a soma.
+
+\begin{lstlisting}
+def media_2(coluna, linha, imagem):
+    """Calcula o valor mŽdio dos pixeis na vizinhana do pixel (coluna,linha)."""
+    r,g,b = 0, 0, 0
+    for c in [-1,0,1]:
+        for l in [-1,0,1]:
+            nova_coluna = coluna+c
+            nova_linha = linha+l
+            pixel = imagem.getPixel(nova_coluna, nova_linha)     
+            # Actualiza pixel por canal
+            r += pixel.getRed()
+            g += pixel.getGreen()
+            b += pixel.getBlue()
+    
+    novo_pixel = cImage.Pixel(r//9,g//9,b//9)
+    return novo_pixel 
+\end{lstlisting}
+
+Deixamos ao leitor a reflex‹o acerca de qual das duas solu›es Ž a melhor.\\
+
+Sabemos agora como obter o valor mŽdio de um pixel quando se considera a sua vizinhana. Falta agora percorrer a imagem, pixel a pixel, calcular o valor mŽdio e construir a nova imagem. Mas isso j‡ temos vindo a fazer ao longo do cap’tulo. Vejamos ent‹o o resultado.
+
+\begin{lstlisting}
+def suaviza(imagem):
+    """Suaviza uma imagem."""
+    # Inicializa
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    nova_imagem = cImage.EmptyImage(largura,altura) 
+    # Percorre a imagem e calcula
+    for coluna in range(1,largura-1):
+        for linha in range(1,altura-1):
+            novo_pixel = media(coluna,linha,imagem)
+            nova_imagem.setPixel(coluna,linha,novo_pixel)
+    return nova_imagem
+\end{lstlisting}
+
+Esta solu‹o tem um aspecto menos simp‡tico. Os pixeis da primeira e œltima linha e os da primeira e œltima coluna n‹o tm os 9 vizinhos. Opt‡mos ent‹o por n‹o calcular os respectivos valores mŽdios, raz‹o pela qual os dois ciclos imbricados do programa evitam esses elementos. Deixamos ao leitor o cuidado de pensar uma solu‹o em que esse problema desaparea (ver exerc’cio \ref{ex:blur}).
+
+\subsubsection{Convolu‹o}
+A opera‹o que descrevemos para cada pixel pode ser apresentada  de outro modo. O novo valor de cada pixel Ž calculado como:
+
+\[ pixel(x,y) = \frac{1}{9} \times \left( \sum_{c = -1}^1 \sum_{l=-1}^1 pixel(x+c,y+l)\right)\]
+
+
+Esta express‹o pode ser manipulada para se obter.
+
+\[ pixel(x,y) =  \left( \sum_{c = -1}^1 \sum_{l=-1}^1 \frac{1}{9} \times pixel(x+c,y+l)\right)\]
+
+Isto significa que a \textbf{soma do produto} de $\frac{1}{9}$  pelo valor de cada elemento da vizinhana. Podemos ainda visualizar esta opera‹o de um modo simples, com se v na figura \ref{fig:convolve}. Na figura, para simplificar,  apresentamos  apenas os valores hipotŽticos para um dos canais.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{visoes_2/imagens/convolve.eps}
+\caption{Aplicar um filtro a uma imagem}
+\label{fig:convolve}
+\end{center}
+\end{figure}
+
+Dizemos que aplicamos um \textbf{filtro} ˆ imagem\footnote{TambŽm designado por m‡scara ou nœcleo.}\marginlabel{Filtro}.  O procedimento consiste percorrer  a imagem pixel a pixel,  alinhando o  \textbf{centro} do filtro com o pixel cujo novo valor queremos calcular e efectuando os c‡lculos com toda a vizinhana de acordo com a f—rmula apresentada.  Podemos generalizar esta opera‹o considerando a possibilidade de os elementos do filtro terem valores diferentes. A figura \ref{fig:gauss_1} mostra um exemplo da fam’lia dos filtros ditos \textbf{gaussianos}. Os valores aparecem na forma de frac›es em que o denominador (no exemplo 16) Ž igual ˆ soma de todos numeradores.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{visoes_2/imagens/gauss_1.eps}
+\caption{Filtro gaussiano}
+\label{fig:gauss_1}
+\end{center}
+\end{figure}
+
+Podemos adaptar a f—rmula anterior  de modo trivial:
+
+
+\[ pixel(x,y) =  \left( \sum_{c = -1}^1 \sum_{l=-1}^1 filtro(c,l) \times pixel(x+c,y+l)\right)\]
+
+
+Em termos gerais designamos esta opera‹o de \textbf{convolu‹o}. A partir da œltima  f—rmula facilmente se chega ao c—digo que efectua a opera‹o de convolu‹o a um pixel.
+
+\begin{lstlisting}
+def convolucao(x,y, imagem, filtro):
+    index = len(filtro) // 2
+    r,g,b = 0, 0, 0
+    for i in range(-index, index+1):
+        for j in range(-index,index+1):
+            pixel = imagem.getPixel(x+j,y+i)
+            r += pixel.getRed() * filtro[j+index][i+index]
+            g += pixel.getGreen() * filtro[j+index][i+index]
+            b += pixel.getBlue() * filtro[j+index][i+index]
+    r = restringe(int(r),0,255)
+    g = restringe(int(g),0,255)
+    b = restringe(int(b),0,255)
+    novo_pixel = cImage.Pixel(r, g,b) 
+    return novo_pixel
+\end{lstlisting}
+
+Note-se como se efectua a convers‹o das coordenadas do filtro relativas ao seu centro em coordenadas do filtro encarado como uma matriz, devido ˆ sua representa‹o como lista de listas. Atente-se ainda na necessidade de verificar se os valores obtidos se encontram na gama permitida, isto Ž, neste caso no intervalo $(0,255)$. Finalmente, verifique que o programa funciona desde que os filtros sejam matrizes quadradas $n\times n$, com $n$ um nœmero ’mpar.  Como se pode ver pela imagem da figura \ref{fig:gauss_2} este filtro melhora a qualidade da imagem contrariando o efeito da pixeliza‹o.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_2/imagens/gauss_1.png}
+\caption{Aplicando um filtro gaussiano}
+\label{fig:gauss_2}
+\end{center}
+\end{figure}
+
+Para correr e programa necessitamos apenas de criar o programa envolvente que percorre a imagem pixel a pixel e desenha as imagens numa janela.
+
+\begin{lstlisting}
+import cImage
+
+def convolucao(x,y, imagem, filtro):
+    index = len(filtro) // 2
+    r,g,b = 0, 0, 0
+    for i in range(-index, index+1):
+        for j in range(-index,index+1):
+            pixel = imagem.getPixel(x+j,y+i)
+            r += pixel.getRed() * filtro[j+index][i+index]
+            g += pixel.getGreen() * filtro[j+index][i+index]
+            b += pixel.getBlue() * filtro[j+index][i+index]
+    r = restringe(int(r),0,255)
+    g = restringe(int(g),0,255)
+    b = restringe(int(b),0,255)
+    novo_pixel = cImage.Pixel(r, g,b) 
+    return novo_pixel
+
+
+def mostra_convol(imagem, filtro):
+    """ Convolu‹o de uma  imagem."""  
+    # Cria imagens
+    img = cImage.FileImage(imagem)
+    nova_img = transforma_convol(img,filtro)
+    # Cria janela
+    largura = img.getWidth()
+    altura = img.getHeight()    
+    janela = cImage.ImageWin('Convolu‹o',2 * largura, altura )
+    # Coloca imagens
+    nova_img.setPosition(largura+1,0)
+    img.draw(janela)
+    nova_img.draw(janela)
+    # Termina
+    janela.exitOnClick() 
+\end{lstlisting}
+
+\subsubsection{Extrair caracter’sticas} 
+
+Existem muitos filtros cada um com a sua finalidade\footnote{Ao leitor interessado sugerimos a consulta de um livro sobre processamento de imagens digitais. Nele encontrar‡ seguramente toda a teoria que explica o uso dos filtros.}. Vamos agora expor de modo simples o uso conjugado da duas m‡scaras para a extrac‹o de lados numa imagem.  As m‡scaras em quest‹o s‹o conhecidas por operadores de Sobel\marginlabel{Operadores de Sobel}. A figura \ref{fig:sobel} mostra as respectivas matrizes. A m‡scara da esquerda permite identificar linhas verticais e a da direita linhas horizontais. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.7]{visoes_2/imagens/sobel.eps}
+\caption{Operadores de Sobel}
+\label{fig:sobel}
+\end{center}
+\end{figure}
+
+O algoritmo de detec‹o trabalha com uma imagem em escala de cinzentos. Funciona aplicando o filtro vertical, $val_x$, seguido do horizontal, $val_y$ a cada pixel. Depois calcula a intensidade recorrendo ˆ f—rmula $\sqrt{val_x^2 + val_y^2}$\footnote{A justifica‹o deste mŽtodo est‡ fora do ‰mbito deste texto.}. Restringe o valor obtido ao intervalo $(0,255)$ e define o correspondente pixel. 
+
+
+A implementa‹o do algoritmo Ž a seguinte.
+
+\begin{lstlisting}
+import cImage
+import math
+
+def extrai_caract(imagem, mascara_1, mascara_2,limiar):
+    """ Convolu‹o de uma  imagem."""  
+    # Cria imagens
+    img_cor = cImage.FileImage(imagem)
+    img = imagem_cinzentos(img_cor)
+    nova_img = transforma_convol(img,mascara_1, mascara_2,limiar)
+    # Cria janela
+    largura = img.getWidth()
+    altura = img.getHeight()    
+    janela = cImage.ImageWin('Extrai Caracter’sticas',2 * largura, altura )
+    # Coloca imagens
+    nova_img.setPosition(largura+1,0)
+    img.draw(janela)
+    nova_img.draw(janela)
+    # Termina
+    janela.exitOnClick() 
+    
+def transforma_convol(imagem,mascara_1, mascara_2,limiar):
+    """Imagem em escala de cinzentos."""
+    largura = imagem.getWidth()
+    altura = imagem.getHeight()
+    nova_imagem = cImage.EmptyImage(largura, altura)
+    index = len(mascara_1)//2   
+    for coluna in range(index,largura-index):
+        for linha in range(index,altura-index):
+            val_x = convolve(coluna,linha,imagem, mascara_1)
+            val_y = convolve(coluna,linha,imagem, mascara_2)
+            val = restringe(math.sqrt(val_x**2 + val_y**2), 0, 255)
+            novo_pixel = preto_branco_pixel(cImage.Pixel(val, val, val), limiar)
+            nova_imagem.setPixel(coluna,linha,novo_pixel)
+    return nova_imagem
+
+def convolve(x,y, imagem, filtro):
+    """Imagem em escala de cinzentos."""
+    index = len(filtro) // 2
+    r = 0
+    for i in range(-index, index+1):
+        for j in range(-index,index+1):
+            pixel = imagem.getPixel(x+j,y+i)
+            r += pixel.getRed() * filtro[j+index][i+index]
+    r = restringe(int(r),0,255)
+    return r
+\end{lstlisting}
+
+Executando o programa para diferentes valores do limiar obtemos resultados diversos (ver figura \ref{fig:op_sobel}). A qualidade das resultado tambŽm depende das caracter’sticas das imagens.
+
+\begin{figure}[h] \centering
+\subfloat[Limiar = 150]
+{\includegraphics [scale=0.3]{visoes_2/imagens/extrai_150.png}\label{fig:c150}}
+\qquad
+\subfloat[Limiar = 100]
+{\includegraphics [scale=0.3]{visoes_2/imagens/extrai_100.png}\label{fig:c100}}
+\qquad
+\subfloat[Limiar = 50]
+{\includegraphics [scale=0.3]{visoes_2/imagens/extrai_50.png}\label{fig:c50}}
+\caption{Operadores de Sobel}\label{fig:op_sobel}
+\end{figure}
+
+
+\section{O formato de imagem PPM}
+
+Uma imagem pode ser armazenada em ficheiro de forma bastante simples, recorrendo ao formato PPM (Portable Pixel Map) que pode existir no modo RAW ou no modo ASCII. ƒ sobre ficheiros neste œltimo modo que nos iremos debruar.  Um ficheiro PPM em modo ASCII come\c{c}a por uma linha com a palavra ``P3'', que identifica o formato PPM nesse modo. A segunda linha do mesmo ficheiro armazena um coment\'{a}rio, normalmente utilizado para identificar a aplica\c{c}\~{a}o respons\'{a}vel pela cria\c{c}\~{a}o do ficheiro. A terceira linha armazena dois valores inteiros, separados por um espa\c{c}o: o primeiro valor representa a largura da imagem e o segundo a sua altura. A quarta linha do ficheiro armazena um valor inteiro, que indica o valor m\'{a}ximo de cor presente na imagem. A partir da quinta linha, s\~{a}o armazenados os valores dos componentes RGB (Red, Green, Blue) de cada p\'{i}xel da imagem. Por exemplo, a quinta linha armazena o valor de {\bf vermelho} do primeiro p\'{i}xel, a sexta linha o valor de {\bf verde} do mesmo p\'{i}xel e a s\'{e}tima linha o seu valor de {\bf azul}. As 3 linhas seguintes no ficheiro armazenam os valores RGB do segundo p\'{i}xel da imagem, e assim sucessivamente. O exemplo seguinte ilustra as primeiras 10 linhas de um ficheiro PPM no formato ASCII. Trata-se neste exemplo de uma imagem criada pela aplica\c{c}\~{a}o GIMP e com dimens\~{a}o de 200x123 p\'{i}xeis:\\
+
+
+\fbox{%
+  \begin{minipage}{0.75\textwidth}
+    \begin{alltt}
+      	P3\\
+	\# CREATOR: GIMP PNM Filter Version 1.1\\
+	200 123\\
+	255\\
+	133\\
+	120\\
+	117\\
+	123\\
+	134\\
+	212\\
+	...
+    \end{alltt}
+  \end{minipage}
+}\\
+
+
+As imagens no formato PPM podem ser visualizadas recorrendo a v\'{a}rias aplica\c{c}\~{o}es, entre as quais o popular GIMP\footnote{Pode ser obtido em \url{http://www.gimp.org}.}.  O que nos interessa aqui Ž mostrar como podemos implementar um conversor entre imagens no formato que temos vindo a usar, em particular o formato \texttt{jpg}, e no formato \texttt{ppm}. 
+
+\subsubsection{De ppm para jpg}
+
+A tarefa de converter de \texttt{ppm} para o formato \texttt{jpg} ser‡ feito tendo por base o conhecimento que temos do formato destes ficheiros no modo ASCII. Na pr‡tica temos que implementar um pequeno analisador sint‡tico. Vejamos como resolvemos esta quest‹o, socorrendo-noas do m—dulo \texttt{cImage}.
+
+\begin{lstlisting}
+import cImage
+
+
+def ppm_to_pil(imagem):
+    # carrega ficheiro
+    with open(imagem,'r') as ppm_img:
+        # extrai cabealho (modo e coment‡rio)
+        ppm_img.readline()
+        ppm_img.readline()
+        # extrai dimens‹o
+        dim = ppm_img.readline().split()
+        largura = int(dim[0])
+        altura = int(dim[1])
+        # valor m‡ximo de cor
+        max_cor = ppm_img.readline()
+        # cria imagem
+        pil_img = cImage.EmptyImage(largura,altura)
+        # converte
+        for lin in range(altura):
+            for col in range(largura):
+                r = int(ppm_img.readline().rstrip('\n'))
+                g = int(ppm_img.readline().rstrip('\n'))
+                b = int(ppm_img.readline().rstrip('\n'))
+                pixel = cImage.Pixel(r,g,b)
+                pil_img.setPixel(col,lin,pixel)
+    ppm_img.close()
+    return pil_img
+
+def mostra_ppm(imagem):
+    """ Procede ˆ diminiui‹o da pixeliza‹o da imagem."""  
+    # carrega e Converte
+    img = ppm_to_pil(imagem)
+    # Cria janela
+    largura = img.getWidth()
+    altura = img.getHeight()    
+    janela = cImage.ImageWin('PPM to PIL', largura, altura )
+    # Salva imagem no disco
+    nome_ficheiro  = imagem.split('.')[0] + '_to' + '.jpg'    
+    img.save(nome_ficheiro)
+    # Coloca imagem
+    img.draw(janela)
+    # Termina
+    janela.exitOnClick() 
+\end{lstlisting}
+
+Sendo um ficheiro ASCII ele Ž aberto para leitura do modo convencional (linha 6). Depois, entre as linhas 7 e 15, lemos a informa‹o que descreve o ficheiro, guardando apenas o que Ž relevante: a dimens‹o.
+
+\subsubsection{De jpg para PPM}
+
+O processo inverso, ou seja converter uma imagem \texttt{jpg}  para PPM ASCII, tambŽm n‹o oferece muitas dœvidas e permite-nos rever algumas instru›es envolvidas na cria‹o de ficheiros de texto.
+
+\begin{lstlisting}
+def pil_to_ppm(imagem):
+    """Constr—i e salva uma imagem em formato PPM, modo ASCII."""
+    # carrega ficheiro origem
+    pil_img = cImage.FileImage(imagem)
+    largura = pil_img.getWidth()
+    altura = pil_img.getHeight()
+    nome_completo = imagem.split('/')[-1]
+    nome  = '/Users/ernestojfcosta/Desktop/' + nome_completo.split('.')[0] + '.ppm'
+    ficheiro = open(nome,'w') 
+    # constr—i cabealho (modo, coment‡rio, dimens‹o, cor m‡xima
+    ficheiro.write('P3\n')
+    ficheiro.write('# Criado por Ernesto Costa.\n')
+    ficheiro.write(str(largura) + ' ' + str(altura) + '\n')
+    ficheiro.write('255\n')
+    # Guarda pixeis
+    for lin in range(altura):
+        for col in range(largura):
+            pixel = pil_img.getPixel(col,lin)
+            r = str(pixel.getRed()) + '\n'
+            ficheiro.write(r)
+            g = str(pixel.getGreen()) + '\n'
+            ficheiro.write(g)   
+            b = str(pixel.getBlue()) + '\n'
+            ficheiro.write(b)                                   
+    ficheiro.close()
+    return ficheiro
+\end{lstlisting}
+
+Comeamos por carregar o ficheiro fonte o extrair as suas dimens›es (linhas 4 a 6). De seguida definimos o nome do novo ficheiro e abrimos para leitura (linhas 7 a 9).  Escrevemos de seguida o cabealho, isto Ž as cinco primeiras linhas que ir‹o conter por esta ordem: o c—digo \textbf{P3} que identifica o ficheiro como PPM ASCII, um coment‡rio, a largura, a altura e o valor m‡ximo da cor. Notar a necessidade de terminar cada linha por \texttt{\\n}. De seguida retiramos cada pixel da imagem original, obtemos os valores dos trs canais e escrevemos eses valores em trs linhas consecutivas. Este processo Ž repetido um nœmero de vezes igual ˆ dimens‹o da imagem (linhas 16 a 24).\\
+
+Com esta interface podemos agora efectuar todas as manipula›es anteriores com mais um formato de imagem!
+
+\section*{Sum‡rio}
+\addcontentsline{toc}{section}{Sum‡rio}
+
+Neste cap’tulo introduzimos alguns conceitos sobre imagens, o modo como podem ser representadas e v‡rias maneiras de as processar. Pusemos em relevo a existncia de um padr‹o que envolve a travessia das imagens atravŽs de dois ciclos \texttt{for}. Discutimos ainda alguns aspectos de abstrac‹o procedimental que se traduziu no uso de fun›es passadas como par‰metros. Introduzimos o m—dulo \texttt{cImage}, os seus tipos e opera›es. Criamos de seguida a nova imagem no formato pretendido (linha 17), por enquanto vazia. De seguida entramos num ciclo formado por dois \texttt{for} imbricados segundo uma l—gica que j‡ conhecemos. No interior do ciclo vamos buscar repetidamente sequncias de trs valores que formar‹o um pixel que iremos guardar na nova imagem (linhas 21 a 25). A fun‹o \texttt{mostra\_ppm} permite visualizar guardar a imagem no disco (linhas 38 e 39) e ainda visualizar  a imagem criada (linha 41).
+
+
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+Verifique se conhece os conceitos discutidos neste cap’tulo e consegue responder ˆs quest›es colocadas.
+
+\begin{itemize}
+\item O que entende por imagem \textit{bitmap}
+\item O que entende por pixel?
+\item O que entende por resolu‹o de uma imagem?
+\item O que entende por modo RGB?
+\item A ordem e o modo de percorrer uma imagem s‹o irrelevantes. Concorda com esta afirma‹o?
+\item Quais as vantagens/inconvenientes  de usar o mecanismo de abstrac‹o procedimental?
+\item  O que entende por filtro ou m‡scara?
+\item O que entende por convolu‹o
+\item O que entende por operadores de Sobel
+\item Quanto maior for o filtro usado melhor se consegue o efeito pretendido. Concorda com esta afirma‹o?
+\item Quando se usa um filtro, por que raz‹o se cria uma nova imagem?
+\end{itemize}
+
+
+\section*{Exerc’cios}\footnote{Para n‹o sobrecarregar  n‹o indicaremos de forma expl’cita que se far‡ uso do m—dulo \texttt{cImage}.}
+\addcontentsline{toc}{section}{Exerc’cios}
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que lhe permita mostrar os elementos que formam a matriz triangular inferior de uma da matriz ˆ semelhana do que foi feito para o caso da matriz triangular superior. A listagem abaixo mostra o pretendido para a matriz
+ \[mat = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]\]
+
+\begin{lstlisting}
+1
+5	6
+9	10	11
+\end{lstlisting}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que lhe permita extrair uma sub-matriz de uma matriz dada, conhecido o elemento inicial e as dimens‹o da sub-matriz. Por exemplo, se chamarmos o programa com:
+
+\begin{lstlisting}
+print(sub_matriz([[1,2,3,4],[5,6,7,8],[9,10,11,12]],1,1,2,2))
+\end{lstlisting}
+
+o resultado obtido dever‡ ser:
+\begin{lstlisting}
+[[6, 7], [10, 11]]
+\end{lstlisting}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Desenvolva um programa que lhe permita gerar uma matriz de tuplos em que cada tuplo contŽm poss’veis valores de pixeis. Os par‰metros do programa s‹o a  largura e a altura  da imagem.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\medio \label{exo:recta}
+
+Desenvolva um programa que lhe permita desenhar uma linha recta numa janela, conhecidas as coordenadas de dois dos seus pontos. Relembramos que a equa\c c‹o de uma recta Ž dada por:
+\[ y = \frac{y_{2} - y_{1}}{x_{2} - x_{1}} \times (x - x_{1}) + y_{1} \]
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que lhe permita desenhar um arco de circunferncia com uma dada amplitude, conhecidos tambŽm as coordenadas do centro e o raio. Deve ser genŽrico: no limite deve permitir desenhar uma circunferncia!
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Pretende-se implementar um programa que permita adicionar uma moldura a uma imagem. Deve ser poss’vel definir o tamanho da moldura e a sua cor. A figura \ref{fig:moldura} ilustra o pretendido.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/moldura.png}
+\caption{Acrescentar uma moldura}
+\label{fig:moldura}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\facil
+
+Implemente um programa que permita obter um corte de uma imagem. Para alŽm da imagem devem ser fornecidos ao programa o ponto de in’cio do corte e as dimens›es. A figura \ref{fig:corte} ilustra a ideia pretendida.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/corta.png}
+\caption{Corte de imagem}
+\label{fig:corte}
+\end{center}
+\end{figure}
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Discutimos um modelo para transformar toda uma imagem alterando um a um os seus pixeis de acordo com a mesma fun‹o de transforma‹o. Vamos aplicar esse modelo ao caso da transforma‹o de uma imagem a cores numa a \textbf{preto e branco}. A figura \ref{fig:pb} ilustra o pretendido. \textbf{Sugest‹o}: Para obter a imagem a preto e branco converta cada pixel para cinzento e depois compare com um limiar (por exemplo 128). Os maiores que o limiar s‹o transformados em branco (ou seja (255,255,255))  e os menores ou igual em preto (ou seja em (0,0,0)).
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.7]{visoes_2/imagens/pb.png}
+\caption{A preto e branco}
+\label{fig:pb}
+\end{center}
+\end{figure}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Desenvolva um programa que lhe permita variar a intensidade dos pixeis de modo \textbf{independente}, isto Ž, a varia\c c‹o no vermelho, no verde e no azul pode ser diferente.
+
+\end{Exercicio}
+
+
+\begin{Exercicio}\dificil
+
+Vimos um exemplo de como ampliar uma imagem, eventualmente com distor‹o. O problema agora Ž o inverso. Implementar um programa que permita reduzir uma imagem, uma vez mais com eventual distor‹o. A figura \ref{fig:reduc} ilustra o que se pretende.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_2/imagens/encolher.png}
+\caption{Redu‹o de uma imagem}
+\label{fig:reduc}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Vimos no texto como pegar na metade esquerda de uma imagem, criar uma c—pia e juntar as duas partes como se fossem a imagem no espelho uma da outra. Pretende-se agora fazer algo semelhante, mas em que usamos a metade superior da imagem e o espelho Ž feito segunda uma perspectiva horizontal. A figura \ref{fig:esph} mostra o efeito pretendido.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/espelho_h.png}
+\caption{Espelho horizontal}
+\label{fig:esph}
+\end{center}
+\end{figure}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Muitas vezes acontece termos que reduzir as cores de uma imagem a um  nœmero limitado de cores. O processo de redu‹o passa por determinar para cada pixel qual a cor mais pr—xima de entre as cores dispon’veis. Implemente o programa que lhe permite fazer essa transforma‹o. Por exemplo, para a palete de cores:
+
+\begin{lstlisting}
+palete_cores = [(255,0,0), (0,255,0), (0,0,255), (0,0,0), (255,255,255), (255,255,0), (0,255,255), (255,0,255)] 
+\end{lstlisting}
+
+A execu‹o do nosso programa para a imagem com os dois c‹es, que temos vindo a usar ao longo do cap’tulo, resulta no que a figura \ref{fig:reduz} ilustra.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/reduz.png}
+\caption{Redu‹o de cores}
+\label{fig:reduz}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Pretendemos desenvolver um programa que permita fazer uma colagem a partir de v‡rias imagens. As imagens podem ter tamanhos diferentes, terem sido manipuladas para criar diversos efeitos, e ser colocadas em posi›es espec’ficas da janela de visualiza‹o.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio\label{ex:blur}
+
+Estud‡mos o problema de minimizar o efeito da pixeliza‹o. A nossa solu‹o evita considerar o bordo da imagem o que se traduz por uma fina moldura de cor preta. Reveja o programa e altere-o por forma que tal n‹o acontea. A figura \ref{fig:blur2} mostra o resultado pretendido. \textbf{Sugest‹o}: no bordo calcule a mŽdia dos vizinhos existentes.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{visoes_2/imagens/blur_2.png}
+\caption{Suavizar sem moldura}
+\label{fig:blur2}
+\end{center}
+\end{figure}
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Nas aulas fal‡mos no conceito de Kernel (ou filtro, ou m‡scara) e mostr‡mos como o conceito podia ser usado para detectar os contornos de uma figura. Vamos agora explorar v‡rios tipos de filtros. Fa\c ca uma pesquisa no \textbf{Google} pelas palavras \textbf{convolution} e \textbf{kernel} e descubra  filtros diferentes dos apresentados neste cap’tulo. Escolha as imagens do seu agrado e aplique  sobre  elas o respectivo filtro. Visualize o resultado.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Um modo de eliminar o ru’do de uma fotografia consiste em considerar para cada pixel e cada canal a mediana dos valores do pixel e dos seus vizinhos. O c‡lculo da mediana faz-se ordenando os valores e considerando o que est‡ na posi‹o do meio. Implemente o respectivo programa.
+
+\end{Exercicio}
+
+\begin{Exercicio}\medio
+
+Pretende-se um programa que permita pegar em duas imagens e fabricar uma terceira. Desenvolva o programa de forma modular de modo a controlar o processo que usa para combinar os pixeis das imagens. A t’tulo de exemplo, na imagem \ref{fig:funde} apresentamos uma combina\c c‹o entre Einstein e Gandhi.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.2]{visoes_2/imagens/funde_e_g_media.jpg}
+\caption{{ Gandstein}}
+\label{fig:funde}
+\end{center}
+\end{figure}
+
+
+\end{Exercicio}
+
+\begin{Exercicio}\dificil \label{exo:roda90}
+
+Desenvolva um programa que dada uma imagem a roda de 90 graus. O sentido Ž ˆ sua escolha.
+\end{Exercicio}
+
+\begin{Exercicio}\muitodificil
+
+Neste exemplo pretendemos resolver uma quest‹o semelhante ˆ do exemplo \ref{exo:roda90}. S— que, agora, pretende-se que a rota\c c‹o possa ser de um ‰ngulo arbitr‡rio. \textbf{Nota:} A resolu\c c‹o desta quest‹o obriga a saber algo sobre transla\c c‹o de sistemas de eixos, de trignometria e de ‡lgebra.
+\end{Exercicio}
+
+\begin{Exercicio}\muitodificil
+Muitas vezes queremos enviar imagens encriptadas. Para isso vamos criar um mŽtodo que consiste em alterar a ordem das linhas da imagem original de modo aleat—rio. Quem receber a mensagem e conhecer o modo como se misturaram as linhas deve ser capaz de reconstruir a imagem original. Implemente os respectivos programas. A figura \ref{fig:encrip} ilustra o pretendido.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.3]{visoes_2/imagens/encripta.png}
+\caption{Encriptar uma imagem}
+\label{fig:encrip}
+\end{center}
+\end{figure}
+\end{Exercicio}
+

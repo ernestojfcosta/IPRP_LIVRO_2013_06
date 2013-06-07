@@ -1,0 +1,152 @@
+% This file was created with JabRef 2.7.2.
+% Encoding: UTF8
+
+@ELECTRONIC{DG2009,
+  author = {Allen Downey and Mark Goadrich},
+  year = {2009},
+  title = {How to think like a (Python 3.0) programmer},
+  date-added = {2010-07-16 16:25:21 +0100},
+  date-modified = {2010-07-16 16:30:24 +0100},
+  keywords = {Python and Programming},
+  publisher = {-},
+  urldate = {http://mark.goadrich.com/courses/csc207f09/book/thinkPP.pdf}
+}
+
+@BOOK{Guzdial2005,
+  title = {Introduction to computing and programming in Python},
+  publisher = {Pearson},
+  year = {2005},
+  author = {Mark Guzdial},
+  date-added = {2010-07-16 16:14:05 +0100},
+  date-modified = {2010-07-16 16:15:04 +0100}
+}
+
+@BOOK{Hetland2005,
+  title = {Beginning Python: from novice to professional},
+  publisher = {Apress},
+  year = {2005},
+  author = {Magnus Lie Hetland},
+  date-added = {2010-07-16 16:18:37 +0100},
+  date-modified = {2010-07-16 16:19:37 +0100}
+}
+
+@BOOK{Lutz2009,
+  title = {Learning Python (4th edition)},
+  publisher = {O'Reilly},
+  year = {2009},
+  author = {Mark Lutz},
+  date-added = {2007-08-24 11:11:06 +0100},
+  date-modified = {2010-07-16 16:09:52 +0100}
+}
+
+@BOOK{Lutz2006,
+  title = {Programming Python (3rd Edition)},
+  publisher = {O'Reilly},
+  year = {2006},
+  author = {Mark Lutz},
+  date-added = {2010-07-16 16:11:26 +0100},
+  date-modified = {2010-07-16 16:12:31 +0100}
+}
+
+@BOOK{Martelli2005,
+  title = {Python Cookbook},
+  publisher = {O'Reilly},
+  year = {2005},
+  author = {Alex Martelli and Anna Martelli Ravenscroft and David Ascher},
+  date-added = {2010-07-16 16:17:01 +0100},
+  date-modified = {2010-07-16 16:18:13 +0100}
+}
+
+@BOOK{McGugan2007,
+  title = {Beginning Game DEvelopment with Python and Pygame},
+  publisher = {Apress},
+  year = {2007},
+  author = {Will McGugan},
+  date-added = {2010-07-16 16:21:07 +0100},
+  date-modified = {2010-07-16 16:21:54 +0100}
+}
+
+@BOOK{Miller2009,
+  title = {Python: programming in context},
+  publisher = {Jones and Bartlett},
+  year = {2009},
+  author = {Bradley N. Miller and David L. Ranum},
+  date-added = {2010-07-16 16:09:58 +0100},
+  date-modified = {2010-07-16 16:11:08 +0100}
+}
+
+@BOOK{Miller2006,
+  title = {Problem solving with Algorithms and Data Structures},
+  publisher = {Franklin, Beedle \& Associates},
+  year = {2006},
+  author = {Bradley N. Miller and David L. Ranum},
+  date-added = {2010-07-16 16:15:28 +0100},
+  date-modified = {2010-07-16 16:16:37 +0100}
+}
+
+@BOOK{Sande2009,
+  title = {Hello world: computer programming for kids and other beginners},
+  publisher = {Manning},
+  year = {2009},
+  author = {Warren Sande and Carter Sande},
+  date-added = {2010-07-16 16:12:55 +0100},
+  date-modified = {2010-07-16 16:13:58 +0100}
+}
+
+@PERIODICAL{Stefik1986,
+  title = {Object-Oriented Programming: themes and variations},
+  year = {1986},
+  volume = {6(4)},
+  author = {M. Stefik and D. Bobrow and D. Winter},
+  date-added = {2007-08-25 16:39:54 +0100},
+  date-modified = {2007-08-25 16:44:14 +0100},
+  journal = {AI Magazine},
+  pages = {41}
+}
+
+@BOOK{Summerfield2009,
+  title = {Programming in Python 3: a complete introduction to the Python language},
+  publisher = {Addison Wesley},
+  year = {2009},
+  author = {Mark Summerfield},
+  date-added = {2010-07-16 16:23:17 +0100},
+  date-modified = {2010-07-16 16:24:46 +0100}
+}
+
+@BOOK{Vaingast2009,
+  title = {Beginning Python Vizualization},
+  publisher = {Apress},
+  year = {2009},
+  author = {Shai Vaingast},
+  date-added = {2010-07-16 16:20:07 +0100},
+  date-modified = {2010-07-16 16:20:54 +0100}
+}
+
+@INPROCEEDINGS{Wegner1987,
+  author = {Peter Wegner},
+  title = {Dimensions of object-based language design},
+  booktitle = {OOPSLA '87 Conference proceedings on Object-oriented programming
+	systems, languages and applications},
+  year = {1987},
+  owner = {ernestojfcosta},
+  timestamp = {2012.09.26}
+}
+
+@BOOK{Younker2008,
+  title = {Foundations of Agile Python Development},
+  publisher = {Apress},
+  year = {2008},
+  author = {Jeff Younker},
+  date-added = {2010-07-16 16:22:09 +0100},
+  date-modified = {2011-07-23 19:20:14 +0100}
+}
+
+@BOOK{Zelle2004,
+  title = {Python programming: introduction to computer science},
+  publisher = {Franklin, Beedle \& Associates},
+  year = {2004},
+  author = {John Zelle},
+  date-added = {2007-08-24 11:07:09 +0100},
+  date-modified = {2007-09-22 19:01:30 +0100}
+}
+

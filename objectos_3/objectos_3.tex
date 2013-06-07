@@ -1,0 +1,424 @@
+%%% cap0???
+%%% Ernesto Costa
+%%% Versão 1: Maio 2013
+
+
+
+\chapter{Objectos (III)}\label{cap:objectos3}
+
+
+\begin{objectivos}
+\item 
+\item 
+\item 
+\item 
+\item
+\end{objectivos}
+
+
+\section{Introdução}
+
+
+\subsection{Segunda Versão: matrizes e o módulo \texttt{numpy}}\label{sec:seg}
+
+Existem muitas aplicações, em particular cientificas, que envolvem vectores e matrizes de grandes dimensões. Para estas situações o recurso a listas como método de representação é muito pouco eficiente. Existe um módulo chamado \texttt{numpy} que nos permite definir e trabalhar com objectos como os vectores e as matrizes. O módulo não está pré-definido em \python, sendo por isso necessário descarregá-lo e instalá-lo convenientemente. Em \url{http.scipy.org} encontrará toda a informação necessária para o fazer.\\
+
+Os objectos podem ser criados de vários modos, sendo comum o recurso ao construtor \texttt{array}. Os objectos deste tipo são colecções ordenadas a várias dimensões, homogéneas e mutáveis. A listagem \ref{lst:mat} mostra algumas operações (funções e métodos) que podem ser efectuadas com objectos deste tipo. O leitor interessado em ter uma ideia completa das possibilidades deste módulo deve consultar o respectivo manual.
+
+\begin{lstlisting}[caption={Algumas operações}, label=lst:mat,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+>>> mat = array([[1,2,3],[4,5,6],[7,8,9]])
+>>> mat
+array([[1, 2, 3],
+       [4, 5, 6],
+       [7, 8, 9]])
+>>> id(mat)
+140217586423248
+>>> type(mat)
+<type 'numpy.ndarray'>
+>>> mat.shape
+(3, 3)
+>>> mat[1]
+array([4, 5, 6])
+>>> mat[1,2]
+6
+>>> mat[:,1]
+array([2, 5, 8])
+>>> mat.diagonal()
+array([1, 5, 9])
+>>> fliplr(mat)
+array([[3, 2, 1],
+       [6, 5, 4],
+       [9, 8, 7]])
+>>> add.reduce(mat, axis=0)
+array([12, 15, 18])
+>>>
+\end{lstlisting}
+
+Na linha 1 criámos uma matriz de $3\times3$. Sendo um objecto podemos verificar os seus três atributos, valor, identidade e tipo (linhas 2,6 e 8). A linha 10 mostra as dimensões da matriz. Existem as operações de indexação e de fatiamento. As linhas de 12 a 17 mostram como se acede a um elemento, linha ou coluna. Podemos também obter a diagonal principal (linha 18), obter a imagem no espelho ao longo do eixo vertical (linha 20), ou ainda somar todos os elementos por linhas (axis = 1) ou por colunas (axis = 0).\\
+
+Vamos agora mostrar uma implementação muito semelhante à anterior mas que usa matrizes.
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+"""Quadrado Mágico. 
+Programação descendente.
+Uso de matrizes
+"""
+
+__author__ = 'Ernesto Costa'
+__date__ = 'October 2011'
+
+from numpy import *
+
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not linhas(quadrado,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	elif not colunas(quadrado, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		return diagonais(quadrado,num_magico), num_magico
+
+# -- Número mágico
+def nm(mat):
+	lin,col = mat.shape
+	return (lin ** 3 + lin) / 2
+
+# -- Linhas
+def linhas(quadrado,num_magic):
+	for linha in quadrado:
+		if soma(linha) != num_magic:
+			return False
+	return True
+
+# Colunas
+def colunas(quadrado, num_magic):
+	aux = quadrado.transpose()
+	for coluna in aux:
+		if soma(coluna) != num_magic:
+			return False
+	return True
+# Diagonais
+def diagonais(quadrado,num_magic):
+	aux = [quadrado.diagonal(),fliplr(quadrado).diagonal()]
+	for diagonal in aux:
+		if soma(diagonal) != num_magic:
+			return False
+	return True
+
+# soma
+def soma(elem):
+	return elem.sum()
+
+if __name__ == '__main__':
+	quadrado_3 = array([[4,9,2],[3,5,7],[8,1,6]])
+	quadrado_4 = array([[16,3,2,13],[5,10,11,8],[9,6,7,12],[4,15,14,1]])
+	quadrado_5 = array([[17,24,1,8,15],[23,5,7,14,16],[4,6,13,20,22],
+		[10,12,19,21,3],[11,18,25,2,9]])
+	print quadrado_5
+	print quadrado_magico(quadrado_5)
+\end{lstlisting}
+
+A lógica do programa não foi alterada, apenas nos limitamos a usar as funções e métodos que nos facilitam a implementação da verificação das colunas e das diagonais. Mas podemos fazer um pouco melhor, alterando as funções para as linhas, colunas e diagonais e tornando a função para a soma desnecessária.
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+from numpy import *
+
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not linhas(quadrado,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	elif not colunas(quadrado, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		return diagonais(quadrado,num_magico), num_magico
+
+
+
+# -- Número mágico
+def nm(mat):
+	lin,col = mat.shape
+	return (lin ** 3 + lin) / 2
+
+# -- Linhas
+def linhas(quadrado,num_magic):
+	res = add.reduce(quadrado, axis = 1)
+	for val in res:
+		if val != num_magic:
+			return False
+	return True
+
+# Colunas
+
+def colunas(quadrado,num_magic):
+	res = add.reduce(quadrado, axis = 0)
+	for val in res:
+		if val != num_magic:
+			return False
+	return True
+
+# Diagonais
+def diagonais(quadrado,num_magic):
+	aux = array([quadrado.diagonal(),fliplr(quadrado).diagonal()])
+	res = add.reduce(aux, axis = 1)
+	for val in res:
+		if val != num_magic:
+			return False
+	return True
+\end{lstlisting}
+
+Olhando para esta solução verificamos que, agora, as funções para as linhas, colunas e diagonais são muito semelhantes. podemos por isso tornar o programa mais compacto, criando uma única definição para os três casos. Isso obriga a alterar ligeiramente o programa principal e a usar na nova definição, chamada \texttt{somas}, um parâmetro adicional para distinguir os três casos. Introduzindo uma nova função do módulo, \texttt{alltrue}, podemos dar à função \texttt{somas} uma versão muito simples\footnote{Esta alteração podia ter já sido usada anteriormente, como é óbvio.}.
+
+\begin{lstlisting}[caption={Versão (quase) final}, label=lst:qm_3,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+from numpy import *
+
+def quadrado_magico(quadrado):
+	num_magico = nm(quadrado)
+	# Verifica linhas
+	if not somas(quadrado,num_magico,1):
+		return False, num_magico
+	# Verifica colunas
+	elif not somas(quadrado, num_magico,0):
+		return False, num_magico
+	# Verifica diagonais
+	else:
+		diagonais = array([quadrado.diagonal(),fliplr(quadrado).diagonal()])
+		return somas(quadrado,num_magico,1), num_magico
+
+# -- Número mágico
+def nm(mat):
+	lin,col = mat.shape
+	return (lin ** 3 + lin) / 2
+
+# -- Somas
+def somas(quadrado,num_magic, eixo):
+	res = add.reduce(quadrado, axis = eixo)
+	return alltrue(res == num_magic)
+\end{lstlisting}
+
+A lição a retirar deste novo exercício é um pouco a mesma da solução anterior: avançar devagar e tentar usar mecanismos de abstracção. Ao olhar para as várias soluções desta secção, também é evidente que quanto melhor conhecermos a linguagem e as suas potencialidades  em melhores condições estaremos para contruir programas simples, legíveis e eficientes.
+
+\section{Intermezzo}\label{sec:inter}
+
+\subsection{Funções como argumentos}
+Vimos na secção \ref{sec:pri} que as funções auxiliares para verificar as linhas, as colunas e as diagonais recorrem todas ao mesmo template genérico: 
+\begin{lstlisting}
+def verifica(quadrado,num_magic):
+	for elem in func(quadrado):
+		if soma(elem) != num_magic:
+			return False
+	return True
+\end{lstlisting}
+
+
+
+Será que é possível ter uma única definição que cubra os três casos? Se pensarmos um pouco em problemas parecidos com este, isto significa que procuramos saber se é possível que a função genérica \texttt{func} possa variar em diferentes chamadas, isto é, se pode ser acrescentada como \textbf{argumento} à definição. Se pensarmos que tudo em \python são objectos, logo uma definição é um objecto, não custa aceitar que podemos resolver a questão:
+
+
+\begin{lstlisting}
+def verifica(quadrado,num_magic, func):
+	for elem in func(quadrado):
+		if soma(elem) != num_magic:
+			return False
+	return True
+\end{lstlisting}
+
+
+Aquando da chamada concreta associamos o nome \texttt{func} com o nome (na realidade a \textbf{referência}) da função concreta! O leitor interessado pode imaginar outras situações em que este mecanismo pode ser vantajoso.
+
+\subsection{Listas por compreensão} 
+
+Regressemos ao problema da transposta de uma matriz. O padrão usado é muito vulgar. E uma vez mais podemos ter código mais legível caso conheçamos as construções que a linguagem \python permite. Uma delas são as \textbf{listas por compreensão}.
+Para ilustrar o conceito, suponhamos que queremos escrever um programa que nos permite construir uma lista com $n$ números inteiros, escolhidos aleatoriamente no intervalo $[1,100]$. Uma solução óbvia seria.
+
+\begin{lstlisting}
+import random
+
+def gera_lista(n):
+    lista = []
+    for i in range(n):
+        lista.append(random.randint(1,100))
+    return lista
+\end{lstlisting}
+
+Recorrendo a listas por compreensão teríamos.
+ 
+ \begin{lstlisting}
+def gera_lista_b(n):
+    return [random.randint(1,100) for i in range(n)]
+\end{lstlisting}
+
+
+A forma mais simples de uma lista por compreensão é:\\
+
+\textbf{[ <expressão> for <item> in <iterável> ]}\\
+
+ É tão trivial que pode não fazer nada:
+ \begin{lstlisting}
+>>> [ i for i in [1,2,3]]
+[1, 2, 3]
+>>> 
+\end{lstlisting}
+
+Ou então coisas muito simples, como calcular o quadrado dos elementos numa lista e devolver a lista dos resultados.
+
+\begin{lstlisting}
+>>> [i ** 2 for i in [1,2,3]]
+[1, 4, 9]
+>>> 
+\end{lstlisting}
+
+Mas também pode ter associado um filtro, como formar uma lista com os elementos pares que aparecem noutra lista.
+
+\begin{lstlisting}
+>>> [i for i in [1,2,3,4,5,6] if i % 2 == 0]
+[2, 4, 6]
+>>> 
+\end{lstlisting}
+
+Como as listas por compreensão apenas necessitam de um iterável, e como o seu resultado é uma lista, logo um objecto iterável, podemos ter listas por compreensão \textbf{imbricadas}.
+
+\begin{lstlisting}
+>>> [ [i**2 for i in elem] for elem in [[1,2,3],[4,5,6]]]
+[[1, 4, 9], [16, 25, 36]]
+>>> [i**2 for elem in [[1,2,3],[4,5,6]] for i in elem]
+[1, 4, 9, 16, 25, 36]
+>>>
+\end{lstlisting}
+
+O exemplo acima mostra a importância do modo como se usa esta construção. Mais alguns exemplos:
+
+\begin{lstlisting}
+>>> [ i * j for i in [1,2,3] for j in ['a','b','c']]
+['a', 'b', 'c', 'aa', 'bb', 'cc', 'aaa', 'bbb', 'ccc']
+>>> [i for elem in [[1,-2,3],[-4,5,-6]] for i in elem if i > 0]
+[1, 3, 5]
+>>> 
+\end{lstlisting}
+
+Podemos agora regressar ao problema da transposta de uma matriz, usando listas por compreensão:
+
+\begin{lstlisting}
+def col_b(quadrado):
+	return [[quadrado[j][i] for j in range(len(quadrado[0]))] for i in range(len(quadrado))]
+\end{lstlisting}
+
+Uma linha apenas de código! \\
+
+O recurso a matrizes para resolver o problema do quadrado mágico também nos dá uma oportunidade para mostrar como o uso de listas por compreensão nos faz chegar a novas soluções. A listagem abaixo mostra como podemos implementar a função \texttt{somas}. A função \texttt{all} verifica se todos os elementos do vector são \texttt{True}\footnote{Este exemplo serve apenas disso: exemplo. Já sabemos que podemos usar a função \texttt{alltrue}.}. 
+
+\begin{lstlisting}
+def somas(quadrado, num_magic, eixo):
+	res = add.reduce(quadrado, axis = eixo)
+	return all([val == num_magic for val in res])
+\end{lstlisting}
+
+
+
+
+\section{Terceira Versão: com classe}\label{sec:tri}
+
+Em \python os objectos têm todos três características comuns: identidade, valor e tipo. Sabemos da existência de vários tipos: inteiros, vírgula flutuante, complexos, cadeias de caracteres, listas. O tipo de um objecto determina os valores que o objecto pode ter e as operações que sobre ele podem ser feitas. Também já sabemos da existência de funções e de métodos, e referimos que os métodos são funções específicas de um certo tipo de objecto. Um aspecto importante nunca referido, é que os tipos são implementados como \textbf{classes}. Não podemos entrar aqui muito em detalhe sobre o que são classes. Seguramente já ouviu falar em \textbf{programação orientada aos objectos} e o papel que as classes assumem nesse paradigma de programação. Aqui basta referir que uma classe é um \textbf{modelo} geral de um objecto, descrevendo não apenas os seus atributos mas também as operações (os métodos) que lhe estão associados. Vamos aproveitar este exemplo do quadrado mágico, não para introduzir a programação orienta aos objectos, mas antes para mostrar como podemos definir uma classe e criar os seus objectos. Vejamos então a classe \texttt{Matriz}.
+
+\begin{lstlisting}[caption={A classe matriz: versão simpificada}, label=lst:mat_c,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+from numpy import *
+
+class Matriz(object):
+    
+    # construtor
+    def __init__(self,dim):
+        self.dim = dim
+        self.valor = zeros(dim*dim,int).reshape(dim,dim)
+        
+    # Acessores
+    def get_dim(self):
+        return self.dim
+    
+    def get_valor(self):
+        return self.valor
+    
+    def get_linhas(self):
+        return self.valor[:]
+    
+    def get_linha(self,i):
+        return self.valor[i]
+    
+    def get_colunas(self):
+        return self.valor[:,arange(self.dim)]
+    
+    def get_coluna(self,j):
+        return self.valor[:,j]
+    
+    def get_diagonais(self):
+        return list((self.valor.diagonal(), fliplr(self.valor).diagonal()))
+    
+    # Modificadores
+    def set_valores(self,valor):
+	self.valor = array(valor).astype(int)
+	
+    # Utilidades
+    def soma(self,valor):
+        return add.reduce(valor,1)
+\end{lstlisting}
+
+Desta listagem podemos retirar um conjunto de factos. Em primeiro lugar, uma matriz é um objecto com dois atributos: dimensão e valor. Em segundo lugar, existem vários métodos que podem ser divididos em categorias: construtores, acessores, modificadores, utilidades. Os construtores permitem criar objectos do tipo, os acessores dão acessos aos atributos do objecto e os modificadores permitem modificar o objecto. Neste exemplo simples os nomes dos métodos são auto-explicativos. O método \texttt{soma} devolve uma lista em que cada elemento é o inteiro correspondente à soma dos valores numa dada linha. O que vamos fazer agora é criar um objecto do tipo \texttt{Matriz} e resolver o problema do quadrado mágico.
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+# Quadrado Mágico
+def main(matriz):
+	num_magico = nm(matriz)
+	# Verifica linhas
+	soma_linhas = matriz.soma(matriz.get_linhas())
+	if not all_equal_nm(soma_linhas,num_magico):
+		return False, num_magico
+	# Verifica colunas
+	soma_colunas = matriz.soma(matriz.get_colunas())
+	if not all_equal_nm(soma_colunas, num_magico):
+		return False, num_magico
+	# Verifica diagonais
+	soma_diagonais = matriz.soma(matriz.get_diagonais())
+	return all_equal_nm(soma_diagonais,num_magico), num_magico
+
+# -- Número mágico
+def nm(mat):
+	lin,col = mat.dim,mat.dim
+	return (lin ** 3 + lin) / 2
+    
+def all_equal_nm(mat,num_magic):
+    return alltrue(mat == num_magic)
+\end{lstlisting}
+
+Como se pode observar a estrutura da solução é semelhante ao que temos vindo a propor, só que agora usamos os métodos próprios para matrizes quadradas. Para executar o programa temos apenas que criar um objecto do tipo matriz e chamar o programa de modo adequado. Vejamos um exemplo disso.
+
+\begin{lstlisting}[caption={}, label=lst:x,backgroundcolor=\color{cinza},numbers=left, numberstyle=\footnotesize]
+if __name__ == '__main__':
+    matriz_3 = Matriz(3) # cria objecto do tipo Matriz
+    quadrado_3 = [[4,9,2],[3,5,7],[8,1,6]]
+    matriz_3.set_valores(quadrado_3) # Instancia o objecto com o candidato a quadrado mágico
+    print main(matriz_3) # chama o programa principal
+\end{lstlisting} 
+
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+
+\section*{Teste os seus conhecimentos}
+\addcontentsline{toc}{section}{Teste os seus conhecimentos}
+
+
+\begin{itemize}
+\item 
+\item 
+\item
+\item 
+\end{itemize}
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+

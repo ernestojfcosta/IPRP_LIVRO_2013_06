@@ -1,0 +1,763 @@
+%%% cap 09
+
+\chapter{Aplicações}
+
+\epigraph{Um método de solu\c cão é perfeito se pudermos antecipar desde o início, e mesmo provar, que seguindo esse método alcan\c caremos o nosso objectivo.}{Leibnitz, \textit{Opuscules}}
+
+\begin{objectivos}
+\item Estudar alguns exemplos clássicos de programa\c cão
+\item Introduzir elementos de metodologia da programa\c cão
+\item Através dos exemplos ampliar o conhecimento da linguagem de programa\c cão
+\end{objectivos}
+
+\section{Introdu\c cão}
+A resolu\c cão de problemas por recurso ao computador exige conhecimento sobre:
+
+\begin{itemize}
+\item o domínio do problema
+\item a linguagem de programa\c cão
+\item o processo de desenvolvimento de programas
+\end{itemize}
+
+
+\marginlabel{Números Primos}Quando o problema é simples ou trivial estas questões não parecem ser importantes, mas devemos ganhar o hábito, mesmo nessas circunstâncias, em ser rigorosos. Suponhamos que o nosso problema é o de determinar todos os \textbf{números primos} até um dado $n$. Relativamente ao domínio do problema,  temos que estar conscientes de que se trata de resolver um problema envolvendo os números inteiros naturais. Temos que saber a defini\c cão de número primo: não tem divisores próprios. Temos que saber o que é um divisor próprio de um número: o resto da divisão do número pelo divisor tem que ser zero, sendo que não contam nem o número 1 nem o próprio número. Temos que saber o que é a divisão de dois números. E por diante. Do ponto de vista da linguagem de programa\c cão, na situa\c cão mais simples, temos que conhecer as suas intru\c cões destrutivas e de controlo e ainda os objectos que podemos usar para representar os dados do problema.  No que toca ao processo de desenvolvimento, temos que identificar muito bem o que nos é dado e o que nos é pedido, temos que por em evidência rela\c cões conhecidas entre os dados e o resultado, e temos que ter um plano que nos permita chegar, usando as constru\c cõe da linguagem e o que sabemos sobre o domínio do problema, dos dados ao resultado pretendido. Um dos métodos mais eficazes de desenvolvimento de programas é o da divisão do problema em sub-problemas, a reso\c cão de cada sub-problema e, finalmente, a combina\c cão dos resultados dos sub-problemas para se obter o resultado final. Vejamos então com o caso dos números primos.\\
+
+Numa primeira abordagem podemos numa solu\c cão que passa por percorrer os números de modo ascendente e identificando todos os que forem primos. Numa primeira decisão temos que decidir se vamos apenas mostrar um a um os números primos ou se os queremos listar todos de uma só vez. No primeiro caso, basta imprimir, no segundo guardamos os elementos e depois de os termos todos fornecemos o resultado. Indo por este segundo caminho um primeiro esbo\c co de solu\c cão é apresentado na listagem \ref{lst:primo1}.
+
+\begin{lstlisting}[caption=Números primos: primeiro esbo\c co,label=lst:primo1]
+def primos1(n):
+	'Primos: usa acumulador'
+	res=[]
+	for i in range(2,n+1):
+		if primo1(i):
+			res.append(i)
+	return res
+\end{lstlisting}
+
+Deste modo conseguimos resolver o nosso problema inicial, se o sub-problema que consiste em determinar se um número é primo for também ele solucionado. Sabemos que um número é primo se não tiver divisores próprios. Daí que uma solu\c cão simples seja a de gerar potenciais divisores de modo ascendente filtrando os que realmente o são. Se no final não existir nenhum divisor, o número é primo. Em fun\c cão da solu\c cão apresentada na listagem \ref{lst:primo1} a nossa margem  para op\c cões está reduzida.  A listagem \ref{lst:primo2} apresenta o resultado.
+
+
+\begin{lstlisting}[caption=Números primos: sub-problema,label=lst:primo2]
+def primo1(n):
+	'primo: usa acumulador'
+	res=[]
+	for i in range(2,(n/2)+1):
+		if (n % i) == 0:
+			res.append(i)
+	return (len(res) == 0)
+\end{lstlisting}
+
+Nesta solu\c cão está patente algum conhecimento sobre o domínio. Por exemplo, não vale a pena procrurar divisores em números que são maiores que metade do número (\lstinline!range(2,(n/2)+1)!).
+No resto, e se olharmos para as duas listagens, podemos ver que as solu\c cões seguem a mesma filosofia de resolu\c cão: gerar candidatos  filtrando os que satisfazem uma condi\c cão.  Do ponto de vista da programa\c cão recorremos  também ao mesmo conceito: um acumulador (\textbf{res}). São padrões de solu\c cão deste tipo que um bom programador interioriza ao longo do tempo. \\
+
+Sempre que se nos depara um problema, a procura da solu\c cão deve obedecer a alguns princípios: elegância, legibilidade, eficiência, por exemplo. Muitas vezes, para um dado problema, estes princípios são contraditórios entre si. Mas devemos procurar que possam conviver conjuntamente. Na procura de solu\c cões alternativas devemos ainda ter em linha de conta que todos os programas, mais tarde ou mais cedo, vão ser lidos por outros e vão ser alterados. Isto refor\c ca o que dissemos anteriormente e chama também a aten\c cão para o aspecto da documenta\c cão do código. Neste exemplo simples vamos só mostrar uma outra solu\c cão que beneficia do conhecimento de outras constru\c cões da linguagem \python, neste caso listas por compreensão.
+
+\begin{lstlisting}[caption=De novo os números primos: alternativa,label=lst:primo3]
+# -- Variante com listas por compreensão
+def primos2(n):
+	return [i for i in range(2,n+1) if primo2(i)]
+	
+def primo2(n):
+	res = [i for i in range(2,(n/2)+1) if (n % i) == 0]
+	return len(res) == 0
+\end{lstlisting}
+
+
+\marginlabel{Quadrado Mágico}Passemos a outro exemplo.Todos já ouvimos falar de \textbf{quadrados mágicos}. Trata-se de uma matriz de $n \times n$, de números inteiros entre $1$ e $n^2$, colocados de tal modo que a soma dos números em todas as linhas, colunas e diagonais é igual ao mesmo número $M$, conhecido por \textbf{constante mágica}. O valor da constante mágica é dado por:
+
+\[M(n)=\frac{n^3 + n}{2}\]
+
+A figura \ref{fig:quad3} mostra um exemplo de um quadrado mágico $3 \times 3$, cuja constante mágica é 15.
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad3.eps}
+\caption{{\bf Quadrado Mágico $3 \times 3$}}
+\label{fig:quad3}
+\end{center}
+\end{figure}
+
+Propomo-nos para já a resolu\c cão de duas questões: determinar a constante mágica e saber se um dado objecto representa ou não um quadrado mágico. Em abstracto podemos dizer como resolver a primeira questão: admitindo que é um quadrado mágico basta calcular a soma segundo uma linha ou uma coluna ou uma diagonal.  A solu\c cão é  apresentada na listangem \ref{lst:cmag}.
+
+\begin{lstlisting}[caption=Constante Mágica,label=lst:cmag]
+def constante_mag(quad):
+	'Admitimos que é um quadrado mágico'
+	dim=dimensao(quad)
+	return (dim ** 3 + dim)/2
+
+def dimensao(quad):
+	"""Quadrado mágico representado como uma
+	lista de listas"""
+	return len(quad)
+\end{lstlisting}
+
+Como verificamos o programa limita-se a usar a fórmula anteriormente referida. O leitor poderá achar estranho termos desdobrado em duas defini\c cões ambas pequenas e simples. Uma razão está no facto que assim a primeira defini\c cão fica independente da representa\c cão do quadrado mágico.\\
+
+No que toca a determinar se um objecto representa um quadrado mágico temos que verificar se a soma de cada linha, coluna ou diagonal é igual à constante mágica. Daqui resulta um programa simples em que os três aspectos são verificados em sequência, conforme se apresenta na listagem \ref{lst:quad1}.
+
+\begin{lstlisting}[caption=quadrado Mágico: solu\c cão geral,label=lst:quad1]
+def quad_mag(quad):
+	cm= constante_mag(quad)
+	# soma por linhas: todas iguais à constante mágica?
+	for linha in linhas(quad):
+		if soma(linha) != cm:
+			return False
+	# soma por colunas: todas iguais à constante mágica?
+	for coluna in colunas(quad):
+		if soma(coluna) != cm:
+			return False
+	# soma por diagonais: todas iguais à constante mágica?
+	for diag in diagonais(quad):
+		if soma(diag) != cm:
+			return False
+	return True
+\end{lstlisting}
+
+Conforme se pode observar, esta solu\c cão não depende da representa\c cão escolhida para o quadrado. Admitamos que usamos uma lista de listas. Deste modo podemos implementar também sem dificuldade as fun\c cões que são usadas no programa principal. É isso que apresentamos na listagem \ref{lst:quad2}.
+
+\begin{lstlisting}[caption=Quadrado Mágico: fun\c cões complementares,label=lst:quad2]
+def linhas(quad):
+	return quad
+	
+def colunas(quad):
+	# quad(l,c) --> quad(c,l)
+	dim=len(quad)
+	return [[ quad[c][l] for c in range(dim)] for l in range(dim)]
+
+def diagonais(quad):
+	dim=len(quad)
+	diag1= [quad[i][i] for i in range(dim) ]
+	diag2= [quad[l][c] for l in range(dim) for c in range(dim) if l + c == dim - 1]
+	return [diag1,diag2]	
+
+
+def soma(lista):
+	return sum(lista)
+\end{lstlisting}
+
+Como verificamos duas das fun\c cões são triviais (i.e., \textbf{linhas} e \textbf{soma}). Isto deriva da representa\c cão escolhida em \python. A defini\c cão \textbf{colunas} faz implicitamente uma opera\c cão de transposi\c cão como as utilizadas para matrizes. Assim o elemento na posi\c cão $(i,j)$ passa para a posi\c cão $(j,i)$. Finalmente a implementa\c cão de \textbf{diagonais} usa o princípio de que na diagonal principal os índices são iguais, e os elementos na diagonal secundária têm índices cuja soma é igual à dimensão da matriz menos 1 (menos 1 porque em \python os índices come\c cam em zero!). Nestes dos últimos casos o rrecurso a listas por compreensão facilitou a vida. De qualquer modo não seria complicado o recurso a constru\c cões mais simples.\\
+
+Este é mais um exemplo de como se pode construir um programa de modo descendente e adiando o mais possível o problema da representa\c cão, i.e., dos objectos a utilizar.\\
+
+\marginlabel{Inverte e Soma}Os números e as suas opera\c cões associadas por vezes têm propriedades surpreendentes.  Escolhamos um número natural. Se considerarmos os dígitos que o compõe ele ou é um palíndrome (por exemplo, 121) ou não (por exemplo, 195). Caso não o seja, podemos inverte-lo e somar os dois números. Uma vez mais o resultado pode ser um novo número que é capicua ou não. Caso não o seja repetir  o processo até chegarmos a uma capicua. É este problema que queremos resolver com o computador. Vamos admitir que podemos indicar quantos números queremos testar e qual o seu valor máximo. À saída o computador deve indicar o número inicial, o palíndrome obtido e no número de passos necessários até encontrar o resultado.  A  listagem \ref{lst:inv1} mostra a nossa primeira aproxima\c cão à solu\c cão.
+
+\begin{lstlisting}[caption=Inverte e Soma,label=lst:inv1]
+def rev_add(n,maximo):
+	numeros=[randint(1,maximo) for i in range(n)]
+	for num in numeros:
+		print 'Número inicial: %d, número de iterações: %d, palíndrome %d' % pal(num)
+	return
+\end{lstlisting} 
+
+Temos agora que implementar a defini\c cão principal que nos vai permitir a partir do número fabricar num certo número de passos a solu\c cão. Há então dois aspectos fundamentais a ter em conta: a contagem do número de passos e a soma do número com o seu inverso. Este processo tem que ser executado um número indefinido de vezes pelo que a op\c cão só pode ser um ciclo \textbf{while}. Daí o programa da listagem \ref{lst:inv2}.
+
+\begin{lstlisting}[caption=Fabrica o palíndrome,label=lst:inv2]
+def pal(num):
+	"""Se não for possível entra em ciclo..."""
+	aux = num
+	conta=0
+	while not palindrome(aux):
+		conta = conta +1
+		aux = aux + inverso_num(aux)
+	return (num,conta, aux)
+\end{lstlisting}
+
+Para terminar o cálculo do inverso de um número. Uma solu\c cão simples é apresentada em \ref{lst:inv3}.
+
+\begin{lstlisting}[caption=Inverte número,label=lst:inv3]
+def inverso_num(num):
+	return int(str(num)[::-1])
+\end{lstlisting}
+
+Simulemos para 7 números menores ou igual a 1000.
+
+\begin{lstlisting}
+>>> rev_add(7,1000)
+Número inicial: 946, número de iterações: 4, palíndrome 44044
+Número inicial: 474, número de iterações: 0, palíndrome 474
+Número inicial: 11, número de iterações: 0, palíndrome 11
+Número inicial: 203, número de iterações: 1, palíndrome 505
+Número inicial: 759, número de iterações: 2, palíndrome 7887
+Número inicial: 925, número de iterações: 2, palíndrome 5995
+Número inicial: 217, número de iterações: 1, palíndrome 929
+>>>
+\end{lstlisting}
+
+Alguns comentários sobre a solu\c cão. Já referimos que transformar um problema num programa que o resolve obriga a por em jogo conhecimento sobre o domínio, sobre a linguagem e sobre o processo. Neste exemplo o simples, usámos basicamente conhecimento sobre o processo e sobre a linguagem \python. Em rela\c cão a esta salientamos dois aspectos: listas por compreensão (para gerar a lista dos números) e cadeias de caracteres e conversão de tipos (inversão de um número). Não sabendo destas possibilidades como poderíamos, mesmo assim, resolver o problema? A resposta está na listagem \ref{lst:inv4}. 
+
+\begin{lstlisting}[caption=Alternativas,label=lst:inv4]
+def rev_add(n,maximo):
+	# Gera números
+	numeros=[]
+	for i in range(n):
+		numeros.append(randint(1,maxino))
+	# Calcula
+	for num in numeros:
+		print 'Número inicial: %d, número de iterações: %d, palíndrome %d' % pal(num)
+	return
+		
+def inverte(num):
+	"""Números na bese 10. Uso das posições"""
+	aux=0
+	while num > 0:
+		digit= num % 10
+		num = num / 10
+		aux = aux * 10 + digit
+	return aux
+
+\end{lstlisting}
+
+Note-se que, para a primeira situa\c cão voltámos a depender de conhecimento sobre a linguagem, enquanto que não segunda situa\c cão recorremos a conhecimento sobre o domínio.  Um número qualquer é dado por:
+
+\[b_{k}b_{k-1}\ldots b_{1}b_{0}= 10^k  \times b_{k} + 10^{k-1} \times b_{k-1} + \ldots +10^1 \times b_{1} + 10^0 \times b_{0} \]
+
+\marginlabel{Pirâmides}Vejamos  um último exemplo introdutório. Para além dos aspectos relacionados com o processo, iremos ver como em \python podemos aumentar o poder da linguagem por recurso a módulos.
+Suponhamos que alguém nos diz que pretende um programa para desenhar o objecto que vemos na figura \ref{fig:pira1}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/piramide.jpg}
+\caption{Que linda pirâmide}
+\label{fig:pira1}
+\end{center}
+\end{figure}
+
+A primeira questão que seguramente nos colocamos é a de saber se é \textbf{exactamente esta} pirâmide cujo desenho se pretende. Dir-nos-ão que não. A altura da pirâmide pode ser qualquer. Feita esta clarifica\c cão o nosso segundo pensamento deverá ser algo como: quais sãos os \textbf{dados} do problema? Qual o \textbf{resultado} pretendido? O que sei sobre o \textbf{domínio} que me possa ajudar a transformar os dados no resultado? É aqui que temos que come\c car a alinhar umas ideias. Fazer um desenho pode ajudar. Assim a figura \ref{fig:des1} tenta clarificar a questão.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/piramide1.eps}
+\caption{Um desenho diz mais do que mil palavras?}
+\label{fig:des1}
+\end{center}
+\end{figure}
+
+Vamos supor que decidimos recorrer ao módulo \textbf{xturtle}\footnote{Neste momento em todo o rigor a decisão pelo módulo \textbf{xturtle} não era ainda necessária. Igualmente o facto de apresentarmos a solu\c cão já em \textbf{Python} não é fundamental. No nosso caso consideramos que a linguagem \textbf{Python} é a que melhor permite expressar psedo-código!} para efectivar o desenho. Isso permite um primeiro esbo\c co do programa como se mostra na listagem \ref{lst:prog1}.
+
+\begin{lstlisting}[caption='De vagar se vai ao longe \ldots', label=lst:prog1]
+from xturtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	return 'Fim'
+
+\end{lstlisting}
+
+Chegou a altura de lembrar uma frase famosa do pai da linguística moderna, Ferdinand de Saussure, que dizia que é o ponto de vista que cria o objecto. Assim vou olhar para a pirâmide \textbf{como se fosse} uma sequência ordenada de linhas que crescem de cima para baixo. Implícito nesta forma de ver estão decisões (vou desenhar de cima para baixo) e abstra\c cões (não vejo os quadrados mas apenas linhas de tamanho distinto). A partir daqui é fácil chegar à conclusão de que uma maneira simples de resolver o problema é dividi-lo em sub-problemas em que cada um consiste no desenho de uma linha. Daí a segunda versão do nosso programa.
+
+\begin{lstlisting}[caption='Continuemos\ldots', label=lst:prog2]
+from xturtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+\end{lstlisting}
+
+Não é difícil entender o recurso ao ciclo \textbf{for}: afinal trata-se de uma ac\c cão que é repetida um número conhecido de vezes! A figura \ref{fig:des2} ilustra o mecanismo de decomposi\c cão do problema e delega\c cão da solu\c cão parcial.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/piramide2.eps}
+\caption{Onde estamos \ldots}
+\label{fig:des2}
+\end{center}
+\end{figure}
+
+É tempo de pensarmos nas linhas. Agora podemos olhar mais de perto e \textit{reparar} que as linhas são feitas de \ldots quadrados! Como anteriormente é fácil concluir (basta olhar para a figura \ref{fig:pira1}) que na linha \textbf{i} são desenhados \textbf{i} quadrados.  Então já não nos espantaremos com a proposta de programa \ref{lst:prog3}.
+
+\begin{lstlisting}[caption='Chegaram os quadrados \ldots', label=lst:prog3]
+from xturtle import *
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+	return 'Fim'
+\end{lstlisting}
+
+Como desenhar um quadrado em \textbf{xturtle}? Todos sabemos, espero bem. Eis uma hipótese de código:
+
+\begin{lstlisting}[caption='Um quadrado de lado 20 \ldots', label=lst:prog4]
+def desenha_quadrado():
+	for i in range(4):
+		fd(20)
+		rt(90)
+	return 'Fim'
+\end{lstlisting}
+
+Mas e se quisermos desenhar sucessivas pirâmides com níveis e lados distintos. Bom, uma solu\c cão muito simples será associar um nome ao valor do lado e depois usar o nome na defini\c cão \footnote{O leitor atento poderá perguntar porque não fazemos como no caso dos níveis tornando o \textbf{lado} um \textbf{parâmetro} do programa \textbf{desenha\_quadrado}? Podíamos fazer, sim senhor. Isso obriga a outras mudan\c cas no resto do programa. Deixamos ao leitor a tarefa de seguir por esse caminho.}. Está na hora de juntar tudo e testar o programa. A listagem \ref{lst:prog5} mostra o programa, enquanto a figura \ref{fig:des3} dá uma ideia das dependências entre partes do programa. 
+
+\begin{lstlisting}[caption='Tudo junto \ldots', label=lst:prog5]
+from xturtle import *
+
+lado = 20
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+\end{lstlisting}
+
+
+\begin{figure}[!htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/piramide3.eps}
+\caption{O primeiro produto}
+\label{fig:des3}
+\end{center}
+\end{figure}
+
+Quando executamos o programa acontece no entanto que vemos a nossa tartaruga, à maneira de Sísifo, a desenhar sempre o mesmo quadrado apresentando no final  o resultado que a figura \ref{fig:quad1} ilustra. Aqui tem que entrar o nosso conhecimento sobre o módulo \textbf{xturtle}. Acontece que a tartaruga é colocada inicialmente no ponto de coordenadas $(0,0)$. Desenhado o primeiro quadrado da primeira linha a posi\c cão final da tartaruga é a mesma, pelo que ele come\c ca a desenhar o quadrado seguinte na mesma posi\c cão. Temos portanto duas questões distintas: nem desenha linha a linha, nem, para uma dada linha desenha a sucessão de quadrados. Este é um problema que já sabíamos que era necessário resolver. Apenas não nos quisemos preocupar logo com esta questão. Está agora na hora da o fazer.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad1.jpg}
+\caption{Mas que linda ... quadrado!}
+\label{fig:quad1}
+\end{center}
+\end{figure}
+
+Comecemos com o problema de desenhar uma linha de quadrados. A questão é que precisamos de fazer avan\c car a posi\c cão da tartaruga cada vez que se pretender desenhar um quadrado novo. Tratando-se de uma linha horizontal basta para tal alterar a coordenada \textbf{x} da tartaruga. De quanto? Bom pela figura \ref{fig:pira1} é evidente que esse valor é igual ao valor do lado! Feitas as altera\c cões temos uma nova versão coma a listagem \ref{lst:prog6} ilustra.
+
+
+\begin{lstlisting}[caption='Um problema já está resolvido \ldots', label=lst:prog6]
+from xturtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def main():
+	piramide(3)
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Ao executarmos o programa (com o número de níveis igual a 3) o nosso programa desenha \textbf{numa mesma linha} seis quadrados,  como se pode ver na figura \ref{fig:quad2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad2.jpg}
+\caption{Tanto quadrado \ldots fora do sítio!}
+\label{fig:quad2}
+\end{center}
+\end{figure}
+
+Este resultado era de esperar. É desenhado o quadrado da primeira linha, mais dois da segunda e mais três da terceira. É manifesto que temos que fazer o nosso programa \textit{mudar de linha} no momento certo. E esse instante é sempre que eu desenhar uma linha. Qual o valor que se deve \textit{descer}? O valor do lado. Esta é a parte fácil. 
+
+
+\begin{lstlisting}[caption='Mudar de linha \ldots', label=lst:prog7]
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		pd()
+	return 'Fim'
+\end{lstlisting}
+
+Mas se corremos de novo o programa o que sê é o que mostramos na figura \ref{fig:quad4}. Está melhor mas não chega!
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad4.jpg}
+\caption{Mudar de linha só não chega \ldots}
+\label{fig:quad4}
+\end{center}
+\end{figure}
+
+
+A figura \ref{fig:quad4}  mostra que é preciso fazer \textit{recuar} a coordenada \textbf{x} cada vez que se desenha uma linha. Mas quanto? Bom analisando a figura vemos que tal depende do tamanho da linha anteriormente desenhada. Daí que a solu\c cão correcta seja a que se apresenta na listagem \ref{lst:prog8}.
+
+\begin{lstlisting}[caption='Versão final', label=lst:prog8]
+from xturtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		setx(xcor() - i * lado - float(lado)/2)
+		pd()
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		desenha_quadrado()
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def main():
+	piramide(3)
+	ht()
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Executado o programa obtemos o lindo resultado da figura \ref{fig:quad3}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad3.jpg}
+\caption{Agora sim!}
+\label{fig:quad3}
+\end{center}
+\end{figure}
+
+Podemos continuar a melhorar o programa introduzindo varia\c cões a nosso gosto e relacionadas, neste caso, com a possibilidades oferecidas pelo módulo \textbf{xturtle}. Ilustramos uma situa\c cão (listagem \ref{lst:prog9} e figura \ref{fig:quad5}) em que introduzimos um pouco de cor e aumentámos a dimensão do tra\c co da caneta.
+
+\begin{lstlisting}[caption='Versão coloridal', label=lst:prog9]
+from random import randint
+from xturtle import *
+
+lado = 40
+# posição inicial
+pu()
+setx(0)
+sety(0)
+pd()
+
+def piramide(niveis):
+	# desenha pirâmide
+	for i in range(1, niveis + 1):
+		desenha_linha(i)
+		# actualiza posição
+		pu()
+		sety(ycor() - lado)
+		setx(xcor() - i * lado - float(lado)/2)
+		pd()
+	return 'Fim'
+
+def desenha_linha(linha):
+	# desenha linha
+	for i in range(linha):
+		#desenha_quadrado() # preto e branco
+		quadrado() # a cores
+		# nova posição
+		pu()
+		setx(xcor() + lado)
+		pd()
+	return 'Fim'
+
+def desenha_quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	return 'Fim'
+	
+def quadrado():
+	# desenha
+	r=randint(0,255)
+	g=randint(0,255)
+	b=randint(0,255)
+	fillcolor(r,g,b)
+	fill(True)
+	for i in range(4):
+		fd(lado)
+		rt(90)
+	fill(False)
+	return 'Fim'
+	
+def main():
+	pencolor('blue')
+	pensize(3)
+	colormode(255)
+	piramide(5)
+	ht()
+	raw_input()
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/quad5.jpg}
+\caption{Pirâmide colorida}
+\label{fig:quad5}
+\end{center}
+\end{figure}
+
+% o ponto de vista
+
+Citámos Ferdinand de Saussure e a sua frase famosa \textit{é o ponto de vista que cria o objecto}. Usámos a cita\c cão para  explicar como é que o modo como olhamos para um problema determina em parte a forma como o resolvemos. Na solu\c cão anterior vimos primeiro uma pirâmide feita de linhas, linhas que mais tarde apareceram como sequências de quadrados. Mas imaginemos que olhávamos para a figura de outro modo. Suponhamos que consideramos que afinal estamos na presen\c ca de diagonais de tamanho decrescente (da esquerda para a direita), como ilustra a figura \ref{fig:pirdiag}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{cap09/imagens/pirdiago.eps}
+\caption{A pirâmide vista de outro modo \ldots}
+\label{fig:pirdiag}
+\end{center}
+\end{figure}
+
+Seguindo o método já utilizado fácil é chegar a um primeiro esbo\c co de programa como o que apresentamos na listagem \ref{lst:diag}.
+
+\begin{lstlisting}[caption='Primeira aproxima\c cão', label=lst:diag]
+from xturtle import *
+
+lado=30
+setx(0)
+sety(0)
+
+def pir(niv):
+	for i in range(niv,0,-1):
+		diagonal(i)
+		
+def diagonal(n):
+	for i in range(n):
+		quadrado()
+
+		
+def quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+\end{lstlisting}
+
+SE mandarmos executar é evidente que não vai dar por razões semelhantes à versão baseada em linhas horizontais. É preciso que as diagonais \textit{avancem} da esquerda para a direita e que sejam formadas por quadrados. Isso leva-nos à versão completa dada na listagem \ref{lst:diag2}.
+
+\begin{lstlisting}[caption='Versão final', label=lst:diag2]
+from xturtle import *
+
+lado=30
+setx(0)
+sety(0)
+
+def pir(niv):
+	for i in range(niv,0,-1):
+		diagonal(i)
+		pu()
+		setx(xcor() - (i * float(lado)/2) + lado)
+		sety(ycor() - i * lado)
+		pd()
+		
+def diagonal(n):
+	for i in range(n):
+		quadrado()
+		pu()
+		setx(xcor() + float(lado)/2)
+		sety(ycor() + lado)
+		pd() 
+		
+def quadrado():
+	for i in range(4):
+		fd(lado)
+		rt(90)
+		
+		
+def main():
+	pir(5)
+	ht()
+	raw_input()
+	
+
+
+if __name__ == '__main__':
+	main()
+\end{lstlisting}
+
+Fica ao cuidado do leitor explorar outras \textit{visões}.
+
+
+
+\section{Procura}
+
+\section{Ordenamento}
+
+\section{Jogo \textit{racquetball}}
+
+\section{Sistemas-L}
+
+\section{Biologia}
+
+\section{Corrector Ortográfico}
+
+\section{Caos}
+
+Estamos em condições de passar a um exemplo que vai exigir um pouco mais de nós. Aqui vai.\\
+
+O crescimento de uma população num dado ecosistema pode ser aproximado pela equação \ref{eq:logmap} conhecida por mapa logístico.
+
+\begin{equation}
+x_{n+1}=\mu x_{n}(1 - x_{n}) \label{eq:logmap}
+\end{equation}
+
+Nesta equação $\mu$ representa a taxa de crescimento intrínseca da população. Vejamos como podemos escrever um programa que nos resolve o problema de dado um valor inicial e uma taxa de crescimento ficarmos a saber que valores $x_{n+1}$ vai tomando. O programa aparece na listagem \ref{prog:log}.
+
+
+\lstinputlisting[caption={O mapa logístico}, label=prog:log]{cap09/programas/exemp11.py}
+
+Para além de alguns aspectos de cosmética este programa tem três aspectos conceptuais importantes relativamente ao que já vimos.
+
+\begin{enumerate}
+\item Definimos duas funções em vez de apenas uma e o nome de uma delas aparece na outra;
+\item Aparece uma nova instrução de controlo: o ciclo \texttt{for}. Esta instrução manda repetir de modo controlado o conjunto de instruções que aparece no seu interior,
+\item A intrução \texttt{return} que manda terminar o programa devolvendo um dado valor ($0$ neste caso).
+\end{enumerate}
+
+Se \textbf{executarmos} o programa vejamos o que acontece:
+
+\begin{lstlisting}
+
+>>> main()
+
+Programa para ilustrar comportamentos de sistemas simples
+
+Valor inicial (entre 0 e 1): 0.25
+Valor do coeficiente (entre 0 e 4): 3.5
+Numero de valores a calcular: 10
+0.65625
+0.78955078125
+0.581561207771
+0.851717192854
+0.442032556878
+0.863239214383
+0.413200455971
+0.848630437048
+0.449598864274
+0.866109039311
+ \end{lstlisting}
+O nosso programa imprime os valores para a população ao fim de 10 gerações quando parte do valor $0.25$ e para uma taxa de crescimento de $3.5$.
+
+\subsection{Visões}
+
+\subsubsection*{Versão 1}
+
+Alteremos o programa de modo a podermos ver o que se passa quando mudamos a taxa de crescimento $\mu$ (ver figura \ref{fig:log}). Os valores considerados são $\mu = 2.5, 3.3,3.5 e 3.9$.
+
+
+
+\begin{figure}[!htb]
+\centering 
+\includegraphics[scale=0.4]{cap09/imagens/log_4.eps} 
+\caption{Os quatro comportamentos do mapa logístico}
+\label{fig:log}
+\end{figure}
+
+Podemos testar vários valores mais mas acabamos sempre por chegar aos mesmos tipos de comportamentos com valores de fronteira nem sempre fáceis de estabelecer. Nos três primeiros casos retratados na figura é claro que após um período inicial de alguma instabilidade o sistema caminha para um estado \textit{estável}. Na primeira situação, o sistema converge para o mesmo valor, para um\textbf{ponto fixo}. Na segunda situação, passa a oscilar entre dois valores. Na terceira, alterna periodicamente entre quatro valores. Pode-se provar que os valores de oscilação vão duplicando em função do tempo. Para uma taxa de crescimento $\mu_{\infty}=3.569946...$ o número de valores de oscilação é infinito. Uma questão que se colocava era de saber como se comportava o sistema para valores de $\mu$ superiores ao valor $\mu_{\infty}$. Essa situação está retratada no quarto gráfico quando o sistema assume um comportamento  dito \textbf{caótico}. \\
+
+Mas do ponto de vista informático que novos conceitos e construções surgiram? Vejamos a listagem do programa que permite calcular os valores e mostrar os quatro gráficos.
+
+\lstinputlisting[caption={O mapa logístico: taxa variável}, label=prog:logtaxa]{cap09/programas/exemp14.py}
+
+Olhando para o essencial do código existem dois conceitos importantes.
+
+
+
+\subsubsection*{Versão 2}
+
+Deste exemplo tão simples na aparência podemos ver como se pode fazer ciência com a ajuda do computador. Como se pode fazer um novo tipo de ciência: baseada na experimentação e na visualização. Vejamos o que acontece quando para um valor de $\mu > 3.5$ alteramos ligeiramente as condições iniciais. Um exemplo é dado pela figura \ref{fig:caos}.
+
+\begin{figure}[!htb]
+\centering 
+\includegraphics[scale=0.4]{cap09/imagens/log_3.eps} 
+\caption{E o caos aparece!}
+\label{fig:caos}
+\end{figure}
+
+A figura traduz uma das características dos sistemas caóticos: a sua sensiblidade às condições iniciais. Com efeito é claro que uma variação diminuta do ponto de partida leva o sistema para valores muito distintos ao longo do tempo.
+
+Tentemos estudar um sistema no regime caótico de um outro modo. Para isso vamos fazer variar $\mu$ e para cada um dos seus valores calculamos a órbita do sistema a partir do mesmo valor inicial identificando os valores após o período inicial de instabilidade. O resultado pode ser visto na figura \ref{fig:orb1}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{cap09/imagens/orbita1.eps} 
+\caption{O diagrama das órbitas}
+\label{fig:orb1}
+\end{figure}
+
+Podemos observar o comportamento de duplicação dos valores de oscilação e, a partir de um dado momento, o comportamento caótico.
+
+Mas se fizermos zoom numa dada zona caótica o que se passará? O resultado pode ser visto na figura \ref{fig:orb2}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{cap09/imagens/orbita2.eps} 
+\caption{Invariância de escala!}
+\label{fig:orb2}
+\end{figure}
+
+Para nossa surpresa reencontramos a mesma figura. Estamos perante outra característica dos sistemas caóticos: invariância de escala. Existem vários exemplos de sitemas caóticos. O tempo é talvez o mais emblemático pois diz-nos que é difícil fazer previsões a longo termo. E mesmo a curto termo por vezes falham!\\
+
+A moral desta curta história é de que os computadores são um auxiliar precioso na compreensão de determinados fenómenos. Para tanto apenas tivemos que o programar!
+
+\section*{Sumário}
+\addcontentsline{toc}{section}{Sumário}
+
+\section*{Leituras Adicionais}
+\addcontentsline{toc}{section}{Leituras Adicionais}
+
+\section*{Exercícios}
+\addcontentsline{toc}{section}{Exercícios}
+

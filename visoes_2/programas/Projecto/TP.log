@@ -1,0 +1,935 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.12.1)  25 OCT 2010 20:48
+entering extended mode
+ \write18 enabled.
+ %&-line parsing enabled.
+**TP.tex
+(./TP.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, german-x-2009-06-19, ngerman-x-2009-06-19, ancientgreek, ibycus, ar
+abic, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutc
+h, esperanto, estonian, farsi, finnish, french, galician, german, ngerman, mono
+greek, greek, hungarian, icelandic, indonesian, interlingua, irish, italian, ku
+rmanji, latin, latvian, lithuanian, mongolian, mongolian2a, bokmal, nynorsk, po
+lish, portuguese, romanian, russian, sanskrit, serbian, slovak, slovenian, span
+ish, swedish, turkish, ukenglish, ukrainian, uppersorbian, welsh, loaded.
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/report.cls
+Document Class: report 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@chapter=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/local/texlive/2009/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip43
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2009/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks14
+\ex@=\dimen103
+))
+(/usr/local/texlive/2009/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen104
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count88
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count89
+\leftroot@=\count90
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count91
+\DOTSCASE@=\count92
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen105
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count93
+\c@MaxMatrixCols=\count94
+\dotsspace@=\muskip10
+\c@parentequation=\count95
+\dspbrk@lvl=\count96
+\tag@help=\toks15
+\row@=\count97
+\column@=\count98
+\maxfields@=\count99
+\andhelp@=\toks16
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
+\@envbody=\toks17
+\multlinegap=\skip44
+\multlinetaggap=\skip45
+\mathdisplay@stack=\toks18
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2008/07/06 v3.8l The Babel package
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/babel/portuges.ldf
+Language: portuges 2008/03/18 v1.2q Portuguese support from the babel system
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2008/07/06 v3.8l Babel common definitions
+\babel@savecnt=\count100
+\U@D=\dimen112
+)
+Package babel Info: Making " an active character on input line 145.
+))
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks19
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2009/08/25 v0.04m Graphics/color for pdfTeX
+\Gread@gobject=\count101
+))
+\Gin@req@height=\dimen113
+\Gin@req@width=\dimen114
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks20
+\inpenc@posthook=\toks21
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/applemac.def
+File: applemac.def 2008/03/30 v1.1d Input encoding file
+))
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2001/02/13 v0.1j Color table columns (DPC)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/tools/array.sty
+Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen115
+\extrarowheight=\dimen116
+\NC@list=\toks22
+\extratabsurround=\skip46
+\backup@length=\skip47
+)
+\everycr=\toks23
+\minrowclearance=\skip48
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2009/10/09 v6.79a Hypertext links for LaTeX
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2009/01/23 v0.5 Provides ifxetex conditional
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/hycolor.sty
+Package: hycolor 2009/10/02 v1.5 Code for color options of hyperref/bookmark (H
+O)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/xcolor-patch.sty
+Package: xcolor-patch 2009/10/02 xcolor patch
+))
+\@linkdim=\dimen117
+\Hy@linkcounter=\count102
+\Hy@pagecounter=\count103
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2009/10/09 v6.79a Hyperref: PDFDocEncoding definition (HO)
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2007/12/12 v1.2 Prefix for e-TeX command names (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2007/09/09 v1.2 Providing info/warning/message (HO)
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2009/08/13 v3.4 Keyval support for LaTeX options (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2009/07/30 v1.5 Key value parser with default handler suppor
+t (HO)
+))
+Package hyperref Info: Option `colorlinks' set `true' on input line 2864.
+Package hyperref Info: Hyper figures OFF on input line 2975.
+Package hyperref Info: Link nesting OFF on input line 2980.
+Package hyperref Info: Hyper index ON on input line 2983.
+Package hyperref Info: Plain pages OFF on input line 2990.
+Package hyperref Info: Backreferencing OFF on input line 2995.
+
+Implicit mode ON; LaTeX internals redefined
+Package hyperref Info: Bookmarks ON on input line 3191.
+(/usr/local/texlive/2009/texmf-dist/tex/latex/ltxmisc/url.sty
+\Urlmuskip=\muskip11
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 3428.
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/bitset.sty
+Package: bitset 2007/09/28 v1.0 Data type bit set (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/intcalc.sty
+Package: intcalc 2007/09/27 v1.1 Expandable integer calculations (HO)
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/bigintcalc.sty
+Package: bigintcalc 2007/11/11 v1.1 Expandable big integer calculations (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2009/09/23 v0.6 LuaTeX support for pdfTeX utility functions
+ (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2009/04/17 v1.2 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2009/08/05 v1.0 Some LaTeX kernel commands for general use (HO
+)
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+)))
+\Fld@menulength=\count104
+\Field@Width=\dimen118
+\Fld@charsize=\dimen119
+\Field@toks=\toks24
+Package hyperref Info: Hyper figures OFF on input line 4377.
+Package hyperref Info: Link nesting OFF on input line 4382.
+Package hyperref Info: Hyper index ON on input line 4385.
+Package hyperref Info: backreferencing OFF on input line 4392.
+Package hyperref Info: Link coloring ON on input line 4395.
+Package hyperref Info: Link coloring with OCG OFF on input line 4402.
+Package hyperref Info: PDF/A mode OFF on input line 4407.
+
+(/usr/local/texlive/2009/texmf-dist/tex/generic/oberdiek/atbegshi.sty
+Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
+)
+\Hy@abspage=\count105
+\c@Item=\count106
+\c@Hfootnote=\count107
+)
+*hyperref using default driver hpdftex*
+(/usr/local/texlive/2009/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
+\Fld@listcount=\count108
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/alltt.sty
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count109
+\lst@gtempboxa=\box28
+\lst@token=\toks25
+\lst@length=\count110
+\lst@currlwidth=\dimen120
+\lst@column=\count111
+\lst@pos=\count112
+\lst@lostspace=\dimen121
+\lst@width=\dimen122
+\lst@newlines=\count113
+\lst@lineno=\count114
+\lst@maxwidth=\dimen123
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count115
+\lst@skipnumbers=\count116
+\lst@framebox=\box29
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/tools/enumerate.sty
+Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
+\@enLab=\toks26
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/fncychap/fncychap.sty
+Package: fncychap 2007/07/30 v1.34 LaTeX package (Revised chapters)
+\RW=\skip49
+\mylen=\skip50
+\myhi=\skip51
+\px=\skip52
+\py=\skip53
+\pyy=\skip54
+\pxx=\skip55
+)
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/epstopdf.sty
+Package: epstopdf 2009/10/17 v2.4 Conversion with epstopdf on the fly (HO)
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2009/10/17 v2.4 Base part for package epstopdf
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2007/09/30 v1.0 Managing graphics extensions (HO)
+)
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 433.
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2009/10/26 v1.1 Configuration of epstopdf for TeX Live
+)))
+(./TP.aux)
+\openout1 = `TP.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+ (/usr/local/texlive/2009/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count117
+\scratchdimen=\dimen124
+\scratchbox=\box30
+\nofMPsegments=\count118
+\nofMParguments=\count119
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count120
+\MPscratchDim=\dimen125
+\MPnumerator=\count121
+\everyMPtoPDFconversion=\toks28
+)
+Package hyperref Info: Link coloring ON on input line 38.
+ (/usr/local/texlive/2009/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/oberdiek/refcount.sty
+Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
+)
+\c@section@level=\count122
+)
+LaTeX Info: Redefining \ref on input line 38.
+LaTeX Info: Redefining \pageref on input line 38.
+ (./TP.out) (./TP.out)
+\@outlinefile=\write3
+\openout3 = `TP.out'.
+
+\AtBeginShipoutBox=\box31
+\c@lstlisting=\count123
+Package epstopdf Info: Source file: <imagens/timbre.eps>
+(epstopdf)                    date: 2008-10-05 20:19:40
+(epstopdf)                    size: 29248 bytes
+(epstopdf)             Output file: <imagens/timbre-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:45
+(epstopdf)                    size: 20328 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/timbre-eps-converte
+d-to.pdf imagens/timbre.eps>
+(epstopdf)             \includegraphics on input line 48.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/timbre-eps-converted-to.pdf, id=91, 33.12375pt x 43.16125pt>
+File: imagens/timbre-eps-converted-to.pdf Graphic file (type pdf)
+
+<use imagens/timbre-eps-converted-to.pdf> [1
+
+{/Users/ernestojfcosta/.texlive2009/texmf-var/fonts/map/pdftex/updmap/pdftex.ma
+p} <./imagens/timbre-eps-converted-to.pdf>]
+Projecto 1.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 65.
+(/usr/local/texlive/2009/texmf-dist/tex/latex/psnfss/ot1phv.fd
+File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
+)
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 65.
+
+(/usr/local/texlive/2009/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 71--72
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 79--80
+
+ []
+
+[2
+
+]
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 98.
+ (/usr/local/texlive/2009/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+Underfull \hbox (badness 10000) in paragraph at lines 98--99
+
+ []
+
+
+Overfull \hbox (43.7663pt too wide) in paragraph at lines 101--102
+\T1/cmr/m/n/12 apli-ca-ções, en-tre as quais o po-pu-lar GIMP (pode ser ob-tido
+ em http://www.gimp.org).
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--102
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--104
+
+ []
+
+
+Overfull \hbox (6.20863pt too wide) in paragraph at lines 107--107
+[]\T1/cmr/bx/n/17.28 Operações ge-rais re-la-ti-vas ao pro-ces-sa-mento
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--113
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 122--123
+
+ []
+
+[4]
+Overfull \hbox (18.42838pt too wide) in paragraph at lines 124--125
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--125
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--125
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 128--129
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--133
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 142--143
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 145.
+Package epstopdf Info: Output file is already uptodate.
+<imagens/vertigo-eps-converted-to.pdf, id=126, 594.22pt x 326.21875pt>
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_sem_red.eps>
+(epstopdf)                    date: 2010-10-25 17:35:30
+(epstopdf)                    size: 433195 bytes
+(epstopdf)             Output file: <imagens/vertigo_sem_red-eps-converted-to.p
+df>
+(epstopdf)                    date: 2010-10-25 19:12:47
+(epstopdf)                    size: 63118 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_sem_red-eps
+-converted-to.pdf imagens/vertigo_sem_red.eps>
+(epstopdf)             \includegraphics on input line 145.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_sem_red-eps-converted-to.pdf, id=127, 596.2275pt x 330.23375pt
+>
+File: imagens/vertigo_sem_red-eps-converted-to.pdf Graphic file (type pdf)
+ <use imagens/vertigo_sem_red-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
+
+ []
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 150--151
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 153.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_moldura.eps>
+(epstopdf)                    date: 2010-10-25 17:35:27
+(epstopdf)                    size: 647920 bytes
+(epstopdf)             Output file: <imagens/vertigo_moldura-eps-converted-to.p
+df>
+(epstopdf)                    date: 2010-10-25 19:13:17
+(epstopdf)                    size: 62577 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_moldura-eps
+-converted-to.pdf imagens/vertigo_moldura.eps>
+(epstopdf)             \includegraphics on input line 153.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_moldura-eps-converted-to.pdf, id=132, 606.265pt x 340.27126pt>
+File: imagens/vertigo_moldura-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo_moldura-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--159
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 160.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_cinza.eps>
+(epstopdf)                    date: 2010-10-25 17:35:33
+(epstopdf)                    size: 639290 bytes
+(epstopdf)             Output file: <imagens/vertigo_cinza-eps-converted-to.pdf
+>
+(epstopdf)                    date: 2010-10-25 19:13:40
+(epstopdf)                    size: 46301 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_cinza-eps-c
+onverted-to.pdf imagens/vertigo_cinza.eps>
+(epstopdf)             \includegraphics on input line 160.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_cinza-eps-converted-to.pdf, id=133, 596.2275pt x 330.23375pt>
+File: imagens/vertigo_cinza-eps-converted-to.pdf Graphic file (type pdf)
+
+<use imagens/vertigo_cinza-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 160--161
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 160--161
+
+ []
+
+[6 <./imagens/vertigo-eps-converted-to.pdf> <./imagens/vertigo_sem_red-eps-conv
+erted-to.pdf> <./imagens/vertigo_moldura-eps-converted-to.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 165--166
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 165--166
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 167.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_rot180.eps>
+(epstopdf)                    date: 2010-10-25 17:35:38
+(epstopdf)                    size: 642729 bytes
+(epstopdf)             Output file: <imagens/vertigo_rot180-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2010-10-25 19:13:41
+(epstopdf)                    size: 60800 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_rot180-eps-
+converted-to.pdf imagens/vertigo_rot180.eps>
+(epstopdf)             \includegraphics on input line 167.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_rot180-eps-converted-to.pdf, id=147, 596.2275pt x 330.23375pt>
+File: imagens/vertigo_rot180-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo_rot180-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 167--168
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--168
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--174
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--174
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 175.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_mirror_hor.eps>
+(epstopdf)                    date: 2010-10-25 17:35:36
+(epstopdf)                    size: 642733 bytes
+(epstopdf)             Output file: <imagens/vertigo_mirror_hor-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2010-10-25 19:14:22
+(epstopdf)                    size: 60817 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_mirror_hor-
+eps-converted-to.pdf imagens/vertigo_mirror_hor.eps>
+(epstopdf)             \includegraphics on input line 175.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_mirror_hor-eps-converted-to.pdf, id=148, 596.2275pt x 330.2337
+5pt>
+File: imagens/vertigo_mirror_hor-eps-converted-to.pdf Graphic file (type pdf)
+ <use imagens/vertigo_mirror_hor-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 175--176
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 175--176
+
+ []
+
+[7 <./imagens/vertigo_cinza-eps-converted-to.pdf> <./imagens/vertigo_rot180-eps
+-converted-to.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 180--181
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 180--181
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 182.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_cortada.eps>
+(epstopdf)                    date: 2010-10-25 17:35:23
+(epstopdf)                    size: 201611 bytes
+(epstopdf)             Output file: <imagens/vertigo_cortada-eps-converted-to.p
+df>
+(epstopdf)                    date: 2010-10-25 19:14:22
+(epstopdf)                    size: 22943 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_cortada-eps
+-converted-to.pdf imagens/vertigo_cortada.eps>
+(epstopdf)             \includegraphics on input line 182.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_cortada-eps-converted-to.pdf, id=160, 304.13625pt x 193.72375p
+t>
+File: imagens/vertigo_cortada-eps-converted-to.pdf Graphic file (type pdf)
+ <use imagens/vertigo_cortada-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 182--183
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 182--183
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 187--188
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 189.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_neg.eps>
+(epstopdf)                    date: 2010-10-25 17:35:11
+(epstopdf)                    size: 643533 bytes
+(epstopdf)             Output file: <imagens/vertigo_neg-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:14:23
+(epstopdf)                    size: 55920 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_neg-eps-con
+verted-to.pdf imagens/vertigo_neg.eps>
+(epstopdf)             \includegraphics on input line 189.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_neg-eps-converted-to.pdf, id=161, 596.2275pt x 330.23375pt>
+File: imagens/vertigo_neg-eps-converted-to.pdf Graphic file (type pdf)
+
+<use imagens/vertigo_neg-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
+
+ []
+
+[8 <./imagens/vertigo_mirror_hor-eps-converted-to.pdf> <./imagens/vertigo_corta
+da-eps-converted-to.pdf>]
+Overfull \hbox (1.16937pt too wide) in paragraph at lines 192--192
+[]\T1/cmr/bx/n/17.28 Outras ope-ra-ções de pro-ces-sa-mento de ima-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 201--202
+
+ []
+
+[9 <./imagens/vertigo_neg-eps-converted-to.pdf>]
+Overfull \hbox (68.95656pt too wide) in paragraph at lines 203--264
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 203--264
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 203--264
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 266--268
+
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
+
+ []
+
+Package epstopdf Info: Source file: <imagens/vertigo.eps>
+(epstopdf)                    date: 2010-10-25 17:35:16
+(epstopdf)                    size: 1151339 bytes
+(epstopdf)             Output file: <imagens/vertigo-eps-converted-to.pdf>
+(epstopdf)                    date: 2010-10-25 19:12:46
+(epstopdf)                    size: 96221 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo-eps-convert
+ed-to.pdf imagens/vertigo.eps>
+(epstopdf)             \includegraphics on input line 279.
+Package epstopdf Info: Output file is already uptodate.
+File: imagens/vertigo-eps-converted-to.pdf Graphic file (type pdf)
+<use imagens/vertigo-eps-converted-to.pdf>
+Package epstopdf Info: Source file: <imagens/vertigo_encriptada.eps>
+(epstopdf)                    date: 2010-10-25 17:35:07
+(epstopdf)                    size: 717731 bytes
+(epstopdf)             Output file: <imagens/vertigo_encriptada-eps-converted-t
+o.pdf>
+(epstopdf)                    date: 2010-10-25 19:14:50
+(epstopdf)                    size: 137711 bytes
+(epstopdf)             Command: <epstopdf --outfile=imagens/vertigo_encriptada-
+eps-converted-to.pdf imagens/vertigo_encriptada.eps>
+(epstopdf)             \includegraphics on input line 279.
+Package epstopdf Info: Output file is already uptodate.
+
+<imagens/vertigo_encriptada-eps-converted-to.pdf, id=183, 596.2275pt x 330.2337
+5pt>
+File: imagens/vertigo_encriptada-eps-converted-to.pdf Graphic file (type pdf)
+ <use imagens/vertigo_encriptada-eps-converted-to.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 279--280
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 279--280
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 281--282
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 289--290
+
+ []
+
+[11 <./imagens/vertigo_encriptada-eps-converted-to.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 294--295
+
+ []
+
+
+Overfull \hbox (52.98976pt too wide) in paragraph at lines 297--326
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 297--326
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 328--329
+
+ []
+
+[12] [13] (./TP.aux) ) 
+Here is how much of TeX's memory you used:
+ 7184 strings out of 493848
+ 102599 string characters out of 3149207
+ 181565 words of memory out of 3000000
+ 10274 multiletter control sequences out of 15000+200000
+ 19116 words of font info for 42 fonts, out of 3000000 for 9000
+ 714 hyphenation exceptions out of 8191
+ 38i,14n,36p,1208b,361s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/local/texlive/2009/texmf-dist/fonts/enc/dvips/cm-su
+per/cm-super-t1.enc}{/usr/local/texlive/2009/texmf-dist/fonts/enc/dvips/base/8r
+.enc}</usr/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfbx1200.p
+fb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb
+></usr/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb><
+/usr/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></u
+sr/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr
+/local/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/l
+ocal/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/loc
+al/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb></usr/local
+/texlive/2009/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb></usr/local/t
+exlive/2009/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/
+2009/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on TP.pdf (13 pages, 819337 bytes).
+PDF statistics:
+ 258 PDF objects out of 1000 (max. 8388607)
+ 40 named destinations out of 1000 (max. 500000)
+ 227 words of extra memory for PDF output out of 10000 (max. 10000000)
+

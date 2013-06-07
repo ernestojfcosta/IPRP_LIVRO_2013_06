@@ -1,0 +1,7 @@
+Um ficheiro pequeno,
+com caracteres estranhos.
+
+para testar a leitura \n de
+ficheiros.
+
+e outras coisas \t mais!
